@@ -1472,24 +1472,13 @@
                         return undefined
                 };
 
-                // Number > Prototype
-                    // Is Finite
-                    LapysDevelopmentKit.Functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(Number) { return Number !== LDKC.Numbers["Infinity"] && Number !== -LDKC.Numbers["Infinity"] };
-
-                    // Is Integer
-                    LapysDevelopmentKit.Functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(Number) { return Number === LDKM.int(Number) };
-
-                    // Is Not-A-Number
-                    LapysDevelopmentKit.Functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(Number) { return Number !== Number };
-
-                    // Is Odd
-                    LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(Number) { return Number & 1 };
-
-                    // Is Overflown
-                    LapysDevelopmentKit.Functions.numberPrototypeIsOverflown = function numberPrototypeIsOverflown(Number) { return Number >= LDKC.Numbers.MaximumIntegerValue || Number <= -LDKC.Numbers.MaximumIntegerValue };
-
-                    // Is Safe --- NOTE (Lapys) -> Numbers redacted to scientific notation in string form are implicitly also not safe.
-                    LapysDevelopmentKit.Functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(Number) { return LDKF.numberPrototypeIsFinite(Number) && !LDKF.numberPrototypeIsNaN(Number) && !LDKF.numberPrototypeIsOverflown(Number) };
+                // Number > Is ...
+                LapysDevelopmentKit.Functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(Number) { return Number !== LDKC.Numbers["Infinity"] && Number !== -LDKC.Numbers["Infinity"] };
+                LapysDevelopmentKit.Functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(Number) { return Number === LDKM.int(Number) };
+                LapysDevelopmentKit.Functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(Number) { return Number !== Number };
+                LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(Number) { return Number & 1 };
+                LapysDevelopmentKit.Functions.numberPrototypeIsOverflown = function numberPrototypeIsOverflown(Number) { return Number >= LDKC.Numbers.MaximumIntegerValue || Number <= -LDKC.Numbers.MaximumIntegerValue };
+                LapysDevelopmentKit.Functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(Number) { return LDKF.numberPrototypeIsFinite(Number) && !LDKF.numberPrototypeIsNaN(Number) && !LDKF.numberPrototypeIsOverflown(Number) };
 
                 // Object > Prototype
                     // Constructor --- CHECKPOINT (Lapys)
@@ -1535,168 +1524,83 @@
                     };
 
                 // String
-                    // Assert As Source --- CONSIDERATION (Lapys) -> Should there be a source validation method?
-                    // Tokenize As Source --- WARN (Lapys) -> These methods do not assert the source to be valid.
-                    LapysDevelopmentKit.Functions.stringTokenizeAsSource = function stringTokenizeAsSource(Source, SourceType, START_INDEX, END_INDEX, PARSING_TYPE) {
+                    // (Assert, Parse, Tokenize) Source
+                    LapysDevelopmentKit.Functions.stringTokenizeSource = function stringTokenizeSource(Source, SourceType, START_INDEX, END_INDEX) {
                         // Logic > Return
                         switch (SourceType || LDKC.Data.SourceTypes["javascript"]) {
-                            case LDKC.Data.SourceTypes["css"]: return LDKF.stringTokenizeCSSSource(Source, FLAG = START_INDEX, FLAG = END_INDEX, FLAG = PARSING_TYPE, FLAG = false);
-                            case LDKC.Data.SourceTypes["html"]: return LDKF.stringTokenizeHTMLSource(Source, FLAG = START_INDEX, FLAG = END_INDEX, FLAG = PARSING_TYPE, FLAG = false);
-                            case LDKC.Data.SourceTypes["javascript"]: return LDKF.stringTokenizeJavaScriptSource(Source, FLAG = START_INDEX, FLAG = END_INDEX, FLAG = PARSING_TYPE, FLAG = false);
+                            case LDKC.Data.SourceTypes["css"]: return LDKF.stringTokenizeCSSSource(Source, FLAG = START_INDEX, FLAG = END_INDEX, FLAG = null, FLAG = null);
+                            case LDKC.Data.SourceTypes["html"]: return LDKF.stringTokenizeHTMLSource(Source, FLAG = START_INDEX, FLAG = END_INDEX, FLAG = null, FLAG = null);
+                            case LDKC.Data.SourceTypes["javascript"]: return LDKF.stringTokenizeJavaScriptSource(Source, FLAG = START_INDEX, FLAG = END_INDEX, FLAG = null, FLAG = null);
                             default: return new LDKT.TokenList(null)
                         }
                     };
-                        // CSS --- CHECKPOINT (Lapys) -> Tokenize blocks, comments, functions and rules.
-                        LapysDevelopmentKit.Functions.stringTokenizeCSSSource = function stringTokenizeCSSSource(Source, START_INDEX, END_INDEX, PARSING_TYPE, WITHIN_PRIVATE_CONTEXT) {};
+                        // CSS
+                        LapysDevelopmentKit.Functions.stringTokenizeCSSSource = function stringTokenizeCSSSource(Source, START_INDEX, END_INDEX, TOKEN_TYPE, SUPERTOKEN) {};
 
-                        // HTML --- CHECKPOINT (Lapys) -> Tokenize (conditional) comments, tags and unicode as tokens.
-                        LapysDevelopmentKit.Functions.stringTokenizeHTMLSource = function stringTokenizeHTMLSource(Source, START_INDEX, END_INDEX, PARSING_TYPE, WITHIN_PRIVATE_CONTEXT) {};
+                        // HTML
+                        LapysDevelopmentKit.Functions.stringTokenizeHTMLSource = function stringTokenizeHTMLSource(Source, START_INDEX, END_INDEX, TOKEN_TYPE, SUPERTOKEN) {};
 
-                        // JavaScript --- CHECKPOINT (Lapys) -> Tokenize functions as tokens.
-                        LapysDevelopmentKit.Functions.stringTokenizeJavaScriptSource = function stringTokenizeJavaScriptSource(Source, START_INDEX, END_INDEX, PARSING_TYPE, WITHIN_PRIVATE_CONTEXT) {
-                            // (Constant, Shorthands) > ...
-                            var SOURCE_TOKEN = WITHIN_PRIVATE_CONTEXT ? new LDKT.Token : new LDKT.Token(Source);
-                            var TOKEN_TYPES = LDKC.Data.StringSourceTokenTypes;
-                            var TOKENS = new LDKT.TokenList(WITHIN_PRIVATE_CONTEXT ? SOURCE_TOKEN : null);
+                        // JavaScript --- CHECKPOINT (Lapys) -> Passing data between tokens.
+                        LapysDevelopmentKit.Functions.stringTokenizeJavaScriptSource = function stringTokenizeJavaScriptSource(Source, START_INDEX, END_INDEX, TOKEN_TYPE, SUPERTOKEN) {
+                            // Constant > Source Token (List)
+                            var SOURCE_TOKEN = new LDKT.Token;
+                            var SOURCE_TOKEN_LIST = new LDKT.TokenList(SOURCE_TOKEN);
 
-                            // Update > (End Index, Parsing State, Starting Index)
-                            END_INDEX || (END_INDEX = LDKF.stringPrototypeLength(Source));
-                            PARSING_TYPE || (PARSING_TYPE = TOKEN_TYPES["undefined"]);
-                            START_INDEX || (START_INDEX = +0);
-
-                            // Logic > Update > ...
-                            switch (PARSING_TYPE) { case TOKEN_TYPES["number"]: TMP = LDKF.stringPrototypeCharacterAt(Source, START_INDEX) === '0' ? 33 : +0 }
-
-                            // : Initialization > (Continue Parsing, Source Iterator)
-                            // : Loop --- NOTE (Lapys) -> Begin tokenize-ing recursively.
+                            // Initialization > ...
                             var continueParsing = true;
-                            var searchForTokens = !WITHIN_PRIVATE_CONTEXT;
+                            var ignoreIteration = false;
                             var sourceIterator = END_INDEX;
 
+                            // Update > ...
+                            END_INDEX || (END_INDEX = LDKF.stringPrototypeLength(Source));
+                            TOKEN_TYPE || (TOKEN_TYPE = LDKC.Data.StringSourceTokenTypes["undefined"]);
+                            SUPERTOKEN || (SUPERTOKEN = null);
+                            START_INDEX || (START_INDEX = +0);
+
+                            // Loop
                             while ((sourceIterator ^ START_INDEX) && continueParsing) {
-                                // Constant > (Source Index, ... Character)
+                                // Constant > ((Previous) Character, ...)
                                 var SOURCE_INDEX = (END_INDEX - (sourceIterator -= 1) - 1) + START_INDEX;
                                 var CHARACTER = LDKF.stringPrototypeCharacterAt(Source, SOURCE_INDEX);
-                                var PREVIOUS_CHARACTER = SOURCE_INDEX ? LDKF.stringPrototypeCharacterAt(Source, SOURCE_INDEX - 1) : null;
-
-                                // Modification > Source Token > Raw [Source]
-                                SOURCE_TOKEN.raw += CHARACTER;
-
-                                console.log(LDKT.EnumerationPrototypeGetOptionNameByValue.call(TOKEN_TYPES, PARSING_TYPE), CHARACTER);
-                                // Logic
-                                switch (PARSING_TYPE) {
-                                    // [Comment]
-                                    case TOKEN_TYPES["multiline-comment"]:
-                                    case TOKEN_TYPES["singleline-comment"]:
-                                        // ...
-                                        break;
-
-                                    // [Idle]
-                                    case TOKEN_TYPES["array"]:
-                                    case TOKEN_TYPES["binary-operation"]:
-                                    case TOKEN_TYPES["function"]:
-                                    case TOKEN_TYPES["group"]:
-                                    case TOKEN_TYPES["indexer"]: case TOKEN_TYPES["initializer-list"]:
-                                    case TOKEN_TYPES["scope"]:
-                                    case TOKEN_TYPES["ternary-operation"]:
-                                    case TOKEN_TYPES["unary-operation"]: case TOKEN_TYPES["undefined"]:
-                                        // Initialization > Next Token
-                                        var nextToken = 0;
-
-                                        // Logic --- NOTE (Lapys) -> Prevent locking control into this block.
-                                        if (searchForTokens) {
-                                            // [Subtoken Identification] Logic > Update > Next Token
-                                                // [Binary Operation]
-                                                if (CHARACTER == '%' || CHARACTER == ',' || CHARACTER == '^' || CHARACTER == '&' || CHARACTER == '|' || (
-                                                    (CHARACTER == '+' || CHARACTER == '-') ||
-                                                    (CHARACTER == '*') ||
-                                                    (CHARACTER == '/') ||
-                                                    (CHARACTER == '=')
-                                                )) nextToken = TOKEN_TYPES["binary-operation"];
-
-                                                // [Comment]
-                                                else if (CHARACTER == '/') {}
-
-                                                // [Number]
-                                                else if (LDKF.stringPrototypeIsDecimalDigit(CHARACTER) || (CHARACTER == '.' && LDKF.stringPrototypeIsDecimalDigit(LDKF.stringPrototypeCharacterAt(Source, SOURCE_INDEX + 1))))
-                                                    nextToken = TOKEN_TYPES["number"];
-
-                                                // [Unary Operation]
-                                                else if (CHARACTER == '+' || CHARACTER == '-' || CHARACTER == '!' || CHARACTER == '~') {}
-
-                                                // [Ternary Operation]
-                                                else if (CHARACTER == '?') {}
-
-                                            // [Sub-Tokenization] Logic
-                                            if (nextToken) {
-                                                // Constant > Subtokens
-                                                var SUBTOKENS = LDKF.stringTokenizeJavaScriptSource(Source, FLAG = SOURCE_INDEX, FLAG = END_INDEX, FLAG = nextToken, FLAG = true);
-
-                                                // Update > Tokens --- NOTE (Lapys) -> Same underlying operation.
-                                                WITHIN_PRIVATE_CONTEXT ?
-                                                    LDKF.functionPrototypeMonoadicCall(LDKT.TokenPrototypeAddSubtoken, SOURCE_TOKEN, SUBTOKENS.owner) :
-                                                    LDKF.arrayPrototypePush(TOKENS, SUBTOKENS.owner, FLAG = null, FLAG = LDKC.TokenListImperative)
-                                            }
-                                        }
-
-                                        else
-                                            // Update > Search For Tokens
-                                            searchForTokens = true;
-
-                                        // ...
-                                        break;
-
-                                    // [Number] --- NOTE (Lapys) -> The values of `TMP` are referenced from the expression: `LapysDevelopmentKit.Functions.functionPrototypeNiladicCall(LapysDevelopmentKit.Types.EnumerationPrototypeGenerateStatesFromOptions, new LapysDevelopmentKit.Types.Enumeration("big", "binary", "decimal", "hexadecimal", "octal", "scientific"))`
-                                    case TOKEN_TYPES["number"]:
-                                        // Logic > Update > (Continue Parsing, ...)
-                                        switch (TMP) {
-                                            // [Binary]
-                                            case 61: LDKF.stringPrototypeIsBinaryDigit(CHARACTER) || (continueParsing = false); break;
-
-                                            // [Decimal]
-                                            case +0: case 57: switch (CHARACTER) {
-                                                case 'b': case 'B': PREVIOUS_CHARACTER === '0' ? TMP = 61 : continueParsing = false; break;
-                                                case 'e': case 'E': TMP = 4; break;
-                                                case 'n': continueParsing = false; break;
-                                                case 'x': case 'X': PREVIOUS_CHARACTER === '0' ? TMP = 49 : continueParsing = false; break;
-                                                case '.': TMP == 57 ? continueParsing = false : TMP = 57; break;
-                                                default: LDKF.stringPrototypeIsDecimalDigit(CHARACTER) || (continueParsing = false)
-                                            } break;
-
-                                            // [Decimal, Scientific]
-                                            case 4: LDKF.stringPrototypeIsDecimalDigit(CHARACTER) || (continueParsing = false); break;
-
-                                            // [Hexadecimal]
-                                            case 49: LDKF.stringPrototypeIsHexadecimalDigit(CHARACTER) || (continueParsing = false); break;
-
-                                            // [Octal]
-                                            case 33: switch (CHARACTER) {
-                                                case '8': case '9': TMP = +0; break;
-                                                default: LDKF.stringPrototypeIsOctalDigit(CHARACTER) || (continueParsing = false)
-                                            } break;
-
-                                            // ...
-                                            default: continueParsing = false
-                                        }
-
-                                        // ...
-                                        break;
-
-                                    // [Regular Expression]
-                                    case TOKEN_TYPES["regular-expression"]:
-                                        // ...
-                                        break;
-
-                                    // [String]
-                                    case TOKEN_TYPES["double-quoted-string"]:
-                                    case TOKEN_TYPES["single-quoted-string"]:
-                                    case TOKEN_TYPES["template-string"]:
-                                }
+                                var PREVIOUS_CHARACTER = SOURCE_INDEX == START_INDEX ? null : LDKF.stringPrototypeCharacterAt(Source, SOURCE_INDEX - 1);
                             }
 
                             // Return
-                            return TOKENS
+                            return SOURCE_TOKEN_LIST
                         };
+
+                    // Is
+                        // CSS Length --- CHECKPOINT (Lapys)
+                        // Number --- NOTE (Lapys) -> JavaScript number literals only.
+                        LapysDevelopmentKit.Functions.stringIsNumber = function stringIsNumber(String, STRING_LENGTH) {
+                            // Update > String Length
+                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+
+                            // Initialization > ...
+                            var isBigInteger = false;
+                            var isBinaryForm = false;
+                            var isHexadecimalForm = false;
+                            var isOctalForm = false;
+                            var isScientificNotation = false;
+                            var stringIterator = STRING_LENGTH;
+
+                            // Loop
+                            while (stringIterator) {
+                                stringIterator -= 1
+                            }
+
+                            // Return
+                            return false
+                        };
+
+                        // ... --- MINIFY (Lapys)
+                        LapysDevelopmentKit.Functions.stringIsAlphabet = function stringIsAlphabet(Character) { return LDKF.stringIsLowercaseAlphabet(Character) || LDKF.stringIsUppercaseAlphabet(Character) };
+                        LapysDevelopmentKit.Functions.stringIsBinaryDigit = function stringIsBinaryDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.BinaryDigits, Character, FLAG = 10) };
+                        LapysDevelopmentKit.Functions.stringIsDecimalDigit = function stringIsDecimalDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.DecimalDigits, Character, FLAG = 10) };
+                        LapysDevelopmentKit.Functions.stringIsHexadecimalDigit = function stringIsHexadecimalDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.HexadecimalDigits, Character, FLAG = 10) };
+                        LapysDevelopmentKit.Functions.stringIsLowercaseAlphabet = function stringIsLowercaseAlphabet(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.LowercaseAlphabets, Character, FLAG = 26) };
+                        LapysDevelopmentKit.Functions.stringIsOctalDigit = function stringIsOctalDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.OctalDigits, Character, FLAG = 10) };
+                        LapysDevelopmentKit.Functions.stringIsUppercaseAlphabet = function stringIsUppercaseAlphabet(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.UppercaseAlphabets, Character, FLAG = 26) };
 
                     /* Prototype
                             --- NOTE ---
@@ -2078,15 +1982,6 @@
                         // Instance Characters
                         LapysDevelopmentKit.Functions.stringPrototypeInstanceCharacters = function stringPrototypeInstanceCharacters(String, STRING_LENGTH) { return LDKF.arrayPrototypeInstance(String, FLAG = STRING_LENGTH, FLAG = LDKC.Data.StringImperative) };
 
-                        // Is ...
-                        LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(Character) { return LDKF.stringPrototypeIsLowercaseAlphabet(Character) || LDKF.stringPrototypeIsUppercaseAlphabet(Character) };
-                        LapysDevelopmentKit.Functions.stringPrototypeIsBinaryDigit = function stringPrototypeIsBinaryDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.BinaryDigits, Character, FLAG = 10) };
-                        LapysDevelopmentKit.Functions.stringPrototypeIsDecimalDigit = function stringPrototypeIsDecimalDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.DecimalDigits, Character, FLAG = 10) };
-                        LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalDigit = function stringPrototypeIsHexadecimalDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.HexadecimalDigits, Character, FLAG = 10) };
-                        LapysDevelopmentKit.Functions.stringPrototypeIsOctalDigit = function stringPrototypeIsOctalDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.OctalDigits, Character, FLAG = 10) };
-                        LapysDevelopmentKit.Functions.stringPrototypeIsLowercaseAlphabet = function stringPrototypeIsLowercaseAlphabet(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.LowercaseAlphabets, Character, FLAG = 26) };
-                        LapysDevelopmentKit.Functions.stringPrototypeIsUppercaseAlphabet = function stringPrototypeIsUppercaseAlphabet(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.UppercaseAlphabets, Character, FLAG = 26) };
-
                         // Last
                         LapysDevelopmentKit.Functions.stringPrototypeLast = function stringPrototypeLast(String, STRING_LENGTH) { return String ? LDKF.stringPrototypeCharacterAt(String, (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - 1) : null };
 
@@ -2252,6 +2147,7 @@
             LapysDevelopmentKit.Mathematics.clamp = function clamp(Number, Minimum, Maximum) { return LDKM.min(LDKM.max(Number, Minimum), Maximum) };
             LapysDevelopmentKit.Mathematics.floor = function floor(Number) { return Number - Number % 1 };
             LapysDevelopmentKit.Mathematics.int = function int(Number) { return LDKM.floor(Number) };
+            LapysDevelopmentKit.Mathematics.log2 = Math.log2; // CHECKPOINT (Lapys) -> Use bitwise operators.
             LapysDevelopmentKit.Mathematics.max = function max(NumberA, NumberB) { return NumberA > NumberB ? NumberA : NumberB };
             LapysDevelopmentKit.Mathematics.min = function min(NumberA, NumberB) { return NumberA < NumberB ? NumberA : NumberB };
             LapysDevelopmentKit.Mathematics.perc = function perc(Base, Exponent) { return +!!Exponent && (Base * (Exponent / 100)) };
@@ -3730,7 +3626,7 @@
                         --- NOTE (Lapys) -> Semantic type for string source parsing.
                         --- WARN (Lapys) -> Tokens do not contain information about their utility or type.
                 */
-                LapysDevelopmentKit.Types.Token = function Token(Source) { Source && (this.raw = this.source = Source); this.subtokens = new LDKT.TokenList(this) };
+                LapysDevelopmentKit.Types.Token = function Token(Source) { this.raw = this.source = Source || ""; this.subtokens = new LDKT.TokenList(this) };
                     // Prototype
                     LapysDevelopmentKit.Types.TokenPrototype = LDKT.Token.prototype;
                         // ...
