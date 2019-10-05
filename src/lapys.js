@@ -122,7 +122,7 @@
 
         // [Status]
         var ANY = {}; // NOTE (Lapys) -> Generalized data (although unique in value).
-        var ERROR = ANY;
+        var ERROR = {message: null};
             // NOTE (Lapys) -> Denotes a silent exception when returned from a function.
             // WARN (Lapys) -> Does not take precedence over common/ default errors (e.g.: returning `-1` when an index is unfounded).
         var FLAG; // NOTE (Lapys) -> Argument to a logical or non-essential function parameter; Also known as an Argument Flag.
@@ -1707,10 +1707,12 @@
                             var currentToken = currentStatement;
                             var currentTokenList = currentToken.subtokens;
                             var currentTokenType = LDKC.Data.StringSourceTokenTypes["statement"];
+                            var previousToken = null;
                             var sourceHasMultipleStatements = false;
                             var sourceIterator = SOURCE_LENGTH;
 
                             var allowSubtokenization = true;
+                            var nonTokenSource = "";
                             var statementDepth = 1;
                             var stopParsingToken = true;
                             var tokenDepth = 1;
@@ -1766,7 +1768,8 @@
                                                     // ...
                                                     break;
                                                 case ',': case '%': nextTokenType = LDKC.Data.StringSourceTokenTypes["binary-operation"]; break;
-                                                case ':': (TOKEN_TYPES[tokenDepth - 1] == LDKC.Data.StringSourceTokenTypes["ternary-operation"]) && (nextTokenType = LDKC.Data.StringSourceTokenTypes["binary-operation"]); break;
+                                                case ':': currentTokenType == LDKC.Data.StringSourceTokenTypes["ternary-operation"] ? nextTokenType = LDKC.Data.StringSourceTokenTypes["binary-operation"] : (TOKEN_TYPES[tokenDepth - 2] == LDKC.Data.StringSourceTokenTypes["ternary-operation"]) && (allowSubtokenization = true); break;
+                                                case '?': nextTokenType = LDKC.Data.StringSourceTokenTypes["ternary-operation"]; break;
                                                 case ';':
                                                     // Logic
                                                     if (currentTokenType == LDKC.Data.StringSourceTokenTypes["statement"]) {
@@ -1790,7 +1793,6 @@
 
                                                     // ...
                                                     break;
-                                                case '?': nextTokenType = LDKC.Data.StringSourceTokenTypes["ternary-operation"]; break;
                                                 default:
                                                     // Logic
                                                     if (LDKF.stringIsDecimalDigit(CHARACTER) || (CHARACTER == '.' && LDKF.stringIsDecimalDigit(NEXT_CHARACTER)))
@@ -1801,34 +1803,41 @@
                                             if (nextTokenType)
                                                 // Logic
                                                 if (allowSubtokenization) {
-                                                    // Constant > Former Token
-                                                    var FORMER_TOKEN = TOKENS[tokenDepth - 1];
+                                                    // Constant > (Former, Previous) Token
+                                                    var FORMER_TOKEN = currentToken;
 
-                                                    // Update > ...
+                                                    // Update > ... Token ...
                                                     currentToken = new LDKT.Token;
                                                     currentTokenList = currentToken.subtokens;
                                                     currentTokenType = nextTokenType;
+                                                    previousToken = LDKF.arrayPrototypeLength(TOKENS) >= tokenDepth ? null : TOKENS[tokenDepth];
 
                                                     TOKENS[tokenDepth] = currentToken;
                                                     TOKEN_LISTS[tokenDepth] = currentTokenList;
                                                     TOKEN_TYPES[tokenDepth] = currentTokenType;
 
+                                                    // Logic > Modification > Current Token > Source --- CHECKPOINT (Lapys) -> Remove the token type.
+                                                    switch (currentTokenType) {
+                                                        case LDKC.Data.StringSourceTokenTypes["binary-operation"]: currentToken.source = FORMER_TOKEN.source; break;
+                                                        case LDKC.Data.StringSourceTokenTypes["ternary-operation"]: currentToken.source = previousToken.source + nonTokenSource
+                                                    }
+                                                    currentToken.type = LDKF.functionPrototypeMonoadicCall(LDKT.EnumerationPrototypeGetOptionNameByValue, LDKC.Data.StringSourceTokenTypes, currentTokenType);
+
+                                                    // Update > ...
                                                     allowSubtokenization = false;
                                                     nextTokenType = +0;
+                                                    nonTokenSource = "";
                                                     sourceIterator += 1;
-                                                    tokenDepth += 1;
-
-                                                    // Modification > Current Token > (Source, Type) --- CHECKPOINT (Lapys) -> Remove the token type.
-                                                    (
-                                                        currentTokenType == LDKC.Data.StringSourceTokenTypes["binary-operation"] ||
-                                                        currentTokenType == LDKC.Data.StringSourceTokenTypes["ternary-operation"]
-                                                    ) && (currentToken.source = FORMER_TOKEN.source);
-                                                    currentToken.type = LDKF.functionPrototypeMonoadicCall(LDKT.EnumerationPrototypeGetOptionNameByValue, LDKC.Data.StringSourceTokenTypes, currentTokenType)
+                                                    tokenDepth += 1
                                                 }
 
                                                 else
                                                     // Update > Allow Sub-Tokenization
                                                     allowSubtokenization = true;
+
+                                            else
+                                                // Update > Non-Token Source
+                                                sourceIterator && (nonTokenSource += CHARACTER);
 
                                             // Modification > Current Token > Source
                                             LDKF.isNull(nextStatement) && sourceIterator && (FORMER_SOURCE_ITERATOR == sourceIterator) &&
@@ -1905,9 +1914,16 @@
                                             currentTokenList[1] = TMP
                                     }
 
-                                    // Insertion; Modification > Former Token > Source
+                                    // Logic
+                                    switch (currentTokenType) {
+                                        case LDKC.Data.StringSourceTokenTypes["ternary-operation"]:
+                                            // currentToken.source = previousToken.source;
+                                            break;
+                                        default: FORMER_TOKEN.source += currentToken.source;
+                                    }
+
+                                    // Modification > Former Token > Source
                                     LDKF.functionPrototypeMonoadicCall(LDKT.TokenPrototypeAddSubtoken, FORMER_TOKEN, currentToken);
-                                    FORMER_TOKEN.source += currentToken.source;
 
                                     // Update > ...
                                     currentToken = FORMER_TOKEN;
@@ -3074,9 +3090,9 @@
                 };
                     // Add
                     LapysDevelopmentKit.Types.BigNumberAdd =
-                    LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, SOURCED) {
                         // Constant > Addition
-                        var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
+                        var ADDITION = SOURCED ? BigNumberA : new LDKT.BigNumber;
 
                         // Update > (Addition > Mantissa)
                         LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeCopy, ADDITION.mantissa, LDKF.digitsAdd(BigNumberA.mantissa, BigNumberB.mantissa, FLAG = LDKC.Strings.DecimalDigits, FLAG = LDKC.Data.BigArrayImperative, FLAG = LDKC.Data.NumberComponent["MANTISSA"]));
@@ -3766,9 +3782,9 @@
                 };
                     // Add
                     LapysDevelopmentKit.Types.RangedNumberAdd =
-                    LapysDevelopmentKit.Types.RangedNumber.add = function add(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.add = function add(RangedNumberA, RangedNumberB, SOURCED) {
                         // Constant > Addition
-                        var ADDITION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+                        var ADDITION = SOURCED ? RangedNumberA : new LDKT.RangedNumber;
 
                         // ...
                         ADDITION.value = RangedNumberA.value + RangedNumberB.value;
@@ -3799,9 +3815,9 @@
 
                     // Divide
                     LapysDevelopmentKit.Types.RangedNumberDivide =
-                    LapysDevelopmentKit.Types.RangedNumber.divide = function divide(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.divide = function divide(RangedNumberA, RangedNumberB, SOURCED) {
                         // Constant > Division
-                        var DIVISION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+                        var DIVISION = SOURCED ? RangedNumberA : new LDKT.RangedNumber;
 
                         // ...
                         DIVISION.value = RangedNumberA.value / RangedNumberB.value;
@@ -3848,9 +3864,9 @@
 
                     // Modulo
                     LapysDevelopmentKit.Types.RangedNumberModulo =
-                    LapysDevelopmentKit.Types.RangedNumber.modulo = function modulo(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.modulo = function modulo(RangedNumberA, RangedNumberB, SOURCED) {
                         // Constant > Modulus
-                        var MODULUS = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+                        var MODULUS = SOURCED ? RangedNumberA : new LDKT.RangedNumber;
 
                         // ...
                         MODULUS.value = RangedNumberA.value % RangedNumberB.value;
@@ -3862,9 +3878,9 @@
 
                     // Multiply
                     LapysDevelopmentKit.Types.RangedNumberMultiply =
-                    LapysDevelopmentKit.Types.RangedNumber.multiply = function multiply(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.multiply = function multiply(RangedNumberA, RangedNumberB, SOURCED) {
                         // Constant > Multiplication
-                        var MULTIPLICATION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+                        var MULTIPLICATION = SOURCED ? RangedNumberA : new LDKT.RangedNumber;
 
                         // ...
                         MULTIPLICATION.value = RangedNumberA.value * RangedNumberB.value;
@@ -3895,9 +3911,9 @@
 
                     // Power
                     LapysDevelopmentKit.Types.RangedNumberPower =
-                    LapysDevelopmentKit.Types.RangedNumber.power = function power(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.power = function power(RangedNumberA, RangedNumberB, SOURCED) {
                         // Constant > Power
-                        var POWER = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+                        var POWER = SOURCED ? RangedNumberA : new LDKT.RangedNumber;
 
                         // ...
                         POWER.value = LDKM.pow(RangedNumberA.value, RangedNumberB.value);
@@ -3909,12 +3925,12 @@
 
                     // Sign
                     LapysDevelopmentKit.Types.RangedNumberSign =
-                    LapysDevelopmentKit.Types.RangedNumber.sign = function sign(RangedNumber, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.sign = function sign(RangedNumber, SOURCED) {
                         // Constant > Ranged Number
                         var RANGED_NUMBER;
 
                         // Logic > ...
-                        if (PARSE_AS_SOURCE) RANGED_NUMBER = RangedNumber;
+                        if (SOURCED) RANGED_NUMBER = RangedNumber;
                         else if (RANGED_NUMBER) { RANGED_NUMBER = new LDKT.RangedNumber; LDKF.functionPrototypeMonoadicCall(LDKT.RangedNumberPrototypeCopy, RANGED_NUMBER, RangedNumber) }
 
                         // ...
@@ -3927,9 +3943,9 @@
 
                     // Subtract
                     LapysDevelopmentKit.Types.RangedNumberSubtract =
-                    LapysDevelopmentKit.Types.RangedNumber.subtract = function subtract(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.subtract = function subtract(RangedNumberA, RangedNumberB, SOURCED) {
                         // Constant > Subtraction
-                        var SUBTRACTION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+                        var SUBTRACTION = SOURCED ? RangedNumberA : new LDKT.RangedNumber;
 
                         // ...
                         SUBTRACTION.value = RangedNumberA.value - RangedNumberB.value;
@@ -3941,12 +3957,12 @@
 
                     // Unsign
                     LapysDevelopmentKit.Types.RangedNumberUnsign =
-                    LapysDevelopmentKit.Types.RangedNumber.unsign = function unsign(RangedNumber, PARSE_AS_SOURCE) {
+                    LapysDevelopmentKit.Types.RangedNumber.unsign = function unsign(RangedNumber, SOURCED) {
                         // Constant > Ranged Number
                         var RANGED_NUMBER;
 
                         // Logic > ...
-                        if (PARSE_AS_SOURCE) RANGED_NUMBER = RangedNumber;
+                        if (SOURCED) RANGED_NUMBER = RangedNumber;
                         else if (RANGED_NUMBER) { RANGED_NUMBER = new LDKT.RangedNumber; LDKF.functionPrototypeMonoadicCall(LDKT.RangedNumberPrototypeCopy, RANGED_NUMBER, RangedNumber) }
 
                         // ...
