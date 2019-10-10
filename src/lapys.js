@@ -19,7 +19,7 @@
     --- CONSIDERATIONS ---
         #Lapys:
             - Defer to object literals (`{}`) instead of array literals (`[]`) for internally managed and locally-scoped collections and lists.
-                Although the structure`s meaning & significance would be strongly-dependent on its identifier name.
+                (Although the structure`s meaning & significance would be strongly-dependent on its identifier name).
             - Implement the `Object.create(null)` value as a substitute for `{}` object literals as objects created with this method do not have any properties (including the `prototype`).
 
     --- NOTE ---
@@ -187,13 +187,14 @@
 
             /* Types > --- REDACT (Lapys)
                     : Array Imperative --- NOTE (Lapys) -> Container for array-like basic access & manipulation functions.
+                    : Array Instance --- NOTE (Lapys) -> Data representing the number of elements within an array.
                     : Clock --- NOTE (Lapys) -> Structure type for asynchronous and multi-threaded processes.
                     : Enumeration --- NOTE (Lapys) -> List of enumerable options represented as integers, labeled as strings.
                     : Safe String --- MINIFY (Lapys) --- NOTE (Lapys) -> String type that does not rely on the `String.prototype.charAt` method to be universally compatible.
             */
             LapysDevelopmentKit.Types.ArrayImperative = function ArrayImperative(Accessor, Mutator, Requester, Allocator) { this.getIndex = Accessor; this.getLength = Requester; this.setIndex = Mutator; this.setLength = Allocator };
             LapysDevelopmentKit.Types.ArrayInstance = function ArrayInstance(Element, Count) { this.element = Element; this.count = Count };
-            LapysDevelopmentKit.Types.Clock = function Clock() { this.timed = false; this.timeElapsed = +0 };
+            LapysDevelopmentKit.Types.Clock = function Clock() {};
             LapysDevelopmentKit.Types.Enumeration = function Enumeration(Values, START_INDEX) { "use strict"; var argumentsIterator = arguments.length; if (LDKF.isNumber(arguments[argumentsIterator - 1])) { var OFFSET = arguments[argumentsIterator - 1] - 1; while (argumentsIterator -= 1) this[arguments[argumentsIterator - 1]] = argumentsIterator + OFFSET } else while (argumentsIterator) this[arguments[argumentsIterator -= 1]] = argumentsIterator + 1 };
             LapysDevelopmentKit.Types.SafeString = function SafeString(Characters) { "use strict"; var argumentsIterator = arguments.length; this.length = argumentsIterator; while (argumentsIterator) { argumentsIterator -= 1; this[argumentsIterator] = arguments[argumentsIterator] } };
 
@@ -1673,6 +1674,9 @@
                                 return false
                         };
 
+                        // Is Rotation Of --- CHECKPOINT (Lapys) -> `"waterbottle"`` is a rotation of `"erbottlewat"`.
+                        LapysDevelopmentKit.Functions.stringIsRotationOf = function stringIsRotationOf(StringA, StringB, STRING_A_LENGTH, STRING_B_LENGTH) {};
+
                         // ... --- MINIFY (Lapys)
                         LapysDevelopmentKit.Functions.stringIsAlphabet = function stringIsAlphabet(Character) { return LDKF.stringIsLowercaseAlphabet(Character) || LDKF.stringIsUppercaseAlphabet(Character) };
                         LapysDevelopmentKit.Functions.stringIsBinaryDigit = function stringIsBinaryDigit(Character) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.BinaryDigits, Character, FLAG = 2) };
@@ -2586,6 +2590,9 @@
 
                 // Object --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Objects.object = Object;
+                    // Create --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Objects.objectCreate = LDKO.object.create;
+
                     // Prototype
                     LapysDevelopmentKit.Objects.objectPrototype = LDKO.object.prototype;
                         // Has Own Property --- CHECKPOINT (Lapys)
@@ -2606,17 +2613,12 @@
                 // Typed Array > Prototype
                     // Sort --- CHECKPOINT (Lapys)
 
-            /* Records */
-                // Lists --- REDACT (Lapys)
-                LapysDevelopmentKit.Records.Lists.ClockData = [];
-                LapysDevelopmentKit.Records.Lists.ClockDataLength = +0;
-
             /* Types */
                 /* Big Array
                         --- NOTE (Lapys) -> Arbitrary-length array type.
                         --- WARN (Lapys) ->
                             - The length is algorithmically infinite, but implementation-restricted (`Number.MAX_SAFE_INTEGER`) and theoretically memory-limited.
-                            - Not optimized for `for...in` loops.
+                            - Not optimized for `for...in` repetition structures.
                 */
                 LapysDevelopmentKit.Types.BigArray = function BigArray(Length, MaximumLength) {
                     // Modification > Target > (Depth, (Maximum) Length, Width)
@@ -3064,8 +3066,8 @@
                         --- CITE (Lapys) -> https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic
                         --- NOTE (Lapys) -> Arbitrary-precision number.
                         --- WARN (Lapys) ->
-                            - The implementation of `BigNumber``s here are implicitly limited due to maximum size of it`s storage mechanism (which is `BigArray``s).
-                                `String``s could have been used instead to store the digits, but it was decided for `BigNumber``s to scale with the practical limits of `BigArray``s.
+                            - The implementation of `BigNumber``s here are implicitly limited due to maximum size of it`s storage (which is `BigArray``s).
+                                (`String``s could have been used instead to store the digits, but it was decided for `BigNumber``s to scale with the practical limits of `BigArray``s).
                             - Locked to the decimal number system (base 10).
                 */
                 LapysDevelopmentKit.Types.BigNumber = function BigNumber(Value) {
@@ -3422,7 +3424,7 @@
                     // Subtract --- CHECKPOINT (Lapys)
 
                     // Prototype
-                    LapysDevelopmentKit.Types.BigNumberPrototype = LapysDevelopmentKit.Types.BigNumber.prototype;
+                    LapysDevelopmentKit.Types.BigNumberPrototype = LDKT.BigNumber.prototype;
                         // Add
                         LapysDevelopmentKit.Types.BigNumberPrototypeAdd =
                         LapysDevelopmentKit.Types.BigNumberPrototype.add = function add(BigNumber) { return LDKT.BigNumberAdd(this, BigNumber, FLAG = true) };
@@ -3532,42 +3534,10 @@
                 /* Clock */
                     // Prototype
                     LapysDevelopmentKit.Types.ClockPrototype = LDKT.Clock.prototype;
-                        // Check
-                        LapysDevelopmentKit.Types.ClockPrototype.check = function check(Condition, Ontrue, Onfalse) { var evaluation, id; try { evaluation = Condition() } catch (error) {} id = LDKF.functionPrototypeMonoadicCall(LDKT.ClockPrototype.wind, this, function() { if (evaluation) { LDKF.functionPrototypeNiladicCall(LDKT.ClockPrototype.stop, id); Ontrue() } else Onfalse() }); return id };
-
-                        // Measure
+                        // ... --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Types.ClockPrototype.check = function check() {};
                         LapysDevelopmentKit.Types.ClockPrototype.measure = function measure() { return LDKC.Assertions.has_Performance_Constructor ? LDKF.functionPrototypeNiladicCall(LDKO.performancePrototypeNow, LDKC.Objects.performance) : LDKF.functionPrototypeNiladicCall(LDKO.dateNow, LDKO.date) };
-
-                        // Stop
-                        LapysDevelopmentKit.Types.ClockPrototype.stop = function stop(id) {
-                            // Logic
-                            if (id) {
-                                // Constant > Clock Data Index
-                                var CLOCK_DATA_INDEX = LDKF.arrayPrototypeIndexFrom(LDKR.Lists.ClockData, id, FLAG = LDKR.Lists.ClockDataLength, FLAG = function(clockData) { return clockData.id });
-
-                                // Logic
-                                if (~CLOCK_DATA_INDEX) {
-                                    // Constant > Clock Data
-                                    var CLOCK_DATA = LDKR.Lists.ClockData[CLOCK_DATA_INDEX];
-
-                                    // Logic > ...
-                                    if (CLOCK_DATA.hasDelay) LDKF.clearInterval(CLOCK_DATA.referenceID);
-                                    else if (CLOCK_DATA.hasInterval) LDKF.clearTimeout(CLOCK_DATA.referenceID);
-                                    else CLOCK_DATA.requestHandler = function() { LDKF.cancelAnimationFrame(CLOCK_DATA.referenceID) };
-
-                                    // Update > (... > Clock Data)
-                                    LDKF.arrayPrototypeCutAt(LDKR.Lists.ClockData, CLOCK_DATA_INDEX);
-
-                                    // Return
-                                    return true
-                                }
-                            }
-
-                            // Return
-                            return false
-                        };
-
-                        // Thread --- UPDATE REQUIRED (Lapys) -> More abstraction and features.
+                        LapysDevelopmentKit.Types.ClockPrototype.stop = function stop() {};
                         LapysDevelopmentKit.Types.ClockPrototype.thread = function thread(handler) {
                             // Constant > (Handler, Worker File) Source
                             var HANDLER_SOURCE = handler + "",
@@ -3581,114 +3551,13 @@
                             // Worker > Post Message
                             LDKF.workerPrototypePostMessage(WORKER, {})
                         };
-
-                        // Tick
-                        LapysDevelopmentKit.Types.ClockPrototype.tick = function tick(handler, delay) {
-                            // ...
-                            "use strict";
-
-                            // Constant > Clock Data
-                            var CLOCK_DATA = {
-                                id: LDKR.Lists.ClockDataLength + 1,
-                                hasDelay: (arguments.length || 1) ^ 1,
-                                referenceID: null
-                            };
-
-                            // Update > (... > Clock Data)
-                            LDKR.Lists.ClockData[(LDKR.Lists.ClockDataLength += 1) - 1] = CLOCK_DATA;
-
-                            // Logic
-                            if (CLOCK_DATA.hasDelay)
-                                // Modification > Clock Data > Reference ID
-                                CLOCK_DATA.referenceID = LDKF.setTimeout(function() { LDKF.clearTimeout(CLOCK_DATA.referenceID); handler() }, delay || +0);
-
-                            else {
-                                // Modification > Clock Data > (Request Handler, Reference ID)
-                                CLOCK_DATA.requestHandler = function() { handler() };
-                                CLOCK_DATA.referenceID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(CLOCK_DATA.referenceID); CLOCK_DATA.requestHandler() });
-                            }
-
-                            // Return
-                            return CLOCK_DATA.id
-                        };
-
-                        // Timestamp --- NOTE (Lapys) -> Measures time (in milliseconds) elapsed between each call; Every next succeeding call resets the timer.
-                        LapysDevelopmentKit.Types.ClockPrototype.timestamp = function timestamp() {
-                            // Constant > Clock
-                            var CLOCK = this;
-
-                            // Modification > Clock > Timed
-                            CLOCK.timed = !CLOCK.timed;
-
-                            // Logic
-                            if (CLOCK.timed) {
-                                // Clock > Check
-                                LDKF.functionPrototypeTriadicCall(LDKT.ClockPrototype.check, CLOCK, function() { return !CLOCK.timed }, function() {}, function() { CLOCK.timeElapsed += LDKC.Constants.Number.FrameRate })
-
-                                // Return
-                                return true
-                            }
-
-                            else {
-                                // Constant > Clock Time Elapsed
-                                var CLOCK_TIME_ELAPSED = CLOCK.timeElapsed;
-
-                                // Modification > Clock > Time Elapsed
-                                CLOCK.timeElapsed = +0;
-
-                                // Return
-                                return CLOCK_TIME_ELAPSED
-                            }
-                        };
-
-                        // Wind
-                        LapysDevelopmentKit.Types.ClockPrototype.wind = function wind(handler, interval) {
-                            // ...
-                            "use strict";
-
-                            // Constant > Clock Data
-                            var CLOCK_DATA = {
-                                id: LDKR.Lists.ClockDataLength + 1,
-                                hasInterval: (arguments.length || 1) ^ 1,
-                                referenceID: null
-                            };
-
-                            // Update > (... > Clock Data)
-                            LDKR.Lists.ClockData[(LDKR.Lists.ClockDataLength += 1) - 1] = CLOCK_DATA;
-
-                            // Logic
-                            if (CLOCK_DATA.hasInterval)
-                                // Modification > Clock Data > Reference ID
-                                CLOCK_DATA.referenceID = LDKF.setInterval(function() { handler() }, interval || +0);
-
-                            else {
-                                // Initialization > Evaluate Handler
-                                var evaluateHandler = false;
-
-                                // Modification > Clock Data > Request Handler
-                                CLOCK_DATA.requestHandler = function() {
-                                    // Cancel Animation Frame
-                                    LDKF.cancelAnimationFrame(CLOCK_DATA.referenceID);
-
-                                    // Modification > Clock Data > Reference ID; ...
-                                    CLOCK_DATA.referenceID = LDKF.requestAnimationFrame(CLOCK_DATA.requestHandler);
-                                    evaluateHandler ? handler() : evaluateHandler = true
-                                };
-
-                                // Clock Data > Request Handler
-                                CLOCK_DATA.requestHandler()
-                            }
-
-                            // Return
-                            return CLOCK_DATA.id
-                        };
+                        LapysDevelopmentKit.Types.ClockPrototype.tick = function tick(handler, delay) {};
+                        LapysDevelopmentKit.Types.ClockPrototype.timestamp = function timestamp() { /* NOTE (Lapys) -> Measures elapsed time between each call (which resets the time). */ };
+                        LapysDevelopmentKit.Types.ClockPrototype.wind = function wind(handler, interval) {};
 
                 /* Enumeration */
                     // Prototype --- WARN (Lapys) -> For development purposes only.
-                        /* Generate States From
-                                --- NOTE (Lapys) -> Generate an options-value pair (state) for every combination of the enumeration`s options.
-                                --- WARN (Lapys) -> This would have been an array-based method (as that would represent majority of the code`s intention) but currently this method would strictly be fore enumerations.
-                        */
+                        // Generate States From --- NOTE (Lapys) -> Generate an options-value pair (state) for every unique combination of the enumeration`s options
                         LapysDevelopmentKit.Types.EnumerationPrototypeGenerateStatesFromOptions = function generateStatesFromOptions() {
                             // Constant > (Enumeration ..., Options, States)
                             var ENUMERATION = this;
@@ -3775,8 +3644,8 @@
                     else {
                         // Modification > Target > (Clamped, ..., Value)
                         this.clamped = true;
-                        this.MAXIMUM_VALUE = LDKC.Numbers["Infinity"];
-                        this.MINIMUM_VALUE = -LDKC.Numbers["Infinity"];
+                        this.MAXIMUM_VALUE = LDKF.isNumber(MaximumValue) && LDKF.numberPrototypeIsSafe(MaximumValue) ? MaximumValue : LDKC.Numbers["Infinity"];
+                        this.MINIMUM_VALUE = LDKF.isNumber(MinimumValue) && LDKF.numberPrototypeIsSafe(MinimumValue) ? MinimumValue : -LDKC.Numbers["Infinity"];
                         this.value = Value || +0
                     }
                 };
@@ -3808,6 +3677,9 @@
                             // Logic > Update > Ranged Number Value
                             if (rangedNumberValue < RANGED_NUMBER_MINIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MINIMUM_VALUE;
                             else if (rangedNumberValue > RANGED_NUMBER_MAXIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MAXIMUM_VALUE;
+
+                        // Modification > Ranged Number > Value
+                        RangedNumber.value = rangedNumberValue;
 
                         // Return
                         return RangedNumber
@@ -3905,6 +3777,9 @@
                             if (rangedNumberValue < RANGED_NUMBER_MINIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MAXIMUM_VALUE - rangedNumberValue;
                             else if (rangedNumberValue > RANGED_NUMBER_MAXIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MINIMUM_VALUE + rangedNumberValue;
 
+                        // Modification > Ranged Number > Value
+                        RangedNumber.value = rangedNumberValue;
+
                         // Return
                         return RangedNumber
                     };
@@ -3974,7 +3849,7 @@
                     };
 
                     // Prototype
-                    LapysDevelopmentKit.Types.RangedNumberPrototype = LapysDevelopmentKit.Types.RangedNumber.prototype;
+                    LapysDevelopmentKit.Types.RangedNumberPrototype = LDKT.RangedNumber.prototype;
                         // ...
                         LapysDevelopmentKit.Types.RangedNumberPrototype.add = function add(RangedNumber) { return LDKT.RangedNumberAdd(this, RangedNumber, FLAG = true) };
                         LapysDevelopmentKit.Types.RangedNumberPrototypeCopy =
@@ -4000,38 +3875,10 @@
                         LapysDevelopmentKit.Types.RangedNumberPrototype.valueOf = function valueOf() { return LDKF.functionPrototypeNiladicCall(LDKT.RangedNumberPrototypeToNumber, this) };
 
                 /* Safe Number
+                        --- CHECKPOINT (Lapys)
                         --- NOTE (Lapys) -> Defers between the `BigNumber` and `Number` types for performance.
-                        --- WARN (Lapys) -> Does not support `BigInt``s.
                 */
-                LapysDevelopmentKit.Types.SafeNumber = function SafeNumber(Value) { this.value = Value ? LDKT.SafeNumberFromNumber(Value).value : +0 };
-                    // Add --- CHECKPOINT (Lapys)
-                    // From Number --- WARN (Lapys) -> Assumes the argument is only of type `BigNumber` or `Number`.
-                    LapysDevelopmentKit.Types.SafeNumberFromNumber =
-                    LapysDevelopmentKit.Types.SafeNumber.fromNumber = function fromNumber(Number) {
-                        // Constant > Safe Number
-                        var SAFE_NUMBER = new LDKT.SafeNumber;
-
-                        // Logic > Modification > Safe Number > Value
-                        if (Number instanceof LDKT.BigNumber) SAFE_NUMBER.value = Number;
-                        else if (LDKF.numberPrototypeIsOverflown(Number)) SAFE_NUMBER.value = LDKT.BigNumberFromNumber(Number);
-                        else SAFE_NUMBER.value = Number || +0;
-
-                        // Return
-                        return SAFE_NUMBER
-                    };
-
-                    // Prototype
-                        // To Big Number
-                        LapysDevelopmentKit.Types.SafeNumberPrototypeToBigNumber =
-                        LapysDevelopmentKit.Types.SafeNumber.prototype.toBigNumber = function toBigNumber() { return this.value instanceof LDKT.BigNumber ? this.value : LDKT.BigNumberFromNumber(this.value) };
-
-                        // To Number
-                        LapysDevelopmentKit.Types.SafeNumberPrototypeToNumber =
-                        LapysDevelopmentKit.Types.SafeNumber.prototype.toNumber = function toNumber() { return this.value };
-
-                        // To String
-                        LapysDevelopmentKit.Types.SafeNumberPrototypeToString =
-                        LapysDevelopmentKit.Types.SafeNumber.prototype.toString = function toString() { var VALUE = this.value; return VALUE instanceof LDKT.BigNumber ? LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeToString, VALUE) : LDKF.toString(VALUE) };
+                LapysDevelopmentKit.Types.SafeNumber = function SafeNumber(Value) {};
 
                 /* Token
                         --- NOTE (Lapys) -> Semantic type for string source parsing.
@@ -4070,7 +3917,7 @@
 
     /* Update > Global */
     try { GLOBAL = LDKO["function"]("return this")() || LDKF.eval("this") }
-    catch (error) { GLOBAL = typeof self == "undefined" ? (typeof window == "undefined" ? (typeof global == "undefined" ? undefined : global) : window) : self }
+    catch (Error) { GLOBAL = typeof self == "undefined" ? (typeof window == "undefined" ? (typeof global == "undefined" ? undefined : global) : window) : self }
 
     /* ... --- CHECKPOINT (Lapys) -> Update this */
     GLOBAL.LapysDevelopmentKit = LapysDevelopmentKit;

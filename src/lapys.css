@@ -591,6 +591,7 @@
             min-height: 6px;
             min-width: 16px;
             padding: 1px 6px;
+            vertical-align: text-top;
             -webkit-appearance: button;
             -webkit-background-origin: border-box
         }
