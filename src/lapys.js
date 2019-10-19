@@ -1564,6 +1564,7 @@
                                     - JavaScript number literals only.
                                     - The global variable `TMP` represents the type of number.
                                         Reference the statement `LDKF.functionPrototypeNiladicCall(LDKT.EnumerationPrototypeGenerateStatesFromOptions, new LDKT.Enumeration("big", "binary", "hexadecimal", "mantissa", "octal", "scientific", "scientific-signed"))` for all possible values of `TMP`.
+                                    - Casting the string source to a numeric literal would have been sufficient if determining the number type was unneeded.
                         */
                         LapysDevelopmentKit.Functions.stringIsNumber = function stringIsNumber(String, STRING_LENGTH) {
                             // Update > (String Length, ...)
@@ -1655,10 +1656,10 @@
                                         default:
                                             // Logic > Update > ...
                                             switch (CHARACTER) {
-                                                case 'b': case 'B': isBinaryForm = true; TMP = 125; break;
+                                                case 'b': case 'B': LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator - 2) == '0' ? isBinaryForm = true : stringIsNumber = false; TMP = 125; break;
                                                 case 'e': case 'E': isScientificNotation = true; TMP = 65; break;
                                                 case 'n': isBigInteger = true; TMP = 127; break;
-                                                case 'x': case 'X': isHexadecimalForm = true; TMP = 121; break;
+                                                case 'x': case 'X': LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator - 2) == '0' ? isHexadecimalForm = true : stringIsNumber = false; TMP = 121; break;
                                                 case '.': hasMantissa = true; TMP = 113; break;
                                                 default: LDKF.stringIsDecimalDigit(CHARACTER) || (stringIsNumber = false)
                                             }
@@ -1731,9 +1732,9 @@
                             while (sourceIterator) {
                                 // [Token Searching] Logic
                                 if (stopParsingToken) {
-                                    // Constant > (Character, Former ...)
+                                    // Constant > (Character, Recent ...)
                                     var CHARACTER = LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - (sourceIterator -= 1) - 1);
-                                    var FORMER_SOURCE_ITERATOR = sourceIterator;
+                                    var RECENT_SOURCE_ITERATOR = sourceIterator;
 
                                     // Logic --- NOTE (Lapys) -> Parse each token based on their type.
                                     switch (currentTokenType) {
@@ -1807,8 +1808,8 @@
                                             if (nextTokenType)
                                                 // Logic
                                                 if (allowSubtokenization) {
-                                                    // Constant > (Former, Previous) Token
-                                                    var FORMER_TOKEN = currentToken;
+                                                    // Constant > (Recent, Previous) Token
+                                                    var RECENT_TOKEN = currentToken;
 
                                                     // Update > ... Token ...
                                                     currentToken = new LDKT.Token;
@@ -1822,7 +1823,7 @@
 
                                                     // Logic > Modification > Current Token > Source --- CHECKPOINT (Lapys) -> Remove the token type.
                                                     switch (currentTokenType) {
-                                                        case LDKC.Data.StringSourceTokenTypes["binary-operation"]: currentToken.source = FORMER_TOKEN.source; break;
+                                                        case LDKC.Data.StringSourceTokenTypes["binary-operation"]: currentToken.source = RECENT_TOKEN.source; break;
                                                         case LDKC.Data.StringSourceTokenTypes["ternary-operation"]: currentToken.source = previousToken.source + nonTokenSource
                                                     }
                                                     currentToken.type = LDKF.functionPrototypeMonoadicCall(LDKT.EnumerationPrototypeGetOptionNameByValue, LDKC.Data.StringSourceTokenTypes, currentTokenType);
@@ -1844,7 +1845,7 @@
                                                 sourceIterator && (nonTokenSource += CHARACTER);
 
                                             // Modification > Current Token > Source
-                                            LDKF.isNull(nextStatement) && sourceIterator && (FORMER_SOURCE_ITERATOR == sourceIterator) &&
+                                            LDKF.isNull(nextStatement) && sourceIterator && (RECENT_SOURCE_ITERATOR == sourceIterator) &&
                                             (currentToken.source += CHARACTER);
 
                                             // ...
@@ -1899,10 +1900,10 @@
 
                                 // [Token Termination] Logic
                                 if (!stopParsingToken) {
-                                    // Constant > Former Token ...
-                                    var FORMER_TOKEN = TOKENS[tokenDepth - 2];
-                                    var FORMER_TOKEN_LIST = TOKEN_LISTS[tokenDepth - 2];
-                                    var FORMER_TOKEN_TYPE = TOKEN_TYPES[tokenDepth - 2];
+                                    // Constant > Recent Token ...
+                                    var RECENT_TOKEN = TOKENS[tokenDepth - 2];
+                                    var RECENT_TOKEN_LIST = TOKEN_LISTS[tokenDepth - 2];
+                                    var RECENT_TOKEN_TYPE = TOKEN_TYPES[tokenDepth - 2];
 
                                     // [Token Formatting/ Ordering] Logic
                                     switch (currentTokenType) {
@@ -1910,7 +1911,7 @@
                                         case LDKC.Data.StringSourceTokenTypes["binary-operation"]:
                                         case LDKC.Data.StringSourceTokenTypes["ternary-operation"]:
                                             // Insertion
-                                            LDKF.functionPrototypeMonoadicCall(LDKT.TokenPrototypeAddSubtoken, currentToken, FORMER_TOKEN_LIST[FORMER_TOKEN_LIST.length - 1]);
+                                            LDKF.functionPrototypeMonoadicCall(LDKT.TokenPrototypeAddSubtoken, currentToken, RECENT_TOKEN_LIST[RECENT_TOKEN_LIST.length - 1]);
 
                                             // Update > ...
                                             TMP = currentTokenList[+0];
@@ -1923,16 +1924,16 @@
                                         case LDKC.Data.StringSourceTokenTypes["ternary-operation"]:
                                             // currentToken.source = previousToken.source;
                                             break;
-                                        default: FORMER_TOKEN.source += currentToken.source;
+                                        default: RECENT_TOKEN.source += currentToken.source;
                                     }
 
-                                    // Modification > Former Token > Source
-                                    LDKF.functionPrototypeMonoadicCall(LDKT.TokenPrototypeAddSubtoken, FORMER_TOKEN, currentToken);
+                                    // Modification > Recent Token > Source
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.TokenPrototypeAddSubtoken, RECENT_TOKEN, currentToken);
 
                                     // Update > ...
-                                    currentToken = FORMER_TOKEN;
-                                    currentTokenList = FORMER_TOKEN_LIST;
-                                    currentTokenType = FORMER_TOKEN_TYPE;
+                                    currentToken = RECENT_TOKEN;
+                                    currentTokenList = RECENT_TOKEN_LIST;
+                                    currentTokenType = RECENT_TOKEN_TYPE;
 
                                     allowSubtokenization = true;
                                     stopParsingToken = !(
@@ -2702,17 +2703,17 @@
                                 // Constant > Big Array Maximum Length
                                 var BIG_ARRAY_MAXIMUM_LENGTH = bigArray.MAXIMUM_LENGTH;
 
-                                // Initialization > Big Array ((Former) Index (Length))
+                                // Initialization > Big Array ((Recent) Index (Length))
                                 var bigArrayIndexLength = +0;
-                                var bigArrayFormerIndex = +0, bigArrayIndex = +0;
+                                var bigArrayRecentIndex = +0, bigArrayIndex = +0;
 
                                 // Loop
                                 while (bigArrayDepth -= 1) {
                                     // Constant > Safe Subarray Maximum Breadth
                                     var SAFE_SUBARRAY_MAXIMUM_BREADTH = LDKM.powInt(BIG_ARRAY_MAXIMUM_LENGTH, bigArrayDepth);
 
-                                    // Update > Big Array (Former) Index
-                                    bigArrayFormerIndex = bigArrayIndex;
+                                    // Update > Big Array (Recent) Index
+                                    bigArrayRecentIndex = bigArrayIndex;
                                     bigArrayIndex = +0;
 
                                     // (Loop > )Update > Big Array Index
@@ -3020,17 +3021,17 @@
                                 // Constant > Big Array Maximum Length
                                 var BIG_ARRAY_MAXIMUM_LENGTH = bigArray.MAXIMUM_LENGTH;
 
-                                // Initialization > Big Array ((Former) Index (Length))
+                                // Initialization > Big Array ((Recent) Index (Length))
                                 var bigArrayIndexLength = +0;
-                                var bigArrayFormerIndex = +0, bigArrayIndex = +0;
+                                var bigArrayRecentIndex = +0, bigArrayIndex = +0;
 
                                 // Loop
                                 while (bigArrayDepth -= 1) {
                                     // Constant > Safe Subarray Maximum Breadth
                                     var SAFE_SUBARRAY_MAXIMUM_BREADTH = LDKM.powInt(BIG_ARRAY_MAXIMUM_LENGTH, bigArrayDepth);
 
-                                    // Update > Big Array (Former) Index
-                                    bigArrayFormerIndex = bigArrayIndex;
+                                    // Update > Big Array (Recent) Index
+                                    bigArrayRecentIndex = bigArrayIndex;
                                     bigArrayIndex = +0;
 
                                     // (Loop > )Update > Big Array Index
