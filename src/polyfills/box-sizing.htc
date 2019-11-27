@@ -7,10 +7,10 @@
     <script language=javascript type=text/javascript>
         //<![CDATA[
             // Initialization >  (Apply Box Sizing, Document, On Resize Timeout, Viewport Width)
-            var applyBoxSizing = false,
-                document = element.document,
-                onresizeTimeout = null, // NOTE (Lapys) -> Buffer for multiple resize events.
-                viewportWidth = (typeof innerWidth == "undefined" ? element.document.documentElement.clientWidth : innerWidth);
+            var applyBoxSizing = false;
+            var document = element.document;
+            var onresizeTimeout = null; // NOTE (Lapys) -> Buffer for multiple resize events.
+            var viewportWidth = (typeof innerWidth == "undefined" ? element.document.documentElement.clientWidth : innerWidth);
 
             // Logic --- NOTE (Lapys) -> Do not apply `box-sizing` to certain elements.
             switch (element.nodeName) {
