@@ -1,0 +1,27 @@
+/**
+    @author: LapysDev Team
+    @description: LapysCSS is a subset of LapysJS that focuses on the visual augmentation of its JavaScript counterpart.
+    @version: 0.0.6
+    @url: https://github.com/LapysDev/LapysJS
+
+    --- CITE ---
+        #Lapys:
+            - `box-sizing` CSS property polyfill: `https://github.com/Schepp/box-sizing-polyfill`.
+
+    --- NOTE ---
+        #Lapys:
+            - Over its years of development, the library is still a bare-bones version of what it could be.
+
+    --- RULES ---
+        #Lapys:
+            - Avoid redundant/ repeated CSS at-rules, selectors, and style declarations.
+            - Maximum significant figures for CSS floating-point measurements is 6.
+            - Utilize only print-friendly units for hexadecimal values (e.g.: `3`, `6`, `9`, `A`, `C`, `F`), otherwise utilize other color codes (e.g.: `hsla`, `rgba`, e.t.c.).
+
+    --- UPDATE ---
+        #Lapys:
+            - Prettify this stylesheet source using Prettify JS.
+            - Separate native & vendor selectors.
+            - Support for vendor prefixes.
+            - The `url(...)` value of `behavior` properties should be relative to the document they are injected from, not this stylesheet.
+*/

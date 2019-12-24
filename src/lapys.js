@@ -1,7 +1,7 @@
 /** Main
     @author: LapysDev Team
     @description: LapysJS is a general-purpose, semantic and universal JavaScript library
-    @version: 0.0.10
+    @version: 0.0.11
     @url: https://www.github.com/LapysDev/LapysJS
 
     --- CODE ---
@@ -15,7 +15,7 @@
 
             _Native Name_
 
-    --- CONSIDERATIONS ---
+    --- CONSIDERATION ---
         #Lapys:
             - Defer to object literals (`{}`) instead of array literals (`[]`) for internally managed and locally-scoped collections and lists.
                 (Although the structure`s meaning & significance would be strongly-dependent on its identifier name rather than syntax).
@@ -24,7 +24,6 @@
     --- NOTE ---
         #Lapys:
             - Details:
-                -- Average Cumulative Processing Duration: --ms
                 -- Average File Upload Speed: --ms
                 -- Supported Development Environments:
                         --- Android (browser)
@@ -90,20 +89,17 @@
             - Minimum number size should be 32 bits.
             - Non-literal digits must be represented as character strings (with collective digits denoted as an `Array` or `BigArray` (usually within a `BigNumber`)); Digits do not have an exclusive type or wrapper class.
             - Non-persistent object properties must be delimited as strings (e.g.: `{"property-name": propertyValue}` not `{propertyName: propertyValue}`)
+            - Object properties (except the `prototype` property) must be initially declared within the object before accessing/ mutating them.
             - Prevent repeated dynamic lookups (e.g.: `for (var iterator = 0; iterator ^ [1, 0, 1].length; iterator += 1) ...`).
             - Private functions should not strictly assert its parameters.
             - `arguments` objects can only be parsed in JavaScript`s Strict Mode.
 
             This is to keep the language somewhat universally readable and similar to other programming languages.
 
-    --- UPDATE ---
-        #Lapys:
-            - Blur all elements when main window is blurred.
-
     --- WARN ---
         #Lapys:
             The class & constant parameter naming convention are similar which may lead to unwanted conflicts.
-            Unfortunately there is no feature to specify constant parameters within the function signature explicitly in JavaScript.
+            Unfortunately there is no feature to specify constant parameters within function signatures explicitly in JavaScript.
 */
 +(function Main() {
     /* Constants > ... */
@@ -128,21 +124,602 @@
     /* Polyfills > ... */
     var undefined = void +0; // WARN (Lapys) -> Should not be legal but inadvertently is.
 
-    /* Namespace > Lapys ... */
+    /* Namespace > Lapys ... --- NOTE (Lapys) -> Definitions only. */
     var LapysDevelopmentKit = {
-        Constants: {},
+        Constants: {
+            Alphabets: null,
+            ASCIICharacters: null,
+            Array: {ASCIISortComparator: null, BubbleSorter: null, InsertionSorter: null, MergeSorter: null, Sorter: null, TimSorter: null, TimSorterRunSize: 32},
+            BinaryDigits: null,
+            CSSLengthUnits: null,
+            CSSSourceCharacterSequences: null,
+            DecimalDigits: null,
+            DigitCarry: 0,
+            DigitsCarry: 0,
+            FrameRate: null,
+            Has_cancelAnimationFrame_Function: false,
+            Has_Document_Constructor: false,
+            Has_Element_Constructor: false,
+            Has_HTMLDocument_Constructor: false,
+            Has_HTMLElement_Constructor: false,
+            Has_requestAnimationFrame_Function: false,
+            HexadecimalDigits: null,
+            HTMLElementTagNames: null,
+            Imperatives: {Array: null, BigArray: null, BigNumber: null, String: null},
+            Infinity: null,
+            IntegerBitSize: null,
+            IsCommandLineEnvironment: null,
+            IsTextEnvironment: null,
+            IsWebBrowserEnvironment: null,
+            PointerBitSize: null,
+            JavaScriptSourceKeywords: null,
+            JavaScriptSourceLineTerminators: null,
+            JavaScriptSourceSpoofTokens: null,
+            JavaScriptSourceWhitespaceCharacterSequences: null,
+            LanguageCodes: null,
+            LowercaseAlphabets: null,
+            MaximumArrayLength: null,
+            MaximumIntegerValue: null,
+            MaximumSafeIntegerValue: null,
+            NaN: null,
+            NumberComponent: null,
+            OctalDigits: null,
+            SortableCharacters: null,
+            SourceTypes: null,
+            SymbolCharacters: null,
+            TokenTypes: null,
+            TrimmableSequences: null,
+            UppercaseAlphabets: null
+        },
         Environment: {},
-        Functions: {},
+        Functions: {
+            arrayVariantPrototypeAfter: null,
+            arrayVariantPrototypeAfterFromBack: null,
+            arrayVariantPrototypeAfterFromFront: null,
+            arrayVariantPrototypeAfterIndex: null,
+            arrayVariantPrototypeBefore: null,
+            arrayVariantPrototypeBeforeFromBack: null,
+            arrayVariantPrototypeBeforeFromFront: null,
+            arrayVariantPrototypeBeforeIndex: null,
+            arrayVariantPrototypeClone: null,
+            arrayVariantPrototypeConcatenate: null,
+            arrayVariantPrototypeCopy: null,
+            arrayVariantPrototypeCount: null,
+            arrayVariantPrototypeCut: null,
+            arrayVariantPrototypeCutAt: null,
+            arrayVariantPrototypeCutLeft: null,
+            arrayVariantPrototypeCutRight: null,
+            arrayVariantPrototypeCycle: null,
+            arrayVariantPrototypeDepth: null,
+            arrayVariantPrototypeElementAt: null,
+            arrayVariantPrototypeEvery: null,
+            arrayVariantPrototypeFill: null,
+            arrayVariantPrototypeFind: null,
+            arrayVariantPrototypeFindFromBack: null,
+            arrayVariantPrototypeFindFromFront: null,
+            arrayVariantPrototypeFirst: null,
+            arrayVariantPrototypeFlatten: null,
+            arrayVariantPrototypeFrequency: null,
+            arrayVariantPrototypeIncludes: null,
+            arrayVariantPrototypeIndex: null,
+            arrayVariantPrototypeIndexFromBack: null,
+            arrayVariantPrototypeIndexFromFront: null,
+            arrayVariantPrototypeInsertAt: null,
+            arrayVariantPrototypeLast: null,
+            arrayVariantPrototypeLength: null,
+            arrayVariantPrototypeLike: null,
+            arrayVariantPrototypeMap: null,
+            arrayVariantPrototypePop: null,
+            arrayVariantPrototypePush: null,
+            arrayVariantPrototypeRemove: null,
+            arrayVariantPrototypeRemoveDuplicate: null,
+            arrayVariantPrototypeRemoveDuplicateFromBack: null,
+            arrayVariantPrototypeRemoveDuplicateFromFront: null,
+            arrayVariantPrototypeRemoveDuplicates: null,
+            arrayVariantPrototypeRemoveFromBack: null,
+            arrayVariantPrototypeRemoveFromFront: null,
+            arrayVariantPrototypeRemoveRepeat: null,
+            arrayVariantPrototypeRemoveRepeatFromBack: null,
+            arrayVariantPrototypeRemoveRepeatFromFront: null,
+            arrayVariantPrototypeRemoveRepeats: null,
+            arrayVariantPrototypeRepeat: null,
+            arrayVariantPrototypeReplace: null,
+            arrayVariantPrototypeReplaceDuplicate: null,
+            arrayVariantPrototypeReplaceDuplicateFromBack: null,
+            arrayVariantPrototypeReplaceDuplicateFromFront: null,
+            arrayVariantPrototypeReplaceDuplicates: null,
+            arrayVariantPrototypeReplaceFromBack: null,
+            arrayVariantPrototypeReplaceFromFront: null,
+            arrayVariantPrototypeReplaceRepeat: null,
+            arrayVariantPrototypeReplaceRepeatFromBack: null,
+            arrayVariantPrototypeReplaceRepeatFromFront: null,
+            arrayVariantPrototypeReplaceRepeats: null,
+            arrayVariantPrototypeResize: null,
+            arrayVariantPrototypeSetIndex: null,
+            arrayVariantPrototypeShift: null,
+            arrayVariantPrototypeSimilar: null,
+            arrayVariantPrototypeSlice: null,
+            arrayVariantPrototypeSome: null,
+            arrayVariantPrototypeSort: null,
+            characterIsAlphabet: null,
+            characterIsBinary: null,
+            characterIsDecimal: null,
+            characterIsHexadecimal: null,
+            characterIsLowercaseAlphabet: null,
+            characterIsOctal: null,
+            characterIsUppercaseAlphabet: null,
+            digitDecrement: null,
+            digitDivide: null,
+            digitIncrement: null,
+            digitMultiply: null,
+            digitSubtract: null,
+            digitSum: null,
+            digitsPrototypeDecrement: null,
+            digitsPrototypeDivide: null,
+            digitsPrototypeIncrement: null,
+            digitsPrototypeMultiply: null,
+            digitsPrototypeSubtract: null,
+            digitsPrototypeSum: null,
+            evaluate: null,
+            functionIsArrow: null,
+            functionIsAsynchronous: null,
+            functionIsAsynchronousArrow: null,
+            functionIsAsynchronousGenerator: null,
+            functionIsGenerator: null,
+            functionIsNative: null,
+            functionIsNativeAsynchronous: null,
+            functionIsNativeAsynchronousArrow: null,
+            functionIsNativeAsynchronousGenerator: null,
+            functionIsNativeArrow: null,
+            functionIsNativeGenerator: null,
+            functionPrototypeApply: null,
+            functionPrototypeArity: null,
+            functionPrototypeBody: null,
+            functionPrototypeCall: null,
+            functionPrototypeDyadicCall: null,
+            functionPrototypeFirst: null,
+            functionPrototypeHead: null,
+            functionPrototypeLast: null,
+            functionPrototypeMonoadicCall: null,
+            functionPrototypeName: null,
+            functionPrototypeParameters: null,
+            functionPrototypeParametersSource: null,
+            functionPrototypePrototype: null,
+            functionPrototypeNiladicCall: null,
+            functionPrototypeTriadicCall: null,
+            functionPrototypeToSourceString: null,
+            isArray: null,
+            isBigInteger: null,
+            isBoolean: null,
+            isConstructible: null,
+            isFunction: null,
+            isNonConstructible: null,
+            isNull: null,
+            isNumber: null,
+            isObjectLike: null, // NOTE (Lapys) -> Inherits the `Object` constructor.
+            isPrimitiveVariant: null, // NOTE (Lapys) -> Is strictly of the `Object` constructor or a non-`Object` based constructor.
+            isString: null,
+            isSymbol: null,
+            isVoid: null,
+            is_ANY_: null,
+            is_ERROR_: null,
+            is_FLAG_: null,
+            is_TMP_: null,
+            numberPrototypeIsBitwiseEven: null,
+            numberPrototypeIsBitwiseInteger: null,
+            numberPrototypeIsBitwiseOdd: null,
+            numberPrototypeIsEven: null,
+            numberPrototypeIsFinite: null,
+            numberPrototypeIsInfinite: null,
+            numberPrototypeIsInteger: null,
+            numberPrototypeIsNaN: null,
+            numberPrototypeIsOdd: null,
+            numberPrototypeIsSafe: null,
+            objectAssign: null,
+            objectDefineProperty: null,
+            objectGetOwnPropertyDescriptor: null,
+            objectGetOwnPropertyDescriptors: null,
+            objectGetOwnPropertyNames: null,
+            objectGetOwnPropertySymbols: null,
+            objectGetOwnPropertyValues: null,
+            objectGetProtoypeOf: null,
+            objectKeys: null,
+            objectPrototypeAssign: null,
+            objectPrototypeClone: null,
+            objectPrototypeConcatenate: null,
+            objectPrototypeConstructor: null,
+            objectPrototypeCopy: null,
+            objectPrototypeDefineProperty: null,
+            objectPrototypeDeleteProperty: null,
+            objectPrototypeDescribeAllProperty: null,
+            objectPrototypeDescribeProperty: null,
+            objectPrototypeDepth: null,
+            objectPrototypeGetProperty: null,
+            objectPrototypeHasProperty: null,
+            objectPrototypeInstanceOf: null,
+            objectPrototypeSetProperty: null,
+            objectSetPrototypeOf: null,
+            objectValues: null,
+            stringVariantIsCSSLength: null,
+            stringVariantIsEscaped: null,
+            stringVariantIsLowercase: null,
+            stringVariantIsRotationOf: null,
+            stringVariantIsScriptLineTerminatorToken: null,
+            stringVariantIsScriptNumericLiteralToken: null,
+            stringVariantIsScriptWhitespaceToken: null,
+            stringVariantIsUppercase: null,
+            stringVariantPrototypeAfter: null,
+            stringVariantPrototypeAfterCharacter: null,
+            stringVariantPrototypeAfterCharacterFromBack: null,
+            stringVariantPrototypeAfterCharacterFromFront: null,
+            stringVariantPrototypeAfterFromBack: null,
+            stringVariantPrototypeAfterFromFront: null,
+            stringVariantPrototypeAfterIndex: null,
+            stringVariantPrototypeBefore: null,
+            stringVariantPrototypeBeforeCharacter: null,
+            stringVariantPrototypeBeforeCharacterFromBack: null,
+            stringVariantPrototypeBeforeCharacterFromFront: null,
+            stringVariantPrototypeBeforeFromBack: null,
+            stringVariantPrototypeBeforeFromFront: null,
+            stringVariantPrototypeBeforeIndex: null,
+            stringVariantPrototypeBeginsWith: null,
+            stringVariantPrototypeCharacterAt: null,
+            stringVariantPrototypeCharacterCodeAt: null,
+            stringVariantPrototypeCount: null,
+            stringVariantPrototypeCut: null,
+            stringVariantPrototypeCutAt: null,
+            stringVariantPrototypeCutLeft: null,
+            stringVariantPrototypeCutRight: null,
+            stringVariantPrototypeEndsWith: null,
+            stringVariantPrototypeFirst: null,
+            stringVariantPrototypeFrequency: null,
+            stringVariantPrototypeIncludes: null,
+            stringVariantPrototypeIncludesCharacter: null,
+            stringVariantPrototypeIndex: null,
+            stringVariantPrototypeIndexCharacter: null,
+            stringVariantPrototypeIndexCharacterFromBack: null,
+            stringVariantPrototypeIndexCharacterFromFront: null,
+            stringVariantPrototypeIndexFromBack: null,
+            stringVariantPrototypeIndexFromFront: null,
+            stringVariantPrototypeInsertAt: null,
+            stringVariantPrototypeLast: null,
+            stringVariantPrototypeRandomize: null,
+            stringVariantPrototypeRemove: null,
+            stringVariantPrototypeRemoveAll: null,
+            stringVariantPrototypeRemoveFromBack: null,
+            stringVariantPrototypeRemoveFromFront: null,
+            stringVariantPrototypeRepeat: null,
+            stringVariantPrototypeReplace: null,
+            stringVariantPrototypeReplaceAll: null,
+            stringVariantPrototypeReplaceFromBack: null,
+            stringVariantPrototypeReplaceFromFront: null,
+            stringVariantPrototypeSlice: null,
+            stringVariantPrototypeTrim: null,
+            stringVariantPrototypeTrimLeft: null,
+            stringVariantPrototypeTrimRight: null,
+            stringVariantToElement: null,
+            stringVariantToHTML: null,
+            throwError: null,
+            throw_ERROR_: null
+        },
         Information: {
             Directives: {DebugMode: false, IgnoreMissingFeatures: false},
             Messages: {Debugging: {}, Error: {}}
         },
-        Mathematics: {},
-        Objects: {},
+        Mathematics: {
+            abs: null,
+            ceil: null,
+            clamp: null,
+            floor: null,
+            int: null,
+            invadd: null,
+            invmul: null,
+            log2: null,
+            max: null,
+            min: null,
+            perc: null,
+            pow: null,
+            powint: null,
+            randint: null,
+            random: null,
+            round: null
+        },
+        Objects: {
+            Array: null,
+            ArrayFrom: null,
+            ArrayPrototype: null,
+            ArrayPrototypeForeach: null,
+            ArrayPrototypePop: null,
+            ArrayPrototypePush: null,
+            cancelAnimationFrame: null,
+            CSSNumericArray: null,
+            CSSNumericArrayPrototype: null,
+            CSSNumericArrayPrototypeForeach: null,
+            Document: null,
+            Element: null,
+            HTMLAllCollection: null,
+            HTMLAllCollectionPrototype: null,
+            HTMLAllCollectionPrototypeForeach: null,
+            HTMLCanvasElement: null,
+            HTMLCanvasElementPrototype: null,
+            HTMLCollection: null,
+            HTMLCollectionPrototype: null,
+            HTMLCollectionProtoypeForeach: null,
+            HTMLDocument: null,
+            HTMLElement: null,
+            HTMLElementPrototype: null,
+            HTMLElementPrototypeChildren: null,
+            HTMLFormControlsCollection: null,
+            HTMLFormControlsCollectionPrototype: null,
+            HTMLFormControlsCollectionPrototypeForeach: null,
+            HTMLOptionsCollection: null,
+            HTMLOptionsCollectionPrototype: null,
+            HTMLOptionsCollectionPrototypeForeach: null,
+            NodeList: null,
+            NodeListPrototype: null,
+            NodeListPrototypeForeach: null,
+            requestAnimationFrame: null
+        },
         Records: {Lists: {}, Values: {}},
-        Types: {} // NOTE (Lapys) -> Non-cryptic, more readable form of data.
+        Types: { // NOTE (Lapys) -> Non-cryptic, more readable form of data.
+            AssertionError: null, // NOTE (Lapys) -> Exception type raised from the `assert` function.
+            BigArray: null, // NOTE (Lapys) -> Arbitrary-length array.
+            BigArrayPrototype: null,
+            BigArrayPrototypeCutAt: null,
+            BigArrayPrototypeElementAt: null,
+            BigArrayPrototypeFree: null,
+            BigArrayPrototypeIndex: null,
+            BigArrayPrototypeIndexFromBack: null,
+            BigArrayPrototypeIndexFromFront: null,
+            BigArrayPrototypeLength: null,
+            BigArrayPrototypeMaximumLength: null,
+            BigArrayPrototypePop: null,
+            BigArrayPrototypePush: null,
+            BigArrayPrototypeResize: null,
+            BigNumber: null, // NOTE (Lapys) -> Arbitrary-precision numeric type.
+            BigNumberClone: null,
+            BigNumberCopy: null,
+            BigNumberDecrement: null,
+            BigNumberDivide: null,
+            BigNumberExponentiate: null,
+            BigNumberIncrement: null,
+            BigNumberInfinity: null,
+            BigNumberIsEqual: null,
+            BigNumberIsGreater: null,
+            BigNumberIsLesser: null,
+            BigNumberModularize: null,
+            BigNumberMultiply: null,
+            BigNumberNaN: null,
+            BigNumberPrototype: null,
+            BigNumberPrototypeDecrement: null,
+            BigNumberPrototypeDivide: null,
+            BigNumberPrototypeExponentiate: null,
+            BigNumberPrototypeIncrement: null,
+            BigNumberPrototypeIsArbitrary: null,
+            BigNumberPrototypeIsEqualTo: null,
+            BigNumberPrototypeIsFinite: null,
+            BigNumberPrototypeIsGreaterThan: null,
+            BigNumberPrototypeIsInfinite: null,
+            BigNumberPrototypeIsNaN: null,
+            BigNumberPrototypeIsLesserThan: null,
+            BigNumberPrototypeModularize: null,
+            BigNumberPrototypeRoot: null,
+            BigNumberPrototypeSign: null,
+            BigNumberPrototypeSubtract: null,
+            BigNumberPrototypeSum: null,
+            BigNumberPrototypeUnsign: null,
+            BigNumberRoot: null,
+            BigNumberSign: null,
+            BigNumberSigned: null,
+            BigNumberSubtract: null,
+            BigNumberSum: null,
+            BigNumberUnsign: null,
+            CharacterArray: null, // NOTE (Lapys) -> Negates the dependent utility of the `String.prototype.charAt` method.
+            ClampedArray: null, // NOTE (Lapys) -> Array of immutable length.
+            ClampedArrayPrototype: null,
+            ClampedArrayPrototypeLength: null,
+            ClampedNumber: null, // NOTE (Lapys) -> Fixed-width numeric type.
+            ClampedNumberClone: null,
+            ClampedNumberCopy: null,
+            ClampedNumberDecrement: null,
+            ClampedNumberDivide: null,
+            ClampedNumberExponentiate: null,
+            ClampedNumberIncrement: null,
+            ClampedNumberIsEqual: null,
+            ClampedNumberIsGreater: null,
+            ClampedNumberIsLesser: null,
+            ClampedNumberModularize: null,
+            ClampedNumberMultiply: null,
+            ClampedNumberNaN: null,
+            ClampedNumberPrototype: null,
+            ClampedNumberPrototypeDecrement: null,
+            ClampedNumberPrototypeDivide: null,
+            ClampedNumberPrototypeExponentiate: null,
+            ClampedNumberPrototypeIncrement: null,
+            ClampedNumberPrototypeIsEqualTo: null,
+            ClampedNumberPrototypeIsFinite: null,
+            ClampedNumberPrototypeIsGreaterThan: null,
+            ClampedNumberPrototypeIsInfinite: null,
+            ClampedNumberPrototypeIsLesserThan: null,
+            ClampedNumberPrototypeIsNaN: null,
+            ClampedNumberPrototypeIsSafe: null,
+            ClampedNumberPrototypeMaximum: null,
+            ClampedNumberPrototypeMinimum: null,
+            ClampedNumberPrototypeModularize: null,
+            ClampedNumberPrototypeMultiply: null,
+            ClampedNumberPrototypeRoot: null,
+            ClampedNumberPrototypeSubtract: null,
+            ClampedNumberPrototypeSum: null,
+            ClampedNumberPrototypeSubtract: null,
+            ClampedNumberPrototypeUnsign: null,
+            ClampedNumberRoot: null,
+            ClampedNumberSign: null,
+            ClampedNumberSigned: null,
+            ClampedNumberSubtract: null,
+            ClampedNumberSum: null,
+            ClampedNumberUnsign: null,
+            Clock: null, // NOTE (Lapys) -> Asynchronous, date-time, event-driven based namespace type.
+            ClockPrototype: null,
+            ClockPrototypeAlways: null,
+            ClockPrototypeDate: null,
+            ClockPrototypeEnd: null, // NOTE (Lapys) -> Pause all `Frame` objects.
+            ClockPrototypeFormat: null, // NOTE (Lapys) -> Returns a date-time format (e.g: UTC, e.t.c.)
+            ClockPrototypeGetDate: null,
+            ClockPrototypeGetDay: null,
+            ClockPrototypeGetHour: null,
+            ClockPrototypeGetMillisecond: null,
+            ClockPrototypeGetMinute: null,
+            ClockPrototypeGetMonth: null,
+            ClockPrototypeGetSecond: null,
+            ClockPrototypeGetTime: null,
+            ClockPrototypeGetTimezoneOffset: null,
+            ClockPrototypeGetYear: null,
+            ClockPrototypeNext: null,
+            ClockPrototypeNow: null,
+            ClockPrototypePause: null,
+            ClockPrototypeStart: null,
+            ClockPrototypeStop: null,
+            ClockPrototypeTick: null,
+            ClockPrototypeTimer: null,
+            ClockPrototypeUTC: null,
+            ClockPrototypeUTCGetDay: null,
+            ClockPrototypeUTCGetDate: null,
+            ClockPrototypeUTCGetHour: null,
+            ClockPrototypeUTCGetMillisecond: null,
+            ClockPrototypeUTCGetMinute: null,
+            ClockPrototypeUTCGetMonth: null,
+            ClockPrototypeUTCGetSecond: null,
+            ClockPrototypeUTCGetYear: null,
+            ClockPrototypeToDateString: null,
+            ClockPrototypeToGMTDateString: null,
+            ClockPrototypeToISODateString: null,
+            ClockPrototypeToLocaleDateString: null,
+            ClockPrototypeToLocaleTimeString: null,
+            ClockPrototypeToString: null,
+            ClockPrototypeToTimeString: null,
+            ClockPrototypeToUTCDateString: null,
+            ClockPrototypeValueOf: null,
+            ClockPrototypeWind: null,
+            ClockTotal: null,
+            DOMCollection: null, // NOTE (Lapys) -> Abstraction for `HTML...Collection` and `NodeList` "variant"`s on the DOM.
+            Enumeration: null, // NOTE (Lapys) -> `enum` type from the C programming language.
+            Frame: null, // NOTE (Lapys) -> Unit of action in a moment of time.
+            FramePrototype: null,
+            FramePrototypeAction: null,
+            FramePrototypeID: null,
+            FramePrototypePause: null,
+            FramePrototypePlay: null,
+            FramePrototypePlaying: null,
+            Imperative: null, // NOTE (Lapys) -> Context for "variant"`s (e.g.: array variants, string variants, e.t.c.).
+            Iterable: null, // NOTE (Lapys) -> Allow conventional native iteration through an object.
+            ParseError: null, // NOTE (Lapys) -> Generic exception type raised from parsing source code.
+            ParseSyntaxError: null, // NOTE (Lapys) -> Exception type raised from parsing source code.
+            Parser: null, // NOTE (Lapys) -> Namespace type for evaluating source code.
+            ParserPrototype: null,
+            ParserPrototypeTokenizeAsScriptSource: null,
+            ParserPrototypeTokenizeAsUMLSource: null,
+            ParserPrototypeTokenizeAsXMLSource: null,
+            ParserPrototypeValidateAsScriptSource: null,
+            ParserPrototypeValidateAsUMLSource: null,
+            ParserPrototypeValidateAsXMLSource: null,
+            Primitive: null, // NOTE (Lapys) -> Non-prototyped object.
+            SafeNumber: null, // NOTE (Lapys) -> Union of `BigNumber` and `Number` types.
+            SafeNumberClone: null,
+            SafeNumberCopy: null,
+            SafeNumberDecrement: null,
+            SafeNumberDivide: null,
+            SafeNumberExponentiate: null,
+            SafeNumberIncrement: null,
+            SafeNumberIsEqual: null,
+            SafeNumberIsGreater: null,
+            SafeNumberIsLesser: null,
+            SafeNumberModularize: null,
+            SafeNumberMultiply: null,
+            SafeNumberPrototype: null,
+            SafeNumberPrototypeDecrement: null,
+            SafeNumberPrototypeDivide: null,
+            SafeNumberPrototypeExponentiate: null,
+            SafeNumberPrototypeIncrement: null,
+            SafeNumberPrototypeIsEqualTo: null,
+            SafeNumberPrototypeIsFinite: null,
+            SafeNumberPrototypeIsGreaterThan: null,
+            SafeNumberPrototypeIsInfinite: null,
+            SafeNumberPrototypeIsLesserThan: null,
+            SafeNumberPrototypeIsNaN: null,
+            SafeNumberPrototypeIsSafe: null,
+            SafeNumberPrototypeModularize: null,
+            SafeNumberPrototypeMultiply: null,
+            SafeNumberPrototypeRoot: null,
+            SafeNumberPrototypeSign: null,
+            SafeNumberPrototypeSubtract: null,
+            SafeNumberPrototypeSum: null,
+            SafeNumberPrototypeUnsign: null,
+            SafeNumberRoot: null,
+            SafeNumberSign: null,
+            SafeNumberSigned: null,
+            SafeNumberSubtract: null,
+            SafeNumberSum: null,
+            SafeNumberUnsign: null,
+            Token: null, // NOTE (Lapys) -> Unit of expression within source code.
+            TokenPrototype: null,
+            TokenPrototypeSource: null,
+            TokenPrototypeSubtokens: null,
+            TokenPrototypeToString: null,
+            TokenList: null, // NOTE (Lapys) -> Ordered collection of `Tokens` objects.
+            TokenListPrototype: null,
+            TokenListPrototypeFirst: null,
+            TokenListPrototypeLast: null,
+            TokenListPrototypeLength: null,
+            TokenListPrototypeOf: null // NOTE (Lapys) -> Hierarchical relationship assertion.
+        }
     };
-    var LapysJS;
+    var LapysJS = (function() {
+        // Class > (LapysJS, ...)
+        function LapysJS() {}
+
+        function Task() {}
+        function TaskList() {}
+
+        // Modification
+            // LapysJS > Prototype
+            LapysJS.prototype = {
+                author: AUTHOR,
+                components: {
+                    Accordion: null,
+                    Carousel: null,
+                    Dropdown: null,
+                    DynamicTime: null, // -> `[Object DynamicHTMLTimeElement]`
+                    DynamicText: null,
+                    Roulette: null,
+                    Table: null,
+                    Toast: null,
+                    Tooltip: null
+                },
+                constructor: null,
+                createNamespace: null,
+                description: DESCRIPTION,
+                namespaces: null,
+                ready: false,
+                tasks: {
+                    listening: new TaskList, // NOTE (Lapys) -> Event listeners.
+                    pending: new TaskList // NOTE (Lapys) -> Asynchronous tasks.
+                },
+                toString: null,
+                valueOf: null,
+                version: VERSION
+            };
+
+            // Task > Prototype
+            Task.prototype = {};
+
+            // Task List > Prototype
+            TaskList.prototype = {
+                length: 0
+            };
+
+        // Return
+        return new LapysJS
+    })();
 
     /* Shorthands */
     var LDK = LapysDevelopmentKit;
@@ -157,722 +734,163 @@
     var LDKT = LapysDevelopmentKit.Types;
 
     /* [Pre-]Modification > Lapys Development Kit */
-        /* Constants */
+        // Constants
             // Alphabets
             LapysDevelopmentKit.Constants.Alphabets = ['A', 'a', 'B', 'b', 'C', 'c', 'D', 'd', 'E', 'e', 'F', 'f', 'G', 'g', 'H', 'h', 'I', 'i', 'J', 'j', 'K', 'k', 'L', 'l', 'M', 'm', 'N', 'n', 'O', 'o', 'P', 'p', 'Q', 'q', 'R', 'r', 'S', 's', 'T', 't', 'U', 'u', 'V', 'v', 'W', 'w', 'X', 'x', 'Y', 'y', 'Z', 'z'];
 
-            // ASCII Characters --- CHECKPOINT (Lapys) -> ASCII characters 129 to 255. --- NOTE (Lapys) -> Ordered by code.
+            // ASCII Characters
             LapysDevelopmentKit.Constants.ASCIICharacters = ['\0', '\1', '\2', '\3', '\4', '\5', '\6', '\a', '\b', '\t', '\n', '\v', '\f', '\r', '\16', '\17', '\20', '\21', '\22', '\23', '\24', '\25', '\26', '\27', '\u0018', '\u0019', '\u001A', '\u001B', '\u001C', '\u001D', '\u001E', '\u001F', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c' , 'd' , 'e' , 'f' , 'g' , 'h' , 'i' , 'j' , 'k' , 'l' , 'm' , 'n' , 'o' , 'p' , 'q' , 'r' , 's' , 't' , 'u' , 'v' , 'w' , 'x' , 'y' , 'z' , '{' , '|' , '}' , '~' , '\u007F'];
 
-            // Array
-                // ASCII Sort Comparator
-                // Bubble Sorter
-                // Insertion Sorter
-                // Merge Sorter
-                // Sorter
-                // Tim Sorter
-                    // Run Size
-
-            // `Array` Imperative
             // Binary Digits
             LapysDevelopmentKit.Constants.BinaryDigits = ['0', '1'];
 
-            // `BigArray`  Imperative
-            // `BigNumber` Imperative
-            // CSS Length Units
-            // CSS Source Character Sequences
-            // Decimal Digits
-            // Frame Rate
-            // Hexadecimal Digits
-            // HTML Element Tag Names
-            // Infinity
-            // Integer Bit Size
-            // Pointer Bit Size
-            // JavaScript Source Keywords
-            // JavaScript Source Line Terminators
-            // JavaScript Source Spoof Tokens
-            // JavaScript Source Whitespace Character Sequences
-            // Language Codes
-            // Lowercase Alphabets
-            // Maximum Array Length
-            // Maximum Integer Value
-            // Maximum Safe Integer Value
-            // Not-A-Number
-            // Number Component
-            // Octal Digits
-            // Sortable Characters
-            // Source Types
-            // Symbol Characters
-            // `String` Imperative
-            // Token Types
-            // Trimmable Sequences
-            // Uppercase Alphabets
-
-        /* Functions */
-            // Array-Variant
-                // Prototype
-                    // After [From]
-                    // After From Back
-                    // After From Front
-                    // After Index
-                    // Before [From]
-                    // Before From Back
-                    // Before From Front
-                    // Before Index
-                    // Clone
-                    // Concatenate
-                    // Copy
-                    // Count [Element]
-                    // Cut
-                    // Cut At
-                    // Cut Left
-                    // Cut Right
-                    // Cycle
-                    // Depth
-                    // Element At [Index]
-                    // Every
-                    // Fill [From]
-                    // Find [From]
-                    // Find From Back
-                    // Find From Front
-                    // First
-                    // Flatten
-                    // Frequency [Of]
-                    // Includes
-                    // Index [From]
-                    // Index From Back
-                    // Index From Front
-                    // Insert At
-                    // [Get] Length
-                    // Last
-                    // Like
-                    // Map
-                    // Pop
-                    // Push
-                    // Remove [From]
-                    // Remove Duplicate [From]
-                    // Remove Duplicate From Back
-                    // Remove Duplicate From Front
-                    // Remove Duplicates
-                    // Remove From Back
-                    // Remove From Front
-                    // Remove Repeat [From]
-                    // Remove Repeat From Back
-                    // Remove Repeat From Front
-                    // Remove Repeats
-                    // Repeat
-                    // Replace [From]
-                    // Replace Duplicate [From]
-                    // Replace Duplicate From Back
-                    // Replace Duplicate From Front
-                    // Replace Duplicates
-                    // Replace From Back
-                    // Replace From Front
-                    // Replace Repeat [From]
-                    // Replace Repeat From Back
-                    // Replace Repeat From Front
-                    // Replace Repeats
-                    // Resize
-                    // Set Index
-                    // Shift
-                    // Similar
-                    // Slice
-                    // Some
-                    // Sort
-
-            // Character
-                // Is Alphabet
-                // Is Binary
-                // Is Decimal
-                // Is Hexadecimal
-                // Is Lowercase Alphabet
-                // Is Octal
-                // Is Uppercase Alphabet
-
-            // Digit --- NOTE (Lapys) -> `TMP` variable represents carry.
-                // Decrement
-                // Divide
-                // Increment
-                // Multiply
-                // Subtract
-                // Sum
-
-            // Digits --- NOTE (Lapys) -> `TMP` variable represents carry.
-                // Prototype
-                    // Decrement
-                    // Divide
-                    // Increment
-                    // Multiply
-                    // Subtract
-                    // Sum
-
-            // Evaluate
-
-            // Function
-                // Prototype
-                    // Apply
-                    // Arity [| Length]
-                    // Body [Source]
-                    // Call
-                    // Dyadic Call
-                    // First
-                    // Head [Source]
-                    // Is Arrow
-                    // Is Asynchronous
-                    // Is Asynchronous Arrow
-                    // Is Asynchronous Generator
-                    // Is Generator
-                    // Is Native
-                    // Is Native Asynchronous
-                    // Is Native Asynchronous Arrow
-                    // Is Native Asynchronous Generator
-                    // Is Native Arrow
-                    // Is Native Generator
-                    // Last
-                    // Monoadic Call
-                    // Name
-                    // Parameters
-                    // Parameters Source
-                    // Prototype
-                    // Niladic Call
-                    // Triadic Call
-                    // To Source String
-
-            // Is Array
-            // Is Big Integer
-            // Is Boolean
-            // Is Constructible
-            // Is Function
-            // Is Non-Constructible
-            // Is Null
-            // Is Number
-            // Is Object-Like --- NOTE (Lapys) -> Inherits the `Object` constructor.
-            // Is Primitive-Variant --- NOTE (Lapys) -> Is strictly of the `Object` constructor or another non-`Object` based constructor.
-            // Is String
-            // Is Symbol
-            // Is Void
-
-            // Is `ANY`
-            // Is `ERROR`
-            // Is `FLAG`
-            // Is `TMP`
-
-            // Number
-                // Prototype
-                    // Is Bitwise Even
-                    // Is Bitwise Integer
-                    // Is Bitwise Odd
-                    // Is Even
-                    // Is Finite
-                    // Is Infinite
-                    // Is Integer
-                    // Is Not-A-Number
-                    // Is Odd
-                    // Is Safe
-
-            // Object
-                // Assign
-                // Define Property
-                // Get Own Property Descriptor
-                // Get Own Property Descriptors
-                // Get Own Property Names
-                // Get Own Property Symbols
-                // Get Own Property Values
-                // Get Prototype Of
-                // Keys
-                // Prototype
-                    // Assign
-                    // Clone
-                    // Concatenate
-                    // Constructor
-                    // Copy
-                    // Define Property
-                    // Delete Property [By Identifier]
-                    // Describe All Properties
-                    // Describe Property [By Identifier]
-                    // Depth
-                    // Get Property [Value By Identifier]
-                    // Has Property [Identifier]
-                    // Instance Of
-                    // Set Property
-                // Set Prototype Of
-                // Values
-
-            // String-Variant
-                // Is CSS Length
-                // Is Escaped [Sequence]
-                // Is Lowercase
-                // Is Rotation Of
-                // Is Script Line Terminator Token
-                // Is Script Numeric Literal Token
-                // Is Script Whitespace [Sequence] Token
-                // Is Uppercase
-                // Prototype
-                    // After [From]
-                    // After Character [From]
-                    // After Character From Back
-                    // After Character From Front
-                    // After From Back
-                    // After From Front
-                    // After Index
-                    // Before [From]
-                    // Before Character [From]
-                    // Before Character From Back
-                    // Before Character From Front
-                    // Before From Back
-                    // Before From Front
-                    // Before Index
-                    // Begins With
-                    // Character At
-                    // Character Code At
-                    // Count [Character]
-                    // Cut
-                    // Cut At
-                    // Cut Left
-                    // Cut Right
-                    // Ends With
-                    // First
-                    // Frequency [Of]
-                    // Includes
-                    // Includes Character
-                    // Index [From]
-                    // Index Character [From]
-                    // Index Character From Back
-                    // Index Character From Front
-                    // Index From Back
-                    // Index From Front
-                    // Insert At
-                    // Last
-                    // Randomize
-                    // Remove
-                    // Remove All
-                    // Remove From Back
-                    // Remove From Front
-                    // Repeat
-                    // Replace
-                    // Replace All
-                    // Replace From Back
-                    // Replace From Front
-                    // Slice
-                    // Trim
-                    // Trim Left
-                    // Trim Right
-
-                // To [HTML] Element
-                // To HTML [DOM Tree]
-
-            // Throw Error
-            // Throw `ERROR`
-
-        /* Mathematics */
-            // Absolute
-            // Ceiling
-            // Clamp
-            // Floor
-            // Integer
-            // Invert Additively
-            // Invert Multiplicatively
-            // Logarithm [Base 2]
-            // Maximum
-            // Minimum
-            // Percent
-            // Power
-            // Power [Integer]
-            // Random
-            // Random [Integer]
-            // Round
-
-        /* Types */
-            // Assertion Error
-            // Big Array
-                // Prototype
-                    // Cut At
-                    // Element At
-                    // Free
-                    // Index [From]
-                    // Index From Back
-                    // Index From Front
-                    // Length
-                    // Maximum Length
-                    // Pop
-                    // Push
-                    // Resize
-
-            // Big Number
-                // Clone
-                // Copy
-                // Decrement
-                // Divide
-                // Exponentiate
-                // Increment
-                // Infinity
-                // Is Equal
-                // Is Greater
-                // Is Lesser
-                // Modularize
-                // Multiply
-                // Not-A-Number
-                // Prototype
-                    // Decrement
-                    // Divide
-                    // Exponentiate
-                    // Increment
-                    // Is Arbitrary
-                    // Is Equal To
-                    // Is Finite
-                    // Is Greater Than
-                    // Is Infinite
-                    // Is Not-A-Number
-                    // Is Lesser Than
-                    // Modularize
-                    // Multiply
-                    // Root
-                    // Sign
-                    // Subtract
-                    // Sum
-                    // Unsign
-
-                // Root
-                // Sign
-                // Signed
-                // Subtract
-                // Sum
-                // Unsign
-
-            // Character Array --- NOTE (Lapys) -> Negates the dependent utility of the `String.prototype.charAt` method.
-            // Clamped Array
-                // Prototype
-                    // Length
-
-            // Clamped Number
-                // Clone
-                // Copy
-                // Decrement
-                // Divide
-                // Exponentiate
-                // Increment
-                // Is Equal
-                // Is Greater
-                // Is Lesser
-                // Modularize
-                // Multiply
-                // Not-A-Number
-                // Prototype
-                    // Decrement
-                    // Divide
-                    // Exponentiate
-                    // Increment
-                    // Is Equal To
-                    // Is Finite
-                    // Is Greater Than
-                    // Is Infinite
-                    // Is Lesser Than
-                    // Is Not-A-Number
-                    // Is Safe
-                    // Maximum
-                    // Minimum
-                    // Modularize
-                    // Multiply
-                    // Root
-                    // Subtract
-                    // Sum
-                    // Unsign
-
-                // Root
-                // Sign
-                // Signed
-                // Subtract
-                // Sum
-                // Unsign
-
-            // Clock
-                // Prototype
-                    // Always
-                    // Date
-                    // End --- NOTE (Lapys) -> Pause all `Frame` objects.
-                    // Format --- NOTE (Lapys) -> Returns a date-time format (e.g.: UTC, e.t.c.)
-                    // Get Date
-                    // Get Day
-                    // Get Hour
-                    // Get Millisecond
-                    // Get Minute
-                    // Get Month
-                    // Get Second
-                    // Get Time
-                    // Get Timezone Offset
-                    // Get Year
-                    // Next
-                    // Now
-                    // Pause
-                    // Start
-                    // Stop
-                    // Tick
-                    // Timer
-                    // UTC
-                        // Get Day
-                        // Get Date
-                        // Get Hour
-                        // Get Millisecond
-                        // Get Minute
-                        // Get Month
-                        // Get Second
-                        // Get Year
-
-                    // Wind
-                    // To Date String
-                    // To GMT Date String
-                    // To ISO Date String
-                    // To Locale Date String
-                    // To Locale Time String
-                    // To String
-                    // To Time String
-                    // To UTC Date String
-                    // Value Of
-
-                // Total
-
-            // DOM Collection
-            // Enumeration
-            // Frame
-                // Prototype
-                    // Action
-                    // ID
-                    // Pause
-                    // Play
-                    // [Is] Playing
-
-            // Imperative --- NOTE (Lapys) -> Context for "variant"`s (e.g.: array variants, string variants, e.t.c.).
-            // Iterable
-            // Parse Error
-            // Parse Syntax Error
-            // Parser
-                // Prototype
-                    // Tokenize As Script Source --- NOTE (Lapys) -> For example: JavaScript.
-                    // Tokenize As UML Source --- NOTE (Lapys) -> For example: CSS.
-                    // Tokenize As XML Source --- NOTE (Lapys) -> For example: HTML.
-                    // Validate As Script Source
-                    // Validate As UML Source
-                    // Validate As XML Source
-
-            // Primitive
-            // Safe Number
-                // Clone
-                // Copy
-                // Decrement
-                // Divide
-                // Exponentiate
-                // Increment
-                // Is Equal
-                // Is Greater
-                // Is Lesser
-                // Modularize
-                // Multiply
-                // Prototype
-                    // Decrement
-                    // Divide
-                    // Exponentiate
-                    // Increment
-                    // Is Equal To
-                    // Is Finite
-                    // Is Greater Than
-                    // Is Infinite
-                    // Is Lesser Than
-                    // Is Not-A-Number
-                    // Is Safe
-                    // Modularize
-                    // Multiply
-                    // Root
-                    // Sign
-                    // Subtract
-                    // Sum
-                    // Unsign
-
-                // Root
-                // Sign
-                // Signed
-                // Subtract
-                // Sum
-                // Unsign
-
-            // Token
-                // Prototype
-                    // Source
-                    // Sub Tokens
-                    // To String
-
-            // Token List
-                // Prototype
-                    // First
-                    // For Each
-                    // Last
-                    // Length
-                    // Of --- NOTE (Lapys) -> Hierarchical relationship assertion.
-                    // Random
-                    // Random Index
-
-        /* Constants, Objects */
-            // Has `cancelAnimationFrame` Function
-            // Has `Document` Constructor
-            // Has `Element` Constructor
-            // Has `HTMLDocument` Constructor
-            // Has `HTMLElement` Constructor`
-            // Has `requestAnimationFrame` Function
-            // Is Command-Line Environment
-            // Is Text Environment
-            // Is Web Browser Environment
-
-            // Array
-                // From
-                // Is Array-Like
-                // Of
-                // Prototype
-                    // [Is] Empty
-                    // First
-                    // For Each
-                    // Free
-                    // Last
-                    // Pop
-                    // Push
-                    // Random
-                    // Random Index
-                    // Remove
-
-            // Cancel Animation Frame
-            // CSS Numeric Array
-                // Prototype
-                    // First
-                    // For Each
-                    // Last
-                    // Random
-                    // Random Index
-
-            // Document
-            // Element
-            // HTML All Collection
-                // Prototype
-                    // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
-                    // [Is] Empty
-                    // First
-                    // For Each
-                    // Last
-                    // Pop
-                    // Random
-                    // Random Index
-                    // Remove
-
-            // HTML Canvas Element
-                // Prototype
-                    // To Blob
-
-            // HTML Collection
-                // Is HTML Collection-Like
-                // Prototype
-                    // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
-                    // [Is] Empty
-                    // First
-                    // For Each
-                    // Get
-                    // Last
-                    // Pop
-                    // Random
-                    // Random Index
-                    // Remove
-
-            // HTML Document
-            // HTML Element
-                // Prototype
-                    // Ancestors
-                    // Children
-                    // Get Children By Class Name
-                    // Get Children By ID
-                    // Get Children By Element Tag Name
-                    // Inspect Ancestors By CSS Selector
-                    // Inspect Children By CSS Selector
-                    // Inspect Descendants By CSS Selector
-                    // Inspect Next Siblings By CSS Selector
-                    // Inspect Previous Siblings By CSS Selector
-                    // Inspect Siblings By CSS Selector
-                    // Next Siblings
-                    // Previous Siblings
-                    // Purge
-                    // Role
-                    // Root
-                    // Script
-                    // Siblings
-
-            // HTML Form Controls Collection
-                // Prototype
-                    // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
-                    // [Is] Empty
-                    // First
-                    // For Each
-                    // Get
-                    // Last
-                    // Pop
-                    // Random
-                    // Random Index
-                    // Remove
-
-            // HTML Input Element, HTML Text Area Element
-                // Prototype
-                    // Ignore [Value]
-                    // Pass [Value]
-
-            // HTML Options Collection
-                // Prototype
-                    // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
-                    // [Is] Empty
-                    // First
-                    // For Each
-                    // Get
-                    // Last
-                    // Pop
-                    // Random
-                    // Random Index
-                    // Remove
-
-            // Mathematics
-                // Average
-                // Clamp
-                // Integer
-                // Sigmoid
-
-            // Node
-                // Prototype
-                    // Ancestor Nodes
-                    // Child Nodes
-                    // Descendant Nodes
-                    // Next Sibling Node
-                    // Next Sibling Nodes
-                    // Previous Sibling Node
-                    // Previous Sibling Nodes
-                    // Root Node
-                    // Sibling Nodes
-
-            // Node List
-                // Prototype
-                    // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
-                    // [Is] Empty
-                    // First
-                    // For Each
-                    // Last
-                    // Pop
-                    // Random
-                    // Random Index
-                    // Remove
-
-            // Request Animation Frame
-            // Style Property Map
-                // Prototype
-                    // For Each
-
-            // Style Property Map Read-Only
-                // Prototype
-                    // For Each
-
     /* Modification */
+        // Array
+            // Is Array-Like
+            // Of
+            // Prototype
+                // [Is] Empty
+                // First
+                // Free
+                // Last
+                // Random
+                // Random Index
+                // Remove
+
+        // CSS Numeric Array
+            // Prototype
+                // First
+                // Last
+                // Random
+                // Random Index
+
         // Document
             // Pending --- NOTE (Lapys) -> Accessor to the value `LapysJS.tasks["pending"].length`.
+
+        // Element
+        // HTML All Collection
+            // Prototype
+                // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
+                // [Is] Empty
+                // First
+                // Last
+                // Pop
+                // Random
+                // Random Index
+                // Remove
+
+        // HTML Canvas Element
+            // Prototype
+                // To Blob
+
+        // HTML Collection
+            // Is HTML Collection-Like
+            // Prototype
+                // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
+                // [Is] Empty
+                // First
+                // Get
+                // Last
+                // Pop
+                // Random
+                // Random Index
+                // Remove
+
+        // HTML Document
+            // Prototype
+                // Get Elements By Class Name
+                // Get Element By ID
+                // Get Elements By ID
+                // Inspect Children By CSS Selector
+                // Inspect Descendants By CSS Selector
+
+        // HTML Element
+            // Prototype
+                // Ancestors
+                // Children
+                // Get Children By Class Name
+                // Get Children By ID
+                // Get Children By Element Tag Name
+                // Inspect Ancestors By CSS Selector
+                // Inspect Children By CSS Selector
+                // Inspect Descendants By CSS Selector
+                // Inspect Next Siblings By CSS Selector
+                // Inspect Previous Siblings By CSS Selector
+                // Inspect Siblings By CSS Selector
+                // Next Siblings
+                // Previous Siblings
+                // Purge
+                // Role
+                // Root
+                // Script
+                // Siblings
+
+        // HTML Form Controls Collection
+            // Prototype
+                // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
+                // [Is] Empty
+                // First
+                // Get
+                // Last
+                // Pop
+                // Random
+                // Random Index
+                // Remove
+
+        // HTML Input Element, HTML Text Area Element
+            // Prototype
+                // Ignore [Value]
+                // Pass [Value]
+
+        // HTML Options Collection
+            // Prototype
+                // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
+                // [Is] Empty
+                // First
+                // Get
+                // Last
+                // Pop
+                // Random
+                // Random Index
+                // Remove
+
+        // Mathematics
+            // Average
+            // Clamp
+            // Integer
+            // Percent
+            // Sigmoid
+
+        // Node
+            // Prototype
+                // Ancestor Nodes
+                // Child Nodes
+                // Descendant Nodes
+                // Next Sibling Node
+                // Next Sibling Nodes
+                // Previous Sibling Node
+                // Previous Sibling Nodes
+                // Root Node
+                // Sibling Nodes
+
+        // Node List
+            // Prototype
+                // Clear --- NOTE (Lapys) -> Removes all `HTMLElement` objects from their parent node.
+                // [Is] Empty
+                // First
+                // Last
+                // Pop
+                // Random
+                // Random Index
+                // Remove
+
+        // Style Property Map
+            // Prototype
+                // For Each
+
+        // Style Property Map Read-Only
+                // Prototype
+                    // For Each
 
         /* Global */
             // Array
@@ -949,20 +967,26 @@
             // Timeout
 
         /* LapysJS */
-            // Author
             // Create Namespace
-            // Description
             // Namespaces
-            // Ready[?]
-            // Tasks
-                // Listening --- NOTE (Lapys) -> Event listeners.
-                // Pending --- NOTE (Lapys) -> Asynchronous tasks.
             // To String
             // Value Of
-            // Version
+
+        /* Lapys Development Kit --- WARN (Lapys) -> For testing purposes only. */
+        window.LapysDevelopmentKit = LapysDevelopmentKit;
+        window.LDK = LapysDevelopmentKit;
+        window.LDKC = LapysDevelopmentKit.Constants;
+        window.LDKE = LapysDevelopmentKit.Environment;
+        window.LDKF = LapysDevelopmentKit.Functions;
+        window.LDKI = LapysDevelopmentKit.Information;
+        window.LDKM = LapysDevelopmentKit.Mathematics;
+        window.LDKO = LapysDevelopmentKit.Objects;
+        window.LDKR = LapysDevelopmentKit.Records;
+        window.LDKS = LapysDevelopmentKit.States;
+        window.LDKT = LapysDevelopmentKit.Types;
 
     /* Event */
-        // Global > Blur
+        // Global > Blur --- NOTE (Lapys) -> Blur all elements when main window is blurred.
 
     /* Phase */
         // Initiate
