@@ -1,0 +1,1 @@
+Universal helper library in JavaScript
