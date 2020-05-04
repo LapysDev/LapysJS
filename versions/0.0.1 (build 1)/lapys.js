@@ -2174,7 +2174,7 @@
         });
 
          // Has Element
-         Array.prototype.hasElement || Object.defineProperty(Array.prototype, 'hasElement', {
+        Array.prototype.hasElement || Object.defineProperty(Array.prototype, 'hasElement', {
             // Value
             value: function hasElement() {
                 // Initialization > Has Element
@@ -2191,7 +2191,7 @@
                 // Return
                 return hasElement.indexOf(false) < 0
             }
-         });
+        });
 
         /* Index Of
                 --- NOTE ---

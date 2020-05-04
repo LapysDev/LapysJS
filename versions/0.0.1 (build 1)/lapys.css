@@ -845,7 +845,7 @@
     b {
         /* --- NOTE ---
                 This method is used to correct the CSS "font-weight"
-                on other platforms than Chrome and Mozila.
+                on other platforms than Chrome and Mozilla.
         */
         font-weight: inherit
     }
@@ -1005,7 +1005,7 @@
             order: 0;
             orphans: 1;
             pointer-events: all;
-            quotes: "“" "”" "‘" "’";
+            quotes: "?" "?" "?" "?";
             resize: none;
             ruby-align: space-around;
             ruby-position: over;
@@ -2140,14 +2140,14 @@
                 their parents cursor to seem not click-able.
     */
         /* States > Disabled */
-            input:disabled,
-            optgroup:disabled,
-            option:disabled,
-            select:disabled:disabled,
-            textarea:disabled {
-                cursor: inherit;
-                -moz-user-input: disabled
-            }
+        input:disabled,
+        optgroup:disabled,
+        option:disabled,
+        select:disabled:disabled,
+        textarea:disabled {
+            cursor: inherit;
+            -moz-user-input: disabled
+        }
 
     /* <ins> */
     ins {
