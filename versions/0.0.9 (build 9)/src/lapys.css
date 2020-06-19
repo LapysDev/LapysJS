@@ -1,4 +1,13 @@
 /* CSS At-Rules */
+    /* @charset */
+    @charset "UTF-8";
+
+    /* @media */
+    @media print {
+        * { cursor: default }
+        marquee { -moz-binding: none }
+    }
+
 /* DOM Elements */
 /* Components --- NOTE (Lapys) -> User-interface components. */
 /* Assets --- NOTE (Lapys) -> Single-instance components/ elements. */
