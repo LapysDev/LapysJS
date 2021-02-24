@@ -37,7 +37,7 @@ var LapysJS = {};
             CURRENT: null, // NOTE (Lapys) -> Represents the current object (a local temporary) synchronously interfacing with the library.
             ERROR: {message: "", toString: function toString() { return LDKD.ERROR.message }, valueOf: function valueOf() { return LDKD.ERROR.message }},
             FLAG: null, // NOTE (Lapys) -> Identifies default arguments to functions; default parameters are not available in all JavaScript versions.
-            GLOBAL: "undefined" == typeof(self) ? ("undefined" == typeof(window) ? ("undefined" == typeof(global) ? (function() { return this })() : global) : window) : self,
+            GLOBAL: "undefined" == typeof(frames) ? ("undefined" == typeof(self) ? ("undefined" == typeof(window) ? ("undefined" == typeof(global) ? ("undefined" == typeof(globalThis) ? (function() { return this })() : globalThis) : global) : window) : self) : frames,
             STOP: false // NOTE (Lapys) -> Used to terminate certain procedures generally.
         },
 
@@ -538,7 +538,7 @@ LapysJS = new (
 
 /* Modification */
 with (LapysDevelopmentKit.prototype)
-void function(GLOBAL, LDKF, LDKM, LDKN) {
+void function(ERROR, GLOBAL, LDKF, LDKM, LDKN) {
     /* Global > ... */
     LDKF.putProperty(GLOBAL, "abs", {value: ERROR === LDKN.Math$abs ? LDKM.abs : function abs(number) { with (LDKN.Math) return LDKN.Math$abs(number) }});
     LDKF.putProperty(GLOBAL, "acos", {value: ERROR === LDKN.Math$acos ? LDKM.acos : function acos(number) { with (LDKN.Math) return LDKN.Math$acos(number) }});
@@ -635,7 +635,7 @@ void function(GLOBAL, LDKF, LDKM, LDKN) {
     LDKF.putProperty(GLOBAL, "$$", {value: function $$() { /* CHECKPOINT (Lapys) -> Selector */ }});
 
     /* ... --- CHECKPOINT (Lapys) -> Polyfill missing features in `LapysDevelopmentKit.Natives`. */
-}(Directives.GLOBAL, Functions, Mathematics, Natives);
+}(Directives.ERROR, Directives.GLOBAL, Functions, Mathematics, Natives);
 
 /* Deletion --- NOTE (Lapys) -> Hide the critical interface of the LDK. */
-LapysDevelopmentKit.prototype = { /* [private code] */ };
+LapysDevelopmentKit.prototype = LapysJS
