@@ -49,9 +49,11 @@ var LapysJS = null;
 
         Functions: {
             functionToString: null,
+            inspectFunction: null,
             integerToString: null,
             isFunction: null,
             isNativeFunction: null,
+            isNull: null,
             isVoid: null,
             numberToInteger: null,
             numberTo32BitInteger: null,
@@ -63,6 +65,7 @@ var LapysJS = null;
         Mathematics: {},
 
         Natives: {
+            Error: null,
             Function$prototype$toString: null,
             Function$prototype$toString$call: null,
             String$prototype$charAt: null
@@ -70,13 +73,19 @@ var LapysJS = null;
 
         Supports: {
             Element$defineProperty: false,
+            Element$getOwnPropertyDescriptor: false,
             Error: false,
+            Function: false,
             Object$create: false,
             Object$defineProperty: false,
+            Object$getOwnPropertyDescriptor: false,
             Object$prototype$__defineGetter__: false,
             Object$prototype$__defineSetter__: false,
+            Object$prototype$__lookupGetter__: false,
+            Object$prototype$__lookupSetter__: false,
             Object$prototype$__proto__: false,
-            String$prototype$charAt: false
+            String$prototype$charAt: false,
+            "String$prototype[]": false
         }
 
         // {}["*"] ; {}["*"] = ...; < IE5
@@ -97,7 +106,7 @@ var LapysJS = null;
         var LDKS = LDK.Supports;
     }
 
-    /* Modification */
+    /* Modification --- REDACT (Lapys) */
     with (LDK) with (Directives) {
         /* Constants */
         Constants.ArabicNumeralDigits = {'0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5', '6': '6', '7': '7', '8': '8', '9': '9'};
@@ -108,16 +117,33 @@ var LapysJS = null;
                 length: 18, toString: function toString() { return "[Command Line API]" }
             },
 
-            /* --> "[native code]"      */ {
+            /* --> "[native code]" */ {
                 '0': '[', '1': 'n', '2': 'a', '3': 't', '4': 'i', '5': 'v', '6': 'e', '7': ' ', '8': 'c', '9': 'o', "10": 'd', "11": 'e', "12": ']',
                 length: 13, toString: function toString() { return "[native code]" }
             }
         ];
 
         /* Errors */
+        Errors.error = (function() {
+            var Error;
 
-        // LDKF.isNativeFunction(GLOBAL, "Error", "Error", null)
-        // LDKF.isNativeFunction(GLOBAL, "Error", "Error", LDKF.functionToString)
+            if (LDKS.Error) Error = LDKN.Error;
+            else {
+                Error = function Error(message, name) { this.message = message; this.name = name };
+                Error.prototype = { message: null, name: "Error", toString: function toString() { return this.name + ": " + this.message } }
+            }
+
+            return function generateError(code, message) {
+                var name = "Error";
+
+                switch (code) {
+                    case LDKE.MISSING_REQUIRED_FEATURE: message = LDKF.isVoid(message) ? "Native implementation is required" : message; name = "MissingFeatureError"; break;
+                    case LDKE.MODIFIED_REQUIRED_FEATURE: message = LDKF.isVoid(message) ? "Native implementation is required" : message; name = "ModifiedFeatureError"
+                }
+
+                return LDKS.Error ? new Error('[' + name + ']' + (false == LDKF.isVoid(message) ? ": " + message : "")) : new Error(message, name)
+            }
+        })();
 
         /* Functions */
         Functions.functionToString = function functionToString(functionObject) {
@@ -130,62 +156,92 @@ var LapysJS = null;
         Functions.integerToString = function integerToString(number) { return (number < 0 ? '-' : "") + LDKF.unsignedIntegerToString(number * -(number < 0)) };
         Functions.isFunction = function isFunction(argument) { return "function" == typeof argument };
 
+        LDKF.inspectFunction(GLOBAL, "Function").evaluate("Function", LDKF.functionToString)
+        LDKF.inspectFunction(GLOBAL, "Function").onerror(function(code) {
+            switch (code) {
+                case LDKE.MISSING_REQUIRED_FEATURE: ...; break;
+                case LDKE.MODIFIED_REQUIRED_FEATURE: ...; break;
+                default: throw new LDKE.error(code, "...")
+            }
+        }).evaluate(...)
+
+        Functions.inspectFunction = (function() {
+            var evaluation = { evaluate: null, onerror: null };
+            var eventQueue = { error: null };
+
+            evaluation.evaluate = function evaluate() {};
+            evaluation.onerror = function onerror(handler) { eventQueue.error = handler; return evaluation };
+
+            return function inspectFunction(object, propertyIdentifier) {
+                try {
+                    LDKS.Object$getOwnPropertyDescriptor
+                    LDKS.Object$prototype$__lookupGetter__
+                    LDKS.Object$prototype$__lookupSetter__
+                } catch (error) {}
+                return evaluation
+            }
+        })();
+
         Functions.isNativeFunction = function isNativeFunction(object, propertyIdentifier, functionName, exposer) {
             var evaluation = false;
             var functionObject, functionSource;
 
             try {
                 functionObject = object[propertyIdentifier];
-                functionSource = null === exposer ? "" + functionObject : exposer(functionObject);
+                if (LDKF.isFunction(functionObject)) {
+                    functionSource = null === exposer ? "" + functionObject : exposer(functionObject);
 
-                for (var iterator = LDKC.NativeFunctionObfuscatedSourceCode.length - 1; false == evaluation && ~iterator; --iterator) {
-                    var functionObfuscatedSource = LDKC.NativeFunctionObfuscatedSourceCode[iterator].toString();
+                    for (var iterator = LDKC.NativeFunctionObfuscatedSourceCode.length - 1; false == evaluation && ~iterator; --iterator) {
+                        var functionObfuscatedSource = LDKC.NativeFunctionObfuscatedSourceCode[iterator].toString();
 
-                    evaluation = null === functionName ? (
-                        functionSource == "function() { " + functionObfuscatedSource + " }" ||
-                        functionSource == "function() {\n    " + functionObfuscatedSource + "\n}" ||
-                        functionSource == "\nfunction() {\n    " + functionObfuscatedSource + "\n}\n"
-                        ||
-                        functionSource == "function " + propertyIdentifier + "() { " + functionObfuscatedSource + " }" ||
-                        functionSource == "function " + propertyIdentifier + "() {\n    " + functionObfuscatedSource + "\n}" ||
-                        functionSource == "\nfunction " + propertyIdentifier + "() {\n    " + functionObfuscatedSource + "\n}\n"
-                    ) : (
-                        functionSource == "function " + functionName + "() { " + functionObfuscatedSource + " }" ||
-                        functionSource == "function " + functionName + "() {\n    " + functionObfuscatedSource + "\n}" ||
-                        functionSource == "\nfunction " + functionName + "() {\n    " + functionObfuscatedSource + "\n}\n"
-                    )
-                }
+                        evaluation = null === functionName ? (
+                            functionSource == "function() { " + functionObfuscatedSource + " }" ||
+                            functionSource == "function() {\n    " + functionObfuscatedSource + "\n}" ||
+                            functionSource == "\nfunction() {\n    " + functionObfuscatedSource + "\n}\n"
+                            ||
+                            functionSource == "function " + propertyIdentifier + "() { " + functionObfuscatedSource + " }" ||
+                            functionSource == "function " + propertyIdentifier + "() {\n    " + functionObfuscatedSource + "\n}" ||
+                            functionSource == "\nfunction " + propertyIdentifier + "() {\n    " + functionObfuscatedSource + "\n}\n"
+                        ) : (
+                            functionSource == "function " + functionName + "() { " + functionObfuscatedSource + " }" ||
+                            functionSource == "function " + functionName + "() {\n    " + functionObfuscatedSource + "\n}" ||
+                            functionSource == "\nfunction " + functionName + "() {\n    " + functionObfuscatedSource + "\n}\n"
+                        )
+                    }
 
-                if (false == evaluation && null !== LDKS.String$prototype$charAt)
-                for (var iterator = 0, length = functionSource.length; iterator != length; ++iterator) {
-                    var character = LDKF.stringAt(functionSource, iterator);
-                    "class {}"
-                    "class <class-name> {}"
+                    if (false == evaluation && (LDKS.String$prototype$charAt || LDKS["String$prototype[]"])) {
+                        for (var iterator = 0, length = functionSource.length; iterator != length; ++iterator) {
+                            var character = LDKF.stringAt(functionSource, iterator);
 
-                    "<function-name>(){}"
-                    "function(){}"
-                    "function <function-name>(){}"
+                            "class {}"
+                            "class <class-name> {}"
 
-                    "*<function-name>(){}"
-                    "function*(){}"
-                    "function* <function-name>(){}"
+                            "<function-name>(){}"
+                            "get <function-name>(){}"
+                            "set <function-name>(<argument-name>){}"
+                            "function(){}"
+                            "function <function-name>(){}"
 
-                    "<argument-name> => {}"
-                    "<argument-name> => <expression>"
-                    "(<argument-name>, ) => <expression>"
-                    "(<argument-name>, ...) => <expression>"
-                    "(<argument-name>, <argument-name>) => <expression>"
+                            "*<function-name>(){}"
+                            "function*(){}"
+                            "function* <function-name>(){}"
 
+                            "[<expression>](){}"
 
-                    "[<expression>](){}"
-                    "get a(){}"
-                    "set a(x){}"
+                            "<argument-name> => {}"
+                            "<argument-name> => <expression>"
+                            "(<argument-name>, ) => <expression>"
+                            "(<argument-name>, ...) => <expression>"
+                            "(<argument-name>, <argument-name>) => <expression>"
+                        }
+                    }
                 }
             } catch (error) {}
 
             return evaluation
         };
 
+        Functions.isNull = function isNull(argument) { return null === argument };
         Functions.isVoid = function isVoid(argument) { return undefined === argument };
         Functions.numberToInteger = function numberToInteger(number) {
             var counter = 1, integer = +0;
@@ -227,11 +283,12 @@ var LapysJS = null;
             return string
         };
 
-        Functions.stringAt = ' '[+0] == ' ' ? function stringAt(string, index) { return string[index] } : function stringAt(string, index) {
+        Functions.stringAt = function stringAt(string, index) {
+            if (LDKS["String$prototype[]"]) return string[index];
             if (LDKN.String$prototype$charAt.call === LDKN.String$prototype$charAt$call) return LDKN.String$prototype$charAt.call(string, index);
             if (LDKN.String$prototype$charAt$call === LDKN.String$prototype$charAt$call.call) return LDKN.String$prototype$charAt$call.call(LDKN.String$prototype$charAt, string, index);
 
-            throw new LKDE.error(0x0, "Unable to read characters from `String`")
+            throw new LKDE.error(0x0, "Unable to index character from `String`")
         };
 
         Functions.unsignedIntegerToString = function unsignedIntegerToString(number) {
@@ -246,37 +303,22 @@ var LapysJS = null;
             return string
         };
 
-        try {
-            Supports.Error = "function" == typeof Error && (
-                "" + Error == "function Error() { [native code] }" ||
-                "" + Error == "function Error() {\n    [native code]\n}" ||
-                "" + Error == "\nfunction Error() {\n    [native code]\n}\n"
-            )
-        } catch (error) {}
+        /* Supports */
+        Supports.Error = LDKF.isNativeFunction(GLOBAL, "Error", "Error", null);
+        Supports.Function = LDKF.isNativeFunction(GLOBAL, "Function", "Function", null);
+        Supports.Function$prototype = LDKF.isNativeFunction(Function.prototype, "toString", "toString", null);
+        Supports.Function$prototype = LDKF.isNativeFunction(Function.prototype.toString, "call", "call", null);
+        Supports.Object$prototype$__proto__ = (function() {
+            CURRENT = {__proto__: ANY};
 
-        Errors.error = function generateError(code, message) {
-            message = (arguments.length || 1) == 1 ? null : message;
-            switch (code) {
-                case LDKE.MISSING_REQUIRED_FEATURE: message = "[MissingFeatureError]: " + (LDKF.isVoid(message) ? "Native implementation is required" : message); break;
-                case LDKE.MODIFIED_REQUIRED_FEATURE: message = "[ModifiedFeatureError]: " + (LDKF.isVoid(message) ? "Native implementation is required" : message); break;
-                case 0x0: case -0x1: default: message = "[Error]" + (LDKF.isVoid(message) ? "" : ": " + message)
-            }
+            delete CURRENT["__proto__"];
+            return ANY === CURRENT.__proto__
+        })();
+        Supports["String$prototype[]"] = '\0'[+0] === '\0';
 
-            return function Error() { return new Error(message) }
-        };
-
-        // throw new LDKE.error()
-        CURRENT = {__proto__: ANY};
-
-        delete CURRENT["__proto__"];
-        Supports.Object$p;rototype$__proto__ = ANY === CURRENT.__proto__;
-
+        /* ... */
         (function() {
-            if ("function" == typeof Function && (
-                "" + Function == "function Function() { [native code] }" ||
-                "" + Function == "function Function() {\n    [native code]\n}" ||
-                "" + Function == "\nfunction Function() {\n    [native code]\n}\n"
-            )) if (
+            if (
                 "toString" in Function.prototype && (
                     "function" == typeof Function.prototype.toString && (
                         "" + Function.prototype.toString == "function toString() { [native code] }" ||
@@ -341,6 +383,18 @@ var LapysJS = null;
                     Function.prototype.toString.call(__defineSetter__) == "\nfunction __defineSetter__() {\n    [native code]\n}\n"
                 );
 
+                Supports.Object$prototype$__lookupGetter__ = "function" == typeof __lookupGetter__ && (
+                    Function.prototype.toString.call(__lookupGetter__) == "function __lookupGetter__() { [native code] }" ||
+                    Function.prototype.toString.call(__lookupGetter__) == "function __lookupGetter__() {\n    [native code]\n}" ||
+                    Function.prototype.toString.call(__lookupGetter__) == "\nfunction __lookupGetter__() {\n    [native code]\n}\n"
+                );
+
+                Supports.Object$prototype$__lookupSetter__ = "function" == typeof __lookupSetter__ && (
+                    Function.prototype.toString.call(__lookupSetter__) == "function __lookupSetter__() { [native code] }" ||
+                    Function.prototype.toString.call(__lookupSetter__) == "function __lookupSetter__() {\n    [native code]\n}" ||
+                    Function.prototype.toString.call(__lookupSetter__) == "\nfunction __lookupSetter__() {\n    [native code]\n}\n"
+                );
+
                 "create" in Object && (
                     "function" == typeof Object.create && (
                         Function.prototype.toString.call(Object.create) == "function create() { [native code] }" ||
@@ -368,9 +422,28 @@ var LapysJS = null;
 
                     if (HAS_CREATE_ELEMENT_METHOD) {
                         try {
-                            Object.defineProperty(document.createElement('a'), "", {configurable: true, enumerable: true, value: undefined, writable: true}) ||
+                            Object.defineProperty(document.createElement('a'), "", {configurable: true, enumerable: true, value: undefined, writable: true}),
                             Object.defineProperty(document.createElement('a'), "", {configurable: true, enumerable: false, get: function() {}, set: function() {}})
                         } catch (error) { Supports.Element$defineProperty = false }
+                    }
+                })();
+
+                "getOwnPropertyDescriptor" in Object && (
+                    "function" == typeof Object.getOwnPropertyDescriptor && (
+                        Function.prototype.toString.call(Object.getOwnPropertyDescriptor) == "function getOwnPropertyDescriptor() { [native code] }" ||
+                        Function.prototype.toString.call(Object.getOwnPropertyDescriptor) == "function getOwnPropertyDescriptor() {\n    [native code]\n}" ||
+                        Function.prototype.toString.call(Object.getOwnPropertyDescriptor) == "\nfunction getOwnPropertyDescriptor() {\n    [native code]\n}\n"
+                    )
+                ) && (function assertion() {
+                    Supports.Element$getOwnPropertyDescriptor = true;
+                    Supports.Object$getOwnPropertyDescriptor = true;
+
+                    try { Object.getOwnPropertyDescriptor({}, "") }
+                    catch (error) { Supports.Object$getOwnPropertyDescriptor = false }
+
+                    if (HAS_CREATE_ELEMENT_METHOD) {
+                        try { Object.getOwnPropertyDescriptor(document.createElement('a'), "") }
+                        catch (error) { Supports.Element$getOwnPropertyDescriptor = false }
                     }
                 })()
             }
