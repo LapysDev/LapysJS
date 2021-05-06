@@ -33,7 +33,7 @@ var LapysJS = null;
         Directives: {
             ANY: {}, // ->> Represents a non-unique value. (though its value is distinct)
             CURRENT: null, // ->> Represents a local dummy or temporary.
-            ERROR: null, // ->> Represents a non-halting, non-throwable, silent exception. (always a unique value)
+            ERROR: {}, // ->> Represents a non-halting, non-throwable, silent exception. (always a unique value)
             FLAG: null, // ->> Identifies default or meta-arguments to functions.
             GLOBAL: "undefined" === typeof frames ? ("undefined" === typeof self ? ("undefined" === typeof window ? ("undefined" === typeof global ? ("undefined" === typeof globalThis ? (function() { return this })() : globalThis) : global) : window) : self) : frames
         },
@@ -52,12 +52,13 @@ var LapysJS = null;
         // [Functions]
         Functions: {
             functionCall: null,
-            functionIsNative: null,
             functionToString: null,
-            inspectFeature: null,
+            inspectFeature: null, "CONSTRUCTOR": 0x1, "METHOD": 0x2,
+            isNativeFunction: null,
             numberToInteger: null, "BITWISE": 0x1,
             numberToString: null, "DECIMAL": 0x1, "SIGNED": 0x2, "UNSIGNED": 0x3,
-            stringAt: null
+            stringAt: null,
+            toString: null
         },
 
         // [Mathematics]
@@ -155,7 +156,12 @@ var LapysJS = null;
                     assertions: new function AssertionList() { return new StaticArray(+0, 8, null) },
                     identifier: null, object: null,
 
-                    assert: function assert(asserter) { this.assertions[this.assertions.length++] = asserter },
+                    // ...
+                    assert: function assert(asserter) {
+                        this.assertions[this.assertions.length++] = asserter;
+                        return this
+                    },
+
                     evaluate: function evaluate(code) {
                         // Constant > ((Identifier, Object), (Syntax, Type))
                         // : Initialization > (... Source, Value)
@@ -165,17 +171,27 @@ var LapysJS = null;
                         var objectSource = "", propertySource = "", propertyType = "feature";
                         var value = ERROR;
 
-                        // Logic > Update > ...
-                        if (null !== syntax) {
+                        // ... Update > ...
+                        if (null === syntax) {
+                            objectSource = "the global object";
+                            propertySource = "symbol" === typeof identifier ? LDKF.toString(identifier) : identifier
+                        }
+
+                        else {
                             for (var iterator = syntax.length - 2; ~iterator; --iterator)
                             objectSource = syntax[iterator] + (objectSource.length ? '.' : "") + objectSource;
 
                             // ...
                             propertySource = objectSource + '.' + syntax[syntax.length - 1];
                             switch (type) {
-                                case LDKF.CONSTRUCTOR: propertySource += "()"; propertyType = "constructor"; break;
-                                case LDKF.METHOD: propertySource += "(...)"; propertyType = "method"
+                                case LDKF.CONSTRUCTOR: propertySource += "()"; break;
+                                case LDKF.METHOD: propertySource += "(...)"
                             }
+                        }
+
+                        switch (type) {
+                            case LDKF.CONSTRUCTOR: propertyType = "constructor"; break;
+                            case LDKF.METHOD: propertyType = "method"
                         }
 
                         // Logic > ...
@@ -261,7 +277,7 @@ var LapysJS = null;
                         }
 
                         // ... Error
-                        if (code & LDKE.MISSING)
+                        else if (code & LDKE.MISSING)
                         throw new LDKE.Error(LDKE.MISSING, "Expected the `" + propertySource + "` " + propertyType + " to be available within " + (GLOBAL === object ? "the global object" : '`' + objectSource + '`'));
 
                         // Return
@@ -309,6 +325,39 @@ var LapysJS = null;
 
             /* Functions */
             Functions.inspectFeature = function inspectFeature(object, identifier) { return new Inspector(identifier, object) };
+            Functions.isNativeFunction = function isNativeFunction(object) {
+                switch (typeof object) { case "function": case "object":
+                    var source = ERROR;
+
+                    try {
+                        if (LDKS.Function$prototype$call) {
+                            if (LDKN.Function$prototype$call === LDKN.Function$prototype$call.call)
+                            source = LDKN.Function$prototype$call.call(LDKN.Function$prototype$toString, object)
+                        }
+                    } catch (error) { throw new LDKE.Error(LDKE.INACCESSIBLE, "") }
+
+                } return false
+            };
+
+            /* Natives */
+            Natives.Function = LDKF.inspectFeature(GLOBAL, "Function").assert(function(object, identifier, value) {
+                try { return (function() {}) instanceof value }
+                catch (error) {}
+
+                return
+                    "function" === typeof value &&
+                    "function" === typeof value() &&
+                    "function" === typeof new value &&
+                    "function" === typeof value.prototype &&
+                    "undefined" === typeof value.prototype()
+
+                try { new value.prototype }
+                catch (error) { return "TypeError" === error.name }
+
+                return LDKF.isNativeFunction(value) && LDKF.isNativeFunction(value.prototype)
+            }).evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.CONSTRUCTOR, FLAG = null);
+
+            Natives.Function$prototype$call = LDKF.inspectFeature(LDKN.Function.prototype, "call").evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.METHOD, FLAG = ["Function", "prototype", "call"]);
 
             /* Supports */
             Supports.Object$prototype$__proto__ = (function() {
