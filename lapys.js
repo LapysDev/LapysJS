@@ -13,10 +13,11 @@ function LapysDevelopmentKit() { /* [private code] */ return '[' + LapysJS.versi
 var LapysJS = null;
 
 /* [Lapys Development Kit] ... ->> Library SDK (private interface) */
-(function() {
+void function() {
     /* Polyfill */
     var Infinity = 1 / +0;
     var NaN = +0 / +0;
+    var undefined = void +0;
 
     /* Definition ->> `null` depicts functions & objects, whilst `undefined` represents all else. */
     LapysDevelopmentKit.prototype = {
@@ -46,15 +47,16 @@ var LapysJS = null;
             INACCESSIBLE: 0x02,
             INHERITED: 0x04,
             MISSING: 0x08,
-            SETTER: 0x10
+            MODIFIED: 0x10,
+            SETTER: 0x20
         },
 
         // [Functions]
         Functions: {
             functionCall: null,
+            functionIsNative: null,
             functionToString: null,
             inspectFeature: null, "CONSTRUCTOR": 0x1, "METHOD": 0x2,
-            isNativeFunction: null,
             numberToInteger: null, "BITWISE": 0x1,
             numberToString: null, "DECIMAL": 0x1, "SIGNED": 0x2, "UNSIGNED": 0x3,
             stringAt: null,
@@ -84,7 +86,6 @@ var LapysJS = null;
         Supports: {
             Element$defineProperty: false,
             Element$getOwnPropertyDescriptor: false,
-            Function: false,
             Function$prototype$call: false,
             Object$create: false,
             Object$defineProperty: false,
@@ -132,6 +133,7 @@ var LapysJS = null;
                     case LDKE.INACCESSIBLE: ERROR.name = "InaccessiblePropertyError"; break;
                     case LDKE.INHERITED: ERROR.name = "InheritedPropertyError"; break;
                     case LDKE.MISSING: ERROR.name = "MissingFeatureError"; break;
+                    case LDKE.MODIFIED: ERROR.name = "ModifiedFeatureError"; break;
                     case LDKE.SETTER: ERROR.name = "UnexpectedSetterError"; break;
 
                     // ...
@@ -273,7 +275,7 @@ var LapysJS = null;
 
                             // Loop > Assertion > ...
                             for (var iterator = +0; iterator != this.assertions.length; ++iterator)
-                            if (false === this.assertions[iterator](object, identifier, value)) { value = ERROR; break }
+                            if (false === this.assertions[iterator](object, identifier, CURRENT = value)) { value = ERROR; break }
                         }
 
                         // ... Error
@@ -324,40 +326,36 @@ var LapysJS = null;
             Errors.Error = Error;
 
             /* Functions */
-            Functions.inspectFeature = function inspectFeature(object, identifier) { return new Inspector(identifier, object) };
-            Functions.isNativeFunction = function isNativeFunction(object) {
-                switch (typeof object) { case "function": case "object":
-                    var source = ERROR;
+            Functions.functionIsNative = function functionIsNative(functionObject, name) {
+                var source = "" + functionObject;
 
-                    try {
-                        if (LDKS.Function$prototype$call) {
-                            if (LDKN.Function$prototype$call === LDKN.Function$prototype$call.call)
-                            source = LDKN.Function$prototype$call.call(LDKN.Function$prototype$toString, object)
-                        }
-                    } catch (error) { throw new LDKE.Error(LDKE.INACCESSIBLE, "") }
+                for (var iterator = LDKC.NativeFunctionObfuscatedSourceCode.length - 1; ~iterator; --iterator)
+                switch (source) {
+                    case "function " + (null === name ? "" : name) + "() { " + LDKC.NativeFunctionObfuscatedSourceCode[iterator] + " }": return true;
+                    case "function " + (null === name ? "" : name) + "() {\n    " + LDKC.NativeFunctionObfuscatedSourceCode[iterator] + "\n}": return true;
+                    case "\nfunction " + (null === name ? "" : name) + "() {\n    " + LDKC.NativeFunctionObfuscatedSourceCode[iterator] + "\n}\n": return true;
+                }
 
-                } return false
+                return false
             };
 
+            Functions.inspectFeature = function inspectFeature(object, identifier) { return new Inspector(identifier, object) };
+
             /* Natives */
-            Natives.Function = LDKF.inspectFeature(GLOBAL, "Function").assert(function(object, identifier, value) {
-                try { return (function() {}) instanceof value }
+            Natives.Function = LDKF.inspectFeature(GLOBAL, "Function").assert(function functionObject() { return functionObject instanceof CURRENT }).evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.CONSTRUCTOR, FLAG = null);
+            Natives.Function$prototype$toString = LDKF.inspectFeature(LDKN.Function.prototype, "toString").assert(function() {
+                try { if ("function" === typeof CURRENT && false === ("prototype" in CURRENT) && CURRENT === CURRENT.toString && LDKF.functionIsNative(CURRENT, "toString")) { try { CURRENT() } catch (error) { CURRENT = null } if (null === CURRENT) return true } }
                 catch (error) {}
 
-                return
-                    "function" === typeof value &&
-                    "function" === typeof value() &&
-                    "function" === typeof new value &&
-                    "function" === typeof value.prototype &&
-                    "undefined" === typeof value.prototype()
+                throw new LDKE.Error(LDKE.MODIFIED, "Expected the `Function.prototype.toString(...)` method to be evaluable & un-modified")
+            }).evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.METHOD, FLAG = ["Function", "prototype", "toString"]);
 
-                try { new value.prototype }
-                catch (error) { return "TypeError" === error.name }
+            Natives.Function$prototype$call = LDKF.inspectFeature(LDKN.Function.prototype, "call").assert(function() {
+                try { if ("function" === typeof CURRENT && CURRENT.toString === LDKN.Function$prototype$toString && LDKF.functionIsNative(CURRENT, "call")) return true }
+                catch (error) { /* Do nothing... */ }
 
-                return LDKF.isNativeFunction(value) && LDKF.isNativeFunction(value.prototype)
-            }).evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.CONSTRUCTOR, FLAG = null);
-
-            Natives.Function$prototype$call = LDKF.inspectFeature(LDKN.Function.prototype, "call").evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.METHOD, FLAG = ["Function", "prototype", "call"]);
+                throw new LDKE.Error(LDKE.MODIFIED, "Expected the `Function.prototype.call(...)` method to be evaluable & un-modified")
+            }).evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, FLAG = LDKF.METHOD, FLAG = ["Function", "prototype", "call"]);
 
             /* Supports */
             Supports.Object$prototype$__proto__ = (function() {
@@ -367,7 +365,7 @@ var LapysJS = null;
                 return ANY === CURRENT.__proto__
             })()
     }
-})();
+}();
 
 /* [LapysJS] ... ->> Library object (public interface) */
 LapysJS = new (
