@@ -86,13 +86,17 @@ var LapysJS = null;
             ceil: null,
             clamp: null,
             cos: null,
+            exp: null,
             floor: null,
             iabs: null,
             icbrt: null,
+            imax: null,
+            imin: null,
             ipow: null,
             iroot: null,
             isqrt: null,
             itrunc: null,
+            ln: null,
             log: null,
             max: null,
             min: null,
@@ -749,19 +753,49 @@ var LapysJS = null;
             Mathematics.asinh = function asinh() { /* PENDING (Lapys) */ };
             Mathematics.atan = function atan() { /* PENDING (Lapys) */ };
             Mathematics.atanh = function atanh() { /* PENDING (Lapys) */ };
+
             Mathematics.cbrt = function cbrt(number) { return LDKM.iroot(number, 3) };
             Mathematics.ceil = function ceil() { return LDKM.trunc(number) + (number >= +0) };
-            Mathematics.clamp = function clamp() { /* PENDING (Lapys) */ };
+            Mathematics.clamp = function clamp(number, minimum, maximum) { return LDKM.imin(maximum, LDKM.imax(number, minimum)) };
+
             Mathematics.cos = function cos() { /* PENDING (Lapys) */ };
+
+            Mathematics.exp = function exp(number) {
+                var evaluation = +0;
+
+                for (var factorial = 1, iterator = +0; iterator !== 100; ) {
+                    evaluation += LDKM.ipow(number, iterator) / factorial;
+                    factorial *= ++iterator;
+                }
+
+                return evaluation
+            };
             Mathematics.floor = function floor(number) { return LDKM.trunc(number) - (number < +0) };
             Mathematics.iabs = function integer_abs(integer) { return (integer ^ (integer >> 31)) - (integer >> 31) };
-            Mathematics.icbrt = function integer_cbrt() { /* PENDING (Lapys) */ };
+            Mathematics.icbrt = function integer_cbrt(integer) {
+                var evaluation = Infinity;
+
+                for (
+                    var approximation = 2048; approximation < evaluation;
+                    approximation = ((2 * evaluation) + (integer / (evaluation * evaluation))) / 3
+                ) evaluation = approximation;
+
+                return evaluation
+            };
+
+            Mathematics.imax = function integer_max(numberA, numberB) { return numberA > numberB ? numberA : numberB };
+            Mathematics.imin = function integer_min(numberA, numberB) { return numberA < numberB ? numberA : numberB };
 
             Mathematics.ipow = function integer_pow(base, exponent) {
-                var evaluation = base;
+                var evaluation = 1;
 
-                for (var exponent = exponent - 1; exponent > +0; --exponent)
-                evaluation *= base;
+                while (true) {
+                    if (exponent % 2) evaluation *= base;
+                    exponent = LDKM.trunc(exponent / 2);
+
+                    if (+0 === exponent) break;
+                    base *= base
+                }
 
                 return evaluation
             };
@@ -798,7 +832,25 @@ var LapysJS = null;
             };
 
             Mathematics.itrunc = function itrunc(integer) { return integer | +0 };
-            Mathematics.log = function log() { /* PENDING (Lapys) */ };
+
+            Mathematics.ln = function ln(number) {
+                if (number < 2) {
+                    var evaluation = +0;
+                    var number = number, precision = 1e-16;
+
+                    for (var current = --number, iterator = 2, recent = +0; precision < LDKM.abs(current - recent); ++iterator) {
+                        evaluation -= current * (iterator % 2 ? 1 : -1);
+
+                        recent = current;
+                        current = LDKM.ipow(number, iterator) / iterator
+                    }
+
+                    return evaluation
+                }
+
+                return -LDKM.ln(1 / number)
+            };
+            Mathematics.log = function log(number, base) { return LDKM.ln(number) / (undefined === base || LDKM.E === base ? 1 : LDKM.ln(base)) };
 
             Mathematics.max = function max() {
                 var evaluation = -Infinity;
@@ -819,7 +871,7 @@ var LapysJS = null;
             };
 
             Mathematics.perc = function perc(base, exponent) { return base * (exponent / 100) };
-            Mathematics.pow = function pow() { /* PENDING (Lapys) */ };
+            Mathematics.pow = function pow(number, exponent) { return exponent % 1 ? LDKM.root(number, 1 / exponent) : LDKM.ipow(number, exponent) };
             Mathematics.random = function random() { /* PENDING (Lapys) */ };
             Mathematics.root = function root(number, exponent) {
                 if (exponent % 1) {
