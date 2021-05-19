@@ -822,7 +822,8 @@ var LapysJS = null;
             Mathematics.pow = function pow() { /* PENDING (Lapys) */ };
             Mathematics.random = function random() { /* PENDING (Lapys) */ };
             Mathematics.root = function root(number, exponent) {
-                if (exponent % 1) with (LDKF.numberToFraction(number).toImproper()) {
+                if (exponent % 1) {
+                    with (LDKF.numberToFraction(exponent).toImproper())
                     return LDKM.iroot(LDKM.ipow(number, denominator), numerator)
                 }
 
