@@ -62,6 +62,7 @@ var LapysJS = null;
             functionToString: null,
             inspectFeature: null, "CONSTRUCTOR": 0x1, "METHOD": 0x2,
             isNativeFunction: null,
+            numberToFraction: null,
             numberToString: null,
             objectGetPrototype: null,
             objectSetPrototype: null,
@@ -86,7 +87,6 @@ var LapysJS = null;
             clamp: null,
             cos: null,
             floor: null,
-            fracture: null,
             iabs: null,
             icbrt: null,
             ipow: null,
@@ -192,6 +192,19 @@ var LapysJS = null;
                 Error.prototype = {
                     message: null, name: "Error",
                     toString: function toString() { return '[' + this.name + ']' + (null !== this.message ? ": " + this.message : "") }
+                };
+
+            /* Fraction */
+            function Fraction(whole, numerator, denominator) {
+                this.denominator = denominator;
+                this.numerator = numerator;
+                this.whole = whole
+            }
+                Fraction.prototype = {
+                    denominator: +0, numerator: +0, whole: +0,
+
+                    toImproper: function toImproper() { this.numerator += this.denominator * this.whole; this.whole = +0; return this },
+                    toMixed: function toMixed() { this.whole = this.numerator; this.numerator %= this.denominator; this.whole -= this.numerator; return this }
                 };
 
             /* [Property] Inspector --- NOTE (Lapys) -> Evaluated by the `Functions.inspectFeature(...)` function. */
@@ -668,6 +681,25 @@ var LapysJS = null;
                 return false
             };
 
+            Functions.numberToFraction = function numberToFraction(number) {
+                var fraction = new Fraction(LDKM.trunc(number), +0, 1);
+                var mantissa = number - fraction.whole;
+
+                if (0.0 !== mantissa) {
+                    var divisor, precision = 1e15;
+
+                    for (var a = precision, b = LDKM.round(mantissa * precision); ; divisor = a ? a : b) {
+                        if (+0 === a || +0 === b) break;
+                        a < b ? b %= a : a %= b
+                    }
+
+                    fraction.denominator = precision / divisor;
+                    fraction.numerator = LDKM.round(fraction.denominator * mantissa)
+                }
+
+                return fraction
+            };
+
             Functions.numberToString = function numberToString(number) {
                 /* PENDING (Lapys) */
                 var digit;
@@ -718,31 +750,10 @@ var LapysJS = null;
             Mathematics.atan = function atan() { /* PENDING (Lapys) */ };
             Mathematics.atanh = function atanh() { /* PENDING (Lapys) */ };
             Mathematics.cbrt = function cbrt(number) { return LDKM.iroot(number, 3) };
-
             Mathematics.ceil = function ceil() { return LDKM.trunc(number) + (number >= +0) };
             Mathematics.clamp = function clamp() { /* PENDING (Lapys) */ };
             Mathematics.cos = function cos() { /* PENDING (Lapys) */ };
             Mathematics.floor = function floor(number) { return LDKM.trunc(number) - (number < +0) };
-
-            LDKM.fracture()
-            Mathematics.fracture = function fracture(number) {
-                var fraction = {};
-                var mantissa = number - LDKM.trunc(number);
-
-                if (0.0 !== mantissa) {
-                    var divisor, precision = 1e15;
-
-                    for (var a = precision, b = LDKM.round(mantissa * precision); ; divisor = a ? a : b) {
-                        if (+0 === a || +0 === b) break;
-                        a < b ? b %= a : a %= b
-                    }
-
-                    return [LDKM.round(mantissa * precision) / divisor, precision / divisor]
-                }
-
-                return [0, 1]
-            };
-
             Mathematics.iabs = function integer_abs(integer) { return (integer ^ (integer >> 31)) - (integer >> 31) };
             Mathematics.icbrt = function integer_cbrt() { /* PENDING (Lapys) */ };
 
@@ -811,9 +822,11 @@ var LapysJS = null;
             Mathematics.pow = function pow() { /* PENDING (Lapys) */ };
             Mathematics.random = function random() { /* PENDING (Lapys) */ };
             Mathematics.root = function root(number, exponent) {
-                if (exponent % 1) {
-                    return LDKM.iroot(LDKM.ipow(number, y), x);
+                if (exponent % 1) with (LDKF.numberToFraction(number).toImproper()) {
+                    return LDKM.iroot(LDKM.ipow(number, denominator), numerator)
                 }
+
+                return LDKM.iroot(number, exponent)
             };
 
             Mathematics.round = function round(number) {
