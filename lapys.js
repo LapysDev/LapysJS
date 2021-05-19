@@ -62,8 +62,6 @@ var LapysJS = null;
             functionToString: null,
             inspectFeature: null, "CONSTRUCTOR": 0x1, "METHOD": 0x2,
             isNativeFunction: null,
-            numberIsInteger: null,
-            numberToInteger: null,
             numberToString: null,
             objectGetPrototype: null,
             objectSetPrototype: null,
@@ -88,9 +86,11 @@ var LapysJS = null;
             clamp: null,
             cos: null,
             floor: null,
+            fracture: null,
             iabs: null,
             icbrt: null,
             ipow: null,
+            iroot: null,
             isqrt: null,
             itrunc: null,
             log: null,
@@ -629,6 +629,7 @@ var LapysJS = null;
                     case 249: return LDKS.Function$prototype$bind ? LDKN.Function$prototype$call(functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249) : LDKN.Function$prototype$call.call(LDKN.Function$prototype$call, functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249); break;
                     case 250: return LDKS.Function$prototype$bind ? LDKN.Function$prototype$call(functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249, argument250) : LDKN.Function$prototype$call.call(LDKN.Function$prototype$call, functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249, argument250); break;
                     case 251: return LDKS.Function$prototype$bind ? LDKN.Function$prototype$call(functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249, argument250, argument251) : LDKN.Function$prototype$call.call(LDKN.Function$prototype$call, functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249, argument250, argument251); break;
+                    case 252: return LDKS.Function$prototype$bind ? LDKN.Function$prototype$call(functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249, argument250, argument251, argument252) : LDKN.Function$prototype$call.call(LDKN.Function$prototype$call, functor, thisArg, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8, argument9, argument10, argument11, argument12, argument13, argument14, argument15, argument16, argument17, argument18, argument19, argument20, argument21, argument22, argument23, argument24, argument25, argument26, argument27, argument28, argument29, argument30, argument31, argument32, argument33, argument34, argument35, argument36, argument37, argument38, argument39, argument40, argument41, argument42, argument43, argument44, argument45, argument46, argument47, argument48, argument49, argument50, argument51, argument52, argument53, argument54, argument55, argument56, argument57, argument58, argument59, argument60, argument61, argument62, argument63, argument64, argument65, argument66, argument67, argument68, argument69, argument70, argument71, argument72, argument73, argument74, argument75, argument76, argument77, argument78, argument79, argument80, argument81, argument82, argument83, argument84, argument85, argument86, argument87, argument88, argument89, argument90, argument91, argument92, argument93, argument94, argument95, argument96, argument97, argument98, argument99, argument100, argument101, argument102, argument103, argument104, argument105, argument106, argument107, argument108, argument109, argument110, argument111, argument112, argument113, argument114, argument115, argument116, argument117, argument118, argument119, argument120, argument121, argument122, argument123, argument124, argument125, argument126, argument127, argument128, argument129, argument130, argument131, argument132, argument133, argument134, argument135, argument136, argument137, argument138, argument139, argument140, argument141, argument142, argument143, argument144, argument145, argument146, argument147, argument148, argument149, argument150, argument151, argument152, argument153, argument154, argument155, argument156, argument157, argument158, argument159, argument160, argument161, argument162, argument163, argument164, argument165, argument166, argument167, argument168, argument169, argument170, argument171, argument172, argument173, argument174, argument175, argument176, argument177, argument178, argument179, argument180, argument181, argument182, argument183, argument184, argument185, argument186, argument187, argument188, argument189, argument190, argument191, argument192, argument193, argument194, argument195, argument196, argument197, argument198, argument199, argument200, argument201, argument202, argument203, argument204, argument205, argument206, argument207, argument208, argument209, argument210, argument211, argument212, argument213, argument214, argument215, argument216, argument217, argument218, argument219, argument220, argument221, argument222, argument223, argument224, argument225, argument226, argument227, argument228, argument229, argument230, argument231, argument232, argument233, argument234, argument235, argument236, argument237, argument238, argument239, argument240, argument241, argument242, argument243, argument244, argument245, argument246, argument247, argument248, argument249, argument250, argument251, argument252)
                 }
             };
 
@@ -666,9 +667,6 @@ var LapysJS = null;
                 // Return
                 return false
             };
-
-            Functions.numberIsInteger = function numberIsInteger(number) { return +0 === number % +0 };
-            Functions.numberToInteger = function numberToInteger(number) { return LDKM.trunc(number) };
 
             Functions.numberToString = function numberToString(number) {
                 /* PENDING (Lapys) */
@@ -719,33 +717,59 @@ var LapysJS = null;
             Mathematics.asinh = function asinh() { /* PENDING (Lapys) */ };
             Mathematics.atan = function atan() { /* PENDING (Lapys) */ };
             Mathematics.atanh = function atanh() { /* PENDING (Lapys) */ };
-            Mathematics.cbrt = function cbrt(number) {
-                var evaluation;
+            Mathematics.cbrt = function cbrt(number) { return LDKM.iroot(number, 3) };
 
-                for (var approximation = number; ; approximation = evaluation) {
-                    evaluation = ((2 * approximation) / 3) + (number / (3 * approximation * approximation));
-                    if (LDKM.abs(evaluation - approximation) < 1e-7) break
-                }
-
-                return evaluation
-            };
-
-            Mathematics.ceil = function ceil() { /* PENDING (Lapys) */ };
+            Mathematics.ceil = function ceil() { return LDKM.trunc(number) + (number >= +0) };
             Mathematics.clamp = function clamp() { /* PENDING (Lapys) */ };
             Mathematics.cos = function cos() { /* PENDING (Lapys) */ };
-            Mathematics.floor = function floor() { /* PENDING (Lapys) */ };
+            Mathematics.floor = function floor(number) { return LDKM.trunc(number) - (number < +0) };
 
-            Mathematics.iabs = function iabs(integer) { return (integer ^ (integer >> 31)) - (integer >> 31) };
-            Mathematics.icbrt = function icbrt(integer) {
+            LDKM.fracture()
+            Mathematics.fracture = function fracture(number) {
+                var fraction = {};
+                var mantissa = number - LDKM.trunc(number);
+
+                if (0.0 !== mantissa) {
+                    var divisor, precision = 1e15;
+
+                    for (var a = precision, b = LDKM.round(mantissa * precision); ; divisor = a ? a : b) {
+                        if (+0 === a || +0 === b) break;
+                        a < b ? b %= a : a %= b
+                    }
+
+                    return [LDKM.round(mantissa * precision) / divisor, precision / divisor]
+                }
+
+                return [0, 1]
             };
 
-            Mathematics.ipow = function ipow(base, exponent) {
+            Mathematics.iabs = function integer_abs(integer) { return (integer ^ (integer >> 31)) - (integer >> 31) };
+            Mathematics.icbrt = function integer_cbrt() { /* PENDING (Lapys) */ };
+
+            Mathematics.ipow = function integer_pow(base, exponent) {
                 var evaluation = base;
 
                 for (var exponent = exponent - 1; exponent > +0; --exponent)
                 evaluation *= base;
 
                 return evaluation
+            };
+
+            Mathematics.iroot = function integer_root(number, exponent) {
+                if (1 !== exponent) {
+                    var evaluation, precision = 1e-10;
+
+                    for (var approximation = number; ; approximation = evaluation) {
+                        evaluation = LDKM.ipow(approximation, exponent - 1); // ->> Dummy store.
+                        evaluation = approximation - (((approximation * evaluation) - number) / (exponent * evaluation));
+
+                        if (LDKM.abs(evaluation - approximation) < precision) break
+                    }
+
+                    return evaluation
+                }
+
+                return number
             };
 
             Mathematics.isqrt = function isqrt(integer) {
@@ -784,33 +808,39 @@ var LapysJS = null;
             };
 
             Mathematics.perc = function perc(base, exponent) { return base * (exponent / 100) };
-            Mathematics.pow = function pow() {};
+            Mathematics.pow = function pow() { /* PENDING (Lapys) */ };
             Mathematics.random = function random() { /* PENDING (Lapys) */ };
-            Mathematics.root = function root() { /* PENDING (Lapys) */ };
-            Mathematics.round = function round() { /* PENDING (Lapys) */ };
-            Mathematics.sin = function sin() { /* PENDING (Lapys) */ };
-
-            Mathematics.sqrt = function sqrt(number) {
-                var evaluation;
-
-                for (var approximation = number; ; approximation = evaluation) {
-                    evaluation = (approximation + (number / approximation)) / 2;
-                    if (LDKM.abs(evaluation - approximation) < 1e-7) break
+            Mathematics.root = function root(number, exponent) {
+                if (exponent % 1) {
+                    return LDKM.iroot(LDKM.ipow(number, y), x);
                 }
-
-                return evaluation
             };
+
+            Mathematics.round = function round(number) {
+                var characteristics = LDKM.trunc(number);
+                var mantissa = number - characteristics;
+
+                if (mantissa >= 0.5) return characteristics + 1;
+                if (mantissa < -0.5) return characteristics - 1;
+
+                return characteristics
+            };
+
+            Mathematics.sin = function sin() { /* PENDING (Lapys) */ };
+            Mathematics.sqrt = function sqrt(number) { return LDKM.iroot(number, 2) };
 
             Mathematics.tan = function tan() { /* PENDING (Lapys) */ };
             Mathematics.trunc = function trunc(number) {
-                var counter = 1, integer;
+                if (number >= +0) {
+                    var counter = 1, integer;
 
-                if (number < +0) return -LDKM.trunc(-number);
+                    while (counter < number) counter *= 2;
+                    for (integer = +0; counter >= 1; counter /= 2) integer += counter * (number >= counter + integer)
 
-                while (counter < number) counter *= 2;
-                for (integer = +0; counter >= 1; counter /= 2) integer += counter * (number >= counter + integer)
+                    return integer
+                }
 
-                return integer
+                return -LDKM.trunc(-number)
             };
 
             /* Natives */
