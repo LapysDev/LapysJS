@@ -755,21 +755,19 @@ var LapysJS = null;
             Mathematics.atanh = function atanh() { /* PENDING (Lapys) */ };
 
             Mathematics.cbrt = function cbrt(number) { return LDKM.iroot(number, 3) };
-            Mathematics.ceil = function ceil() { return LDKM.trunc(number) + (number >= +0) };
+            Mathematics.ceil = function ceil(number) { return LDKM.trunc(number) + (number >= +0) };
             Mathematics.clamp = function clamp(number, minimum, maximum) { return LDKM.imin(maximum, LDKM.imax(number, minimum)) };
 
             Mathematics.cos = function cos() { /* PENDING (Lapys) */ };
-
             Mathematics.exp = function exp(number) {
                 var evaluation = +0;
 
-                for (var factorial = 1, iterator = +0; iterator !== 100; ) {
-                    evaluation += LDKM.ipow(number, iterator) / factorial;
-                    factorial *= ++iterator;
-                }
+                for (var factorial = 1, iterator = +0; iterator !== 100; factorial *= ++iterator)
+                evaluation += LDKM.ipow(number, iterator) / factorial;
 
                 return evaluation
             };
+
             Mathematics.floor = function floor(number) { return LDKM.trunc(number) - (number < +0) };
             Mathematics.iabs = function integer_abs(integer) { return (integer ^ (integer >> 31)) - (integer >> 31) };
             Mathematics.icbrt = function integer_cbrt(integer) {
@@ -785,7 +783,6 @@ var LapysJS = null;
 
             Mathematics.imax = function integer_max(numberA, numberB) { return numberA > numberB ? numberA : numberB };
             Mathematics.imin = function integer_min(numberA, numberB) { return numberA < numberB ? numberA : numberB };
-
             Mathematics.ipow = function integer_pow(base, exponent) {
                 var evaluation = 1;
 
@@ -832,9 +829,10 @@ var LapysJS = null;
             };
 
             Mathematics.itrunc = function itrunc(integer) { return integer | +0 };
-
             Mathematics.ln = function ln(number) {
-                if (number < 2) {
+                // UPDATE (Lapys) -> Implement Halley's or Newton's method, instead.
+                if (+0 === number) return Infinity;
+                else if (number < 2) {
                     var evaluation = +0;
                     var number = number, precision = 1e-16;
 
@@ -850,8 +848,8 @@ var LapysJS = null;
 
                 return -LDKM.ln(1 / number)
             };
-            Mathematics.log = function log(number, base) { return LDKM.ln(number) / (undefined === base || LDKM.E === base ? 1 : LDKM.ln(base)) };
 
+            Mathematics.log = function log(number, base) { return LDKM.ln(number) / (undefined === base || LDKM.E === base ? 1 : LDKM.ln(base)) };
             Mathematics.max = function max() {
                 var evaluation = -Infinity;
 
@@ -872,9 +870,66 @@ var LapysJS = null;
 
             Mathematics.perc = function perc(base, exponent) { return base * (exponent / 100) };
             Mathematics.pow = function pow(number, exponent) { return exponent % 1 ? LDKM.root(number, 1 / exponent) : LDKM.ipow(number, exponent) };
-            Mathematics.random = function random() { /* PENDING (Lapys) */ };
+            Mathematics.random = (function() {
+                function extract_53bits(number) {
+                  var x = 1, y = number;
+                  var bits = 0;
+
+                  for (var k = 53; k; --k) x *= 2;
+                  --x;
+
+                  for (var n = 1; x > 0 && y > 0; n *= 2) {
+                    bits += n * (x % 2) * (y % 2);
+
+                    x = Math.trunc(x / 2);
+                    y = Math.trunc(y / 2)
+                  }
+
+                  return bits
+                }
+
+                function init(seed) {
+                  var tmp;
+
+                  tmp = splitmix32(seed + (1 * 0x9e3779b9));
+                  a = tmp; b = tmp;
+                  for (var i = 32; i; --i) b = Math.trunc(b / 2);
+
+                  tmp = splitmix32(seed + (2 * 0x9e3779b9));
+                  c = tmp; d = tmp;
+                  for (var i = 32; i; --i) d = Math.trunc(d / 2)
+                }
+
+                function rol64(x, k) {
+                  return (x << k) | (x >> (64 - k))
+                }
+
+                function splitmix32(s) {
+                  var z = s;
+
+                  z ^= z >> 15; z *= 0x85ebca6b;
+                  z ^= z >> 13; z *= 0xc2b2ae35;
+
+                  return z ^ (z >> 16)
+                }
+
+                function xoshiro256p() {
+                  var result = a + d;
+                  var t = b << 17;
+
+                  c ^= a; d ^= b; b ^= c; a ^= d;
+                  c ^= t; d = rol64(d, 45);
+
+                  return extract_53bits(result < 0 ? -(result + 1) : result)
+                }
+
+                return function random() {
+                }
+            })();
+
             Mathematics.root = function root(number, exponent) {
                 if (exponent % 1) {
+                    // UPDATE (Lapys) -> Denominator & numerator should clamp to smaller values.
                     with (LDKF.numberToFraction(exponent).toImproper())
                     return LDKM.iroot(LDKM.ipow(number, denominator), numerator)
                 }
