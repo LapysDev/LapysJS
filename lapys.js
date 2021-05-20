@@ -164,6 +164,8 @@ var LapysJS = null;
     /* ... */
     with (LDK) with (Directives) {
         /* Global > ... */
+        var MAXIMUM_INTEGER = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 2 ** 1024
+        var MAXIMUM_SAFE_INTEGER = 9007199254740991; // --> 2 ** 53
         var RANDOMIZER;
         var TYPE_ERROR = (function TypeError() { try { null() } catch (error) { return error } })();
 
@@ -372,7 +374,7 @@ var LapysJS = null;
                 RNG.prototype = {
                     seed: null,
                     next: function next() {
-                        var exponent = /* --> 2 ** 53 */ 9007199254740991;
+                        var exponent = /* --> 2 ** 53 */ MAXIMUM_SAFE_INTEGER;
                         var evaluation = this.seed[0] + this.seed[3], subevaluation = this.seed[1] << 17;
 
                         this.seed[3] ^= this.seed[1];
@@ -846,20 +848,15 @@ var LapysJS = null;
             };
 
             Mathematics.iroot = function integer_root(number, exponent) {
-                if (1 !== exponent) {
-                    var evaluation, precision = 1e-10;
+                var currentTerm = 1;
+                var evaluation = +0;
 
-                    for (var approximation = number; ; approximation = evaluation) {
-                        evaluation = LDKM.ipow(approximation, exponent - 1); // ->> Dummy store.
-                        evaluation = approximation - (((approximation * evaluation) - number) / (exponent * evaluation));
-
-                        if (LDKM.abs(evaluation - approximation) < precision) break
-                    }
-
-                    return evaluation
+                for (var exponent = --exponent; ; currentTerm = evaluation) {
+                    evaluation = ((currentTerm * exponent) + (number / LDKM.ipow(currentTerm, exponent))) / (exponent + 1);
+                    if (1e-15 > LDKM.abs(evaluation - currentTerm)) break
                 }
 
-                return number
+                return evaluation
             };
 
             Mathematics.isqrt = function isqrt(integer) {
@@ -878,23 +875,40 @@ var LapysJS = null;
 
             Mathematics.itrunc = function itrunc(integer) { return integer | +0 };
             Mathematics.ln = function ln(number) {
-                // UPDATE (Lapys) -> Implement Halley's or Newton's method, instead.
-                if (+0 === number) return Infinity;
-                else if (number < 2) {
+                // Logic
+                if (+0 !== number) {
+                    // Initialization > (Evaluation, ...)
                     var evaluation = +0;
-                    var number = number, precision = 1e-16;
+                    var number = number;
+                    var factor = +0; // ->> of 10.
+                    var within = true; // --> 0 > x < 2
 
-                    for (var current = --number, iterator = 2, recent = +0; precision < LDKM.abs(current - recent); ++iterator) {
-                        evaluation -= current * (iterator % 2 ? 1 : -1);
+                    // Update
+                    // : Factor, Number
+                    while (number <= 1e-1) { --factor; number *= 10 }
+                    while (number >= 1e+1) { ++factor; number /= 10 }
 
-                        recent = current;
-                        current = LDKM.ipow(number, iterator) / iterator
+                    // : Number, Within
+                    if (number >= 2) { number = 1 / number; within = false }
+                    --number;
+
+                    // ... Loop
+                    var currentTerm = number, recentTerm = +0;
+                    var termNumerator = number; {
+                        for (var iterator = 2; 1e-15 < LDKM.abs(currentTerm - recentTerm); ++iterator) {
+                            evaluation += currentTerm * (iterator % 2 ? -1 : 1);
+
+                            recentTerm = currentTerm;
+                            currentTerm = (termNumerator *= number) / iterator
+                        }
                     }
 
-                    return evaluation
+                    // Return
+                    return (evaluation * (within ? 1 : -1)) + (factor * /* --> ln(10) */ 2.302585092994046)
                 }
 
-                return -LDKM.ln(1 / number)
+                // Return
+                return Infinity
             };
 
             Mathematics.log = function log(number, base) { return LDKM.ln(number) / (undefined === base || LDKM.E === base ? 1 : LDKM.ln(base)) };
@@ -920,10 +934,16 @@ var LapysJS = null;
             Mathematics.pow = function pow(number, exponent) { return exponent % 1 ? LDKM.root(number, 1 / exponent) : LDKM.ipow(number, exponent) };
             Mathematics.random = function random() { return RANDOMIZER.next() };
             Mathematics.root = function root(number, exponent) {
-                if (exponent % 1) {
-                    // UPDATE (Lapys) -> Denominator & numerator should clamp to smaller values.
-                    with (LDKF.numberToFraction(exponent).toImproper())
-                    return LDKM.iroot(LDKM.ipow(number, denominator), numerator)
+                if (+0 === ((1 / exponent) % 1)) return LDKM.ipow(number, 1 / exponent);
+                else if (exponent % 1) {
+                    for (var fraction = LDKF.numberToFraction(exponent).toImproper(); ; ) {
+                        var evaluation = LDKM.ipow(number, fraction.denominator);
+
+                        if (Infinity !== evaluation) return LDKM.iroot(evaluation, fraction.numerator);
+
+                        fraction.denominator = LDKM.trunc(fraction.denominator / 10);
+                        fraction.numerator = LDKM.trunc(fraction.numerator / 10)
+                    }
                 }
 
                 return LDKM.iroot(number, exponent)
@@ -939,21 +959,18 @@ var LapysJS = null;
                 return characteristics
             };
 
-            Mathematics.sin = function sin() { /* PENDING (Lapys) */ };
+            Mathematics.sin = function sin(number) { /* PENDING (Lapys) */ };
             Mathematics.sqrt = function sqrt(number) { return LDKM.iroot(number, 2) };
-
             Mathematics.tan = function tan() { /* PENDING (Lapys) */ };
             Mathematics.trunc = function trunc(number) {
-                if (number >= +0) {
-                    var counter = 1, integer;
+                var counter = 1, integer;
+                var signed = number < +0;
 
-                    while (counter < number) counter *= 2;
-                    for (integer = +0; counter >= 1; counter /= 2) integer += counter * (number >= counter + integer)
+                if (signed) number = -number;
+                while (counter < number) counter *= 2;
+                for (integer = +0; counter >= 1; counter /= 2) integer += counter * (number >= counter + integer)
 
-                    return integer
-                }
-
-                return -LDKM.trunc(-number)
+                return integer * (signed ? -1 : 1)
             };
 
             /* Natives */
