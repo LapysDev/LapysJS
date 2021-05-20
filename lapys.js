@@ -163,7 +163,8 @@ var LapysJS = null;
 
     /* ... */
     with (LDK) with (Directives) {
-        /* Constant > ... */
+        /* Global > ... */
+        var RANDOMIZER;
         var TYPE_ERROR = (function TypeError() { try { null() } catch (error) { return error } })();
 
         /* Class > ... --- REDACT (Lapys) */
@@ -350,6 +351,49 @@ var LapysJS = null;
 
                         // Return
                         return value
+                    }
+                };
+
+            /* [Pseudo] Random Number Generator */
+            function RNG(seed) {
+                this.seed = new StaticArray(+0, 4, +0);
+
+                for (var index = 4, state; index; ) {
+                    state = seed + (0x9E3779B9 * (index >> 1)); {
+                        state ^= state >> 15; state *= 0x85EBCA6B;
+                        state ^= state >> 13; state *= 0xC2B2AE35;
+                        state ^= state >> 16
+                    }
+
+                    this.seed[--index] = state;
+                    this.seed[--index] = LDKM.trunc(state / /* --> 2 ** 32 */ 4294967296)
+                }
+            }
+                RNG.prototype = {
+                    seed: null,
+                    next: function next() {
+                        var exponent = /* --> 2 ** 53 */ 9007199254740991;
+                        var evaluation = this.seed[0] + this.seed[3], subevaluation = this.seed[1] << 17;
+
+                        this.seed[3] ^= this.seed[1];
+                        this.seed[2] ^= this.seed[0];
+                        this.seed[1] ^= this.seed[2];
+                        this.seed[0] ^= this.seed[3];
+
+                        this.seed[3] = (this.seed[3] << 45) | (this.seed[3] >> 19);
+                        this.seed[2] ^= subevaluation;
+
+                        subevaluation = evaluation < +0 ? -(evaluation + 1) : evaluation;
+                        evaluation = +0;
+
+                        for (var index = 1; exponent && subevaluation; index *= 2) {
+                            evaluation += index * (exponent % 2) * (subevaluation % 2);
+
+                            exponent = LDKM.trunc(exponent / 2);
+                            subevaluation = LDKM.trunc(subevaluation / 2)
+                        }
+
+                        return evaluation
                     }
                 };
 
@@ -651,6 +695,7 @@ var LapysJS = null;
             };
 
             Functions.functionRebindCall = function functionRebindCall() {
+                // Logic ... ->> Asserts that `Function.prototype.call.call(...)` works as intended.
                 if (false === LDKS.Function$prototype$bind) {
                     ERROR = new LDKE.Error(LDKE.MODIFIED, "Expected the `Function.prototype.call(...)` method to be evaluable & un-modified");
 
@@ -689,18 +734,22 @@ var LapysJS = null;
                 var fraction = new Fraction(LDKM.trunc(number), +0, 1);
                 var mantissa = number - fraction.whole;
 
+                // Logic
                 if (0.0 !== mantissa) {
                     var divisor, precision = 1e15;
 
+                    // ... Update > Divisor
                     for (var a = precision, b = LDKM.round(mantissa * precision); ; divisor = a ? a : b) {
                         if (+0 === a || +0 === b) break;
                         a < b ? b %= a : a %= b
                     }
 
+                    // Modification > Fraction > (Denominator, Numerator)
                     fraction.denominator = precision / divisor;
                     fraction.numerator = LDKM.round(fraction.denominator * mantissa)
                 }
 
+                // Return
                 return fraction
             };
 
@@ -753,7 +802,6 @@ var LapysJS = null;
             Mathematics.asinh = function asinh() { /* PENDING (Lapys) */ };
             Mathematics.atan = function atan() { /* PENDING (Lapys) */ };
             Mathematics.atanh = function atanh() { /* PENDING (Lapys) */ };
-
             Mathematics.cbrt = function cbrt(number) { return LDKM.iroot(number, 3) };
             Mathematics.ceil = function ceil(number) { return LDKM.trunc(number) + (number >= +0) };
             Mathematics.clamp = function clamp(number, minimum, maximum) { return LDKM.imin(maximum, LDKM.imax(number, minimum)) };
@@ -870,63 +918,7 @@ var LapysJS = null;
 
             Mathematics.perc = function perc(base, exponent) { return base * (exponent / 100) };
             Mathematics.pow = function pow(number, exponent) { return exponent % 1 ? LDKM.root(number, 1 / exponent) : LDKM.ipow(number, exponent) };
-            Mathematics.random = (function() {
-                function extract_53bits(number) {
-                  var x = 1, y = number;
-                  var bits = 0;
-
-                  for (var k = 53; k; --k) x *= 2;
-                  --x;
-
-                  for (var n = 1; x > 0 && y > 0; n *= 2) {
-                    bits += n * (x % 2) * (y % 2);
-
-                    x = Math.trunc(x / 2);
-                    y = Math.trunc(y / 2)
-                  }
-
-                  return bits
-                }
-
-                function init(seed) {
-                  var tmp;
-
-                  tmp = splitmix32(seed + (1 * 0x9e3779b9));
-                  a = tmp; b = tmp;
-                  for (var i = 32; i; --i) b = Math.trunc(b / 2);
-
-                  tmp = splitmix32(seed + (2 * 0x9e3779b9));
-                  c = tmp; d = tmp;
-                  for (var i = 32; i; --i) d = Math.trunc(d / 2)
-                }
-
-                function rol64(x, k) {
-                  return (x << k) | (x >> (64 - k))
-                }
-
-                function splitmix32(s) {
-                  var z = s;
-
-                  z ^= z >> 15; z *= 0x85ebca6b;
-                  z ^= z >> 13; z *= 0xc2b2ae35;
-
-                  return z ^ (z >> 16)
-                }
-
-                function xoshiro256p() {
-                  var result = a + d;
-                  var t = b << 17;
-
-                  c ^= a; d ^= b; b ^= c; a ^= d;
-                  c ^= t; d = rol64(d, 45);
-
-                  return extract_53bits(result < 0 ? -(result + 1) : result)
-                }
-
-                return function random() {
-                }
-            })();
-
+            Mathematics.random = function random() { return RANDOMIZER.next() };
             Mathematics.root = function root(number, exponent) {
                 if (exponent % 1) {
                     // UPDATE (Lapys) -> Denominator & numerator should clamp to smaller values.
@@ -1014,8 +1006,8 @@ var LapysJS = null;
             })();
 
         /* ... */
-        if (LDKS.Object$prototype$__proto__ || LDKS.Object$setPrototypeOf)
-        LDKF.objectSetPrototype(LapysDevelopmentKit, null)
+        RANDOMIZER = new RNG(0x45); // ->> `Mathematics.trunc(...)` had to be defined first.
+        (LDKS.Object$prototype$__proto__ || LDKS.Object$setPrototypeOf) && LDKF.objectSetPrototype(LapysDevelopmentKit, null)
     }
 })();
 
