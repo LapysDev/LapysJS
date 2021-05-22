@@ -959,7 +959,28 @@ var LapysJS = null;
                 return characteristics
             };
 
-            Mathematics.sin = function sin(number) { /* PENDING (Lapys) */ };
+            Mathematics.sin = function sin(number) {
+                var currentTerm = evaluation;
+                var evaluation = +0;
+                var iterator = 1;
+                // var number = (number % 180) * (LDKM.PI / 180);
+                var signed = false;
+                var termDenominator = 1;
+                var termNumerator = number;
+
+                do {
+                    currentTerm = evaluation;
+                    evaluation += (termNumerator / termDenominator) * (signed ? -1 : 1);
+
+                    signed = false === signed;
+                    termDenominator *= ++iterator;
+                    termDenominator *= ++iterator;
+                    termNumerator *= number * number
+                } while (1e-15 < LDKM.abs(currentTerm - evaluation));
+
+                return evaluation
+            };
+
             Mathematics.sqrt = function sqrt(number) { return LDKM.iroot(number, 2) };
             Mathematics.tan = function tan() { /* PENDING (Lapys) */ };
             Mathematics.trunc = function trunc(number) {
@@ -1067,3 +1088,135 @@ var LDK = LapysDevelopmentKit.prototype; {
 
 /* Deletion */
 LapysDevelopmentKit.prototype = null;
+
+// (function() {
+//     if (
+//         "toString" in Function.prototype && (
+//             "function" === typeof Function.prototype.toString && (
+//                 "" + Function.prototype.toString == "function toString() { [native code] }" ||
+//                 "" + Function.prototype.toString == "function toString() {\n    [native code]\n}" ||
+//                 "" + Function.prototype.toString == "\nfunction toString() {\n    [native code]\n}\n"
+//             )
+//         )
+//     ) if (
+//         "call" in Function.prototype.toString && (
+//             "function" === typeof Function.prototype.toString.call && (
+//                 "" + Function.prototype.toString.call == "function call() { [native code] }" ||
+//                 "" + Function.prototype.toString.call == "function call() {\n    [native code]\n}" ||
+//                 "" + Function.prototype.toString.call == "\nfunction call() {\n    [native code]\n}\n"
+//             )
+//         )
+//     ) if ("function" === typeof Object && (
+//         Function.prototype.toString.call(Object) == "function Object() { [native code] }" ||
+//         Function.prototype.toString.call(Object) == "function Object() {\n    [native code]\n}" ||
+//         Function.prototype.toString.call(Object) == "\nfunction Object() {\n    [native code]\n}\n"
+//     )) {
+//         var HAS_CREATE_ELEMENT_METHOD = false;
+
+//         if (
+//             "toString" in Object.prototype && (
+//                 "function" === typeof Object.prototype.toString && (
+//                     Function.prototype.toString.call(Object.prototype.toString) == "function toString() { [native code] }" ||
+//                     Function.prototype.toString.call(Object.prototype.toString) == "function toString() {\n    [native code]\n}" ||
+//                     Function.prototype.toString.call(Object.prototype.toString) == "\nfunction toString() {\n    [native code]\n}\n"
+//                 )
+//             )
+//         ) if (
+//             "call" in Object.prototype.toString && (
+//                 "function" === typeof Object.prototype.toString.call && (
+//                     Function.prototype.toString.call(Object.prototype.toString.call) == "function call() { [native code] }" ||
+//                     Function.prototype.toString.call(Object.prototype.toString.call) == "function call() {\n    [native code]\n}" ||
+//                     Function.prototype.toString.call(Object.prototype.toString.call) == "\nfunction call() {\n    [native code]\n}\n"
+//                 )
+//             )
+//         ) {
+//             if ("object" === typeof document && (
+//                 Object.prototype.toString.call(document) == "[object]" ||
+//                 Object.prototype.toString.call(document) == "[object Document]" ||
+//                 Object.prototype.toString.call(document) == "[object HTMLDocument]"
+//             )) HAS_CREATE_ELEMENT_METHOD = "createElement" in document && (
+//                 "function" === typeof document.createElement && (
+//                     Function.prototype.toString.call(document.createElement) == "function createElement() { [native code] }" ||
+//                     Function.prototype.toString.call(document.createElement) == "function createElement() {\n    [native code]\n}" ||
+//                     Function.prototype.toString.call(document.createElement) == "\nfunction createElement() {\n    [native code]\n}\n"
+//                 )
+//             )
+//         }
+
+//         Supports.Object$prototype$__defineGetter__ = "function" === typeof __defineGetter__ && (
+//             Function.prototype.toString.call(__defineGetter__) == "function __defineGetter__() { [native code] }" ||
+//             Function.prototype.toString.call(__defineGetter__) == "function __defineGetter__() {\n    [native code]\n}" ||
+//             Function.prototype.toString.call(__defineGetter__) == "\nfunction __defineGetter__() {\n    [native code]\n}\n"
+//         );
+
+//         Supports.Object$prototype$__defineSetter__ = "function" === typeof __defineSetter__ && (
+//             Function.prototype.toString.call(__defineSetter__) == "function __defineSetter__() { [native code] }" ||
+//             Function.prototype.toString.call(__defineSetter__) == "function __defineSetter__() {\n    [native code]\n}" ||
+//             Function.prototype.toString.call(__defineSetter__) == "\nfunction __defineSetter__() {\n    [native code]\n}\n"
+//         );
+
+//         Supports.Object$prototype$__lookupGetter__ = "function" === typeof __lookupGetter__ && (
+//             Function.prototype.toString.call(__lookupGetter__) == "function __lookupGetter__() { [native code] }" ||
+//             Function.prototype.toString.call(__lookupGetter__) == "function __lookupGetter__() {\n    [native code]\n}" ||
+//             Function.prototype.toString.call(__lookupGetter__) == "\nfunction __lookupGetter__() {\n    [native code]\n}\n"
+//         );
+
+//         Supports.Object$prototype$__lookupSetter__ = "function" === typeof __lookupSetter__ && (
+//             Function.prototype.toString.call(__lookupSetter__) == "function __lookupSetter__() { [native code] }" ||
+//             Function.prototype.toString.call(__lookupSetter__) == "function __lookupSetter__() {\n    [native code]\n}" ||
+//             Function.prototype.toString.call(__lookupSetter__) == "\nfunction __lookupSetter__() {\n    [native code]\n}\n"
+//         );
+
+//         "create" in Object && (
+//             "function" === typeof Object.create && (
+//                 Function.prototype.toString.call(Object.create) == "function create() { [native code] }" ||
+//                 Function.prototype.toString.call(Object.create) == "function create() {\n    [native code]\n}" ||
+//                 Function.prototype.toString.call(Object.create) == "\nfunction create() {\n    [native code]\n}\n"
+//             )
+//         ) && (function assertion() {
+//             var count = +0;
+//             for (var i in Object.create(null)) ++count;
+//             Supports.Object$create = +0 == count
+//         })();
+
+//         "defineProperty" in Object && (
+//             "function" === typeof Object.defineProperty && (
+//                 Function.prototype.toString.call(Object.defineProperty) == "function defineProperty() { [native code] }" ||
+//                 Function.prototype.toString.call(Object.defineProperty) == "function defineProperty() {\n    [native code]\n}" ||
+//                 Function.prototype.toString.call(Object.defineProperty) == "\nfunction defineProperty() {\n    [native code]\n}\n"
+//             )
+//         ) && (function assertion() {
+//             Supports.Element$defineProperty = true;
+//             Supports.Object$defineProperty = true;
+
+//             try { Object.defineProperty({}, "", {configurable: true, enumerable: true, value: undefined, writable: true}) }
+//             catch (error) { Supports.Object$defineProperty = false }
+
+//             if (HAS_CREATE_ELEMENT_METHOD) {
+//                 try {
+//                     Object.defineProperty(document.createElement('a'), "", {configurable: true, enumerable: true, value: undefined, writable: true}),
+//                     Object.defineProperty(document.createElement('a'), "", {configurable: true, enumerable: false, get: function() {}, set: function() {}})
+//                 } catch (error) { Supports.Element$defineProperty = false }
+//             }
+//         })();
+
+//         "getOwnPropertyDescriptor" in Object && (
+//             "function" === typeof Object.getOwnPropertyDescriptor && (
+//                 Function.prototype.toString.call(Object.getOwnPropertyDescriptor) == "function getOwnPropertyDescriptor() { [native code] }" ||
+//                 Function.prototype.toString.call(Object.getOwnPropertyDescriptor) == "function getOwnPropertyDescriptor() {\n    [native code]\n}" ||
+//                 Function.prototype.toString.call(Object.getOwnPropertyDescriptor) == "\nfunction getOwnPropertyDescriptor() {\n    [native code]\n}\n"
+//             )
+//         ) && (function assertion() {
+//             Supports.Element$getOwnPropertyDescriptor = true;
+//             Supports.Object$getOwnPropertyDescriptor = true;
+
+//             try { Object.getOwnPropertyDescriptor({}, "") }
+//             catch (error) { Supports.Object$getOwnPropertyDescriptor = false }
+
+//             if (HAS_CREATE_ELEMENT_METHOD) {
+//                 try { Object.getOwnPropertyDescriptor(document.createElement('a'), "") }
+//                 catch (error) { Supports.Element$getOwnPropertyDescriptor = false }
+//             }
+//         })()
+//     }
+// })()
