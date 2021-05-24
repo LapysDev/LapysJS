@@ -30,7 +30,10 @@ var LapysJS = null;
 
         // [Constants]
         Constants: {
-            ArabicNumeralDigits: null,
+            ArabicDigits: null,
+            MaximumBitwiseInteger: null,
+            MaximumInteger: null,
+            MaximumSafeInteger: null,
             NativeFunctionObfuscatedSourceCode: null
         },
 
@@ -62,6 +65,10 @@ var LapysJS = null;
             functionToString: null,
             inspectFeature: null, "CONSTRUCTOR": 0x1, "METHOD": 0x2,
             isNativeFunction: null,
+            numberIsFinite: null,
+            numberIsNaN: null,
+            numberIsSafe: null,
+            numberIsSafeInteger: null,
             numberToFraction: null,
             numberToString: null,
             objectGetPrototype: null,
@@ -80,6 +87,12 @@ var LapysJS = null;
             abs: null,
             acos: null,
             acosh: null,
+            acot: null,
+            acoth: null,
+            acsc: null,
+            acsch: null,
+            asec: null,
+            asech: null,
             asin: null,
             asinh: null,
             atan: null,
@@ -88,8 +101,11 @@ var LapysJS = null;
             ceil: null,
             clamp: null,
             cot: null,
+            coth: null,
             cos: null,
             csc: null,
+            csch: null,
+            fact: null,
             exp: null,
             floor: null,
             iabs: null,
@@ -110,10 +126,14 @@ var LapysJS = null;
             root: null,
             round: null,
             sec: null,
+            sech: null,
             sin: null,
+            sinh: null,
             sqrt: null,
             tan: null,
-            trunc: null
+            tanh: null,
+            trunc: null,
+            wrap: null
         },
 
         // [Natives]
@@ -169,8 +189,6 @@ var LapysJS = null;
     /* ... */
     with (LDK) with (Directives) {
         /* Global > ... */
-        var MAXIMUM_INTEGER = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 2 ** 1024
-        var MAXIMUM_SAFE_INTEGER = 9007199254740991; // --> 2 ** 53
         var RANDOMIZER;
         var TYPE_ERROR = (function TypeError() { try { null() } catch (error) { return error } })();
 
@@ -379,7 +397,7 @@ var LapysJS = null;
                 RNG.prototype = {
                     seed: null,
                     next: function next() {
-                        var exponent = /* --> 2 ** 53 */ MAXIMUM_SAFE_INTEGER;
+                        var exponent = /* --> 2 ** 53 */ LDKC.MaximumInteger;
                         var evaluation = this.seed[0] + this.seed[3], subevaluation = this.seed[1] << 17;
 
                         this.seed[3] ^= this.seed[1];
@@ -430,7 +448,10 @@ var LapysJS = null;
 
         /* Modification > ... */
             /* Constants */
-            Constants.ArabicNumeralDigits = new StaticArray(10, 10, +0, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            Constants.ArabicDigits = new StaticArray(10, 10, +0, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            Constants.MaximumBitwiseInteger = 2147483647; // --> (2 ** 31) - 1
+            Constants.MaximumInteger = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 2 ** 1024
+            Constants.MaximumSafeInteger = 9007199254740991; // --> 2 ** 53
             Constants.NativeFunctionObfuscatedSourceCode = [
                 /* --> "[Command Line API]" */ new StaticString(18, '[', 'C', 'o', 'm', 'm', 'a', 'n', 'd', ' ', 'L', 'i', 'n', 'e', ' ', 'A', 'P', 'I', ']'),
                 /* --> "[native code]"      */ new StaticString(13, '[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']')
@@ -737,6 +758,10 @@ var LapysJS = null;
                 return false
             };
 
+            Functions.numberIsFinite = function numberIsFinite(number) { return Infinity !== number && -Infinity !== number };
+            Functions.numberIsNaN = function numberIsNaN(number) { return number !== number };
+            Functions.numberIsSafe = function numberIsSafe(number) { return LDKF.numberIsFinite(number) && false === LDKF.numberIsNaN(number) };
+            Functions.numberIsSafeInteger = function numberIsSafeInteger(number) { return -LDKC.MaximumSafeInteger <= number && number <= LDKC.MaximumSafeInteger };
             Functions.numberToFraction = function numberToFraction(number) {
                 var fraction = new Fraction(LDKM.trunc(number), +0, 1);
                 var mantissa = number - fraction.whole;
@@ -803,22 +828,66 @@ var LapysJS = null;
 
             /* Mathematics */
             Mathematics.abs = function abs(number) { return number < +0 ? -number : number };
-            Mathematics.acos = function acos() { /* PENDING (Lapys) */ };
-            Mathematics.acosh = function acosh() { /* PENDING (Lapys) */ };
-            Mathematics.asin = function asin() { /* PENDING (Lapys) */ };
-            Mathematics.asinh = function asinh() { /* PENDING (Lapys) */ };
-            Mathematics.atan = function atan() { /* PENDING (Lapys) */ };
-            Mathematics.atanh = function atanh() { /* PENDING (Lapys) */ };
+            Mathematics.acos = function acos(number) { return LDKM.ETA - LDKM.asin(number) };
+            Mathematics.acosh = function acosh(number) { return LDKM.ln(number + LDKM.sqrt((number * number) - 1)) };
+            Mathematics.acot = function acot(number) { return LDKM.ETA - LDKM.atan(number) };
+            Mathematics.acoth = function acoth(number) { return LDKM.ln((number + 1) / (number - 1)) / 2 };
+            Mathematics.acsc = function acsc(number) { return LDKM.ETA - LDKM.asec(number) };
+            Mathematics.acsch = function acsch(number) { return LDKM.ln((1 + LDKM.sqrt((1 + number) * (1 + number))) / number) };
+            Mathematics.asec = function asec(number) { return LDKM.acos(1 / number) };
+            Mathematics.asech = function asech(number) { return LDKM.ln((1 + LDKM.sqrt((1 - number) * (1 - number))) / number) };
+            Mathematics.asin = function asin(number) {
+                var evaluation = number;
+
+                var currentTermDenominator = 1, currentTermNumerand = number, currentTermNumerator = 1;
+                var recent;
+
+                // ...
+                for (var iterator = +0; ; ) {
+                    currentTermNumerator *= ++iterator;
+                    currentTermNumerand *= number * number;
+                    currentTermDenominator *= ++iterator;
+
+                    recent = evaluation;
+                    evaluation += (currentTermNumerator / currentTermDenominator) * (currentTermNumerand / (iterator + 1));
+
+                    // UPDATE (Lapys) -> Requires a better halt to the series used here.
+                    if (false === LDKF.numberIsSafe(evaluation)) { evaluation = recent; break }
+                }
+
+                // ...
+                return evaluation
+            };
+
+            Mathematics.asinh = function asinh(number) { return LDKM.ln(number + LDKM.sqrt((number * number) + 1)) };
+            Mathematics.atan = function atan(number) {
+                var evaluation = number;
+                var currentTermNumerator = number, recent = number, signed = false;
+
+                for (var iterator = 1; iterator < 51; iterator += 2) {
+                    currentTermNumerator *= number * number;
+                    signed = false === signed;
+
+                    recent = evaluation;
+                    evaluation += (signed ? -1 : 1) * (currentTermNumerator / iterator)
+                }
+
+                return evaluation
+            };
+            Mathematics.atanh = function atanh(number) { return LDKM.ln((1 + number) / (1 - number)) / 2 };
             Mathematics.cbrt = function cbrt(number) { return LDKM.iroot(number, 3) };
             Mathematics.ceil = function ceil(number) { return LDKM.trunc(number) + (number >= +0) };
             Mathematics.clamp = function clamp(number, minimum, maximum) { return LDKM.imin(maximum, LDKM.imax(number, minimum)) };
             Mathematics.cos = function cos(number) { return LDKM.sin(LDKM.ETA - number) };
             Mathematics.cot = function cot(number) { return 1 / LDKM.tan(number) };
+            Mathematics.coth = function coth(number) { return 1 / LDKM.tanh(number) };
             Mathematics.csc = function csc(number) { return 1 / LDKM.sin(number) };
+            Mathematics.csch = function csch(number) { return 1 / LDKM.sinh(number) };
+            Mathematics.fact = function fact(number) { var evaluation = 1; for (var number = number; number; --number) evaluation *= number; return evaluation };
             Mathematics.exp = function exp(number) {
                 if (number > 1) {
                     var currentTermDenominator = 1, currentTermNumerator = 1, recentTerm = 0;
-                    var recent, number = number, signed = number < +0;
+                    var number = number, recent, signed = number < +0;
 
                     var evaluation = +0;
 
@@ -830,10 +899,7 @@ var LapysJS = null;
 
                         // ...
                         evaluation += recentTerm;
-                        if (
-                            evaluation !== evaluation ||
-                            (Infinity === evaluation || -Infinity === evaluation)
-                        ) { evaluation = recent; break }
+                        if (false === LDKF.numberIsSafe(evaluation)) { evaluation = recent; break }
 
                         // ...
                         currentTermNumerator *= number;
@@ -985,6 +1051,7 @@ var LapysJS = null;
             };
 
             Mathematics.sec = function sec(number) { return 1 / LDKM.cos(number) };
+            Mathematics.sech = function sech(number) { return 1 / LDKM.cosh(number) };
             Mathematics.sin = function sin(number) {
                 var evaluation = +0;
 
@@ -996,18 +1063,20 @@ var LapysJS = null;
                     currentTerm = evaluation;
                     evaluation += (currentTermNumerator / currentTermDenominator) * (signed ? -1 : 1);
 
-                    signed = false === signed;
                     currentTermDenominator *= ++iterator;
                     currentTermDenominator *= ++iterator;
-                    currentTermNumerator *= number * number
+                    currentTermNumerator *= number * number;
+                    signed = false === signed
                 } while (1e-15 < LDKM.abs(currentTerm - evaluation));
 
                 // ...
                 return evaluation
             };
 
+            Mathematics.sinh = function sinh(number) { return (LDKM.exp(number) - LDKM.exp(-number)) / 2 };
             Mathematics.sqrt = function sqrt(number) { return LDKM.iroot(number, 2) };
             Mathematics.tan = function tan(number) { return LDKM.sin(number) / LDKM.cos(number) };
+            Mathematics.tanh = function tanh(number) { return LDKM.sinh(number) / LDKM.cosh(number) };
             Mathematics.trunc = function trunc(number) {
                 var evaluation;
                 var counter = 1, signed = number < +0;
@@ -1020,6 +1089,11 @@ var LapysJS = null;
 
                 // ...
                 return evaluation * (signed ? -1 : 1)
+            };
+
+            Mathematics.wrap = function wrap(number, start, end) {
+                if (undefined === end) { end = start; start = +0 }
+                else if (end < start) { var dummy = start; start = end; end = dummy }
             };
 
             /* Natives */
