@@ -30,17 +30,18 @@ var LapysJS = null;
 
         // [Constants]
         Constants: {
-            ArabicDigits: null,
-            MaximumBitwiseInteger: null,
-            MaximumInteger: null,
-            MaximumSafeInteger: null,
-            NativeFunctionObfuscatedSourceCode: null
+            ARABIC_DIGITS: null,
+            MAXIMUM_BITWISE_INTEGER: undefined,
+            MAXIMUM_INTEGER: undefined,
+            MAXIMUM_SAFE_INTEGER: undefined,
+            NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE: null,
+            RANDOMIZER: null,
+            TYPE_ERROR: null
         },
 
         // [Directives]
         Directives: {
             ANY: {}, // ->> Represents a non-unique value. (though its value is distinct)
-            CURRENT: null, // ->> Represents a local dummy or temporary. (take care with its implementation & use)
             ERROR: {}, // ->> Represents an exception instance. (always a unique value)
             GLOBAL: "undefined" === typeof frames ? ("undefined" === typeof self ? ("undefined" === typeof window ? ("undefined" === typeof global ? ("undefined" === typeof globalThis ? (function() { return this })() : globalThis) : global) : window) : self) : frames
         },
@@ -116,6 +117,7 @@ var LapysJS = null;
             iroot: null,
             isqrt: null,
             itrunc: null,
+            lerp: null,
             ln: null,
             log: null,
             max: null,
@@ -188,15 +190,11 @@ var LapysJS = null;
 
     /* ... */
     with (LDK) with (Directives) {
-        /* Global > ... */
-        var RANDOMIZER;
-        var TYPE_ERROR = (function TypeError() { try { null() } catch (error) { return error } })();
-
         /* Class > ... --- REDACT (Lapys) */
             /* Error */
             function Error(name, message) {
                 // ... Update > Error
-                ERROR = TYPE_ERROR; {
+                ERROR = LDKC.TYPE_ERROR; {
                     ERROR.message = null === message ? "" : message;
                     ERROR.name = name
                 }
@@ -364,10 +362,10 @@ var LapysJS = null;
 
                             // ...
                             for (var iterator = +0; iterator != this.assertions.length; ++iterator)
-                            if (false === this.assertions[iterator](CURRENT = value, identifier, object)) { value = ERROR; break }
+                            if (false === this.assertions[iterator](value, identifier, object)) { value = ERROR; break }
 
                             for (var iterator = +0; iterator != this.forwards.length; ++iterator)
-                            (CURRENT = value), this.forwards[iterator]()
+                            this.forwards[iterator](value)
                         }
 
                         // ... Error
@@ -397,7 +395,7 @@ var LapysJS = null;
                 RNG.prototype = {
                     seed: null,
                     next: function next() {
-                        var exponent = /* --> 2 ** 53 */ LDKC.MaximumInteger;
+                        var exponent = /* --> 2 ** 53 */ LDKC.MAXIMUM_INTEGER;
                         var evaluation = this.seed[0] + this.seed[3], subevaluation = this.seed[1] << 17;
 
                         this.seed[3] ^= this.seed[1];
@@ -448,14 +446,15 @@ var LapysJS = null;
 
         /* Modification > ... */
             /* Constants */
-            Constants.ArabicDigits = new StaticArray(10, 10, +0, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-            Constants.MaximumBitwiseInteger = 2147483647; // --> (2 ** 31) - 1
-            Constants.MaximumInteger = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 2 ** 1024
-            Constants.MaximumSafeInteger = 9007199254740991; // --> 2 ** 53
-            Constants.NativeFunctionObfuscatedSourceCode = [
+            Constants.ARABIC_DIGITS = new StaticArray(10, 10, +0, '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            Constants.MAXIMUM_BITWISE_INTEGER = 2147483647; // --> (2 ** 31) - 1
+            Constants.MAXIMUM_INTEGER = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 2 ** 1024
+            Constants.MAXIMUM_SAFE_INTEGER = 9007199254740991; // --> 2 ** 53
+            Constants.NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE = [
                 /* --> "[Command Line API]" */ new StaticString(18, '[', 'C', 'o', 'm', 'm', 'a', 'n', 'd', ' ', 'L', 'i', 'n', 'e', ' ', 'A', 'P', 'I', ']'),
                 /* --> "[native code]"      */ new StaticString(13, '[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']')
             ];
+            Constants.TYPE_ERROR = (function TypeError() { try { null() } catch (error) { return error } })();
 
             /* Errors */
             Errors.Error = Error;
@@ -745,11 +744,11 @@ var LapysJS = null;
 
                     // Logic > ... ->> Presume the `functor` source
                     if (false === LDKS.String$prototype$charAt) {
-                        for (var iterator = LDKC.NativeFunctionObfuscatedSourceCode.length - 1; ~iterator; --iterator)
+                        for (var iterator = LDKC.NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE.length - 1; ~iterator; --iterator)
                         if (
-                            source === "function " + (null === name ? "" : name) + "() { " + LDKC.NativeFunctionObfuscatedSourceCode[iterator] + " }" ||
-                            source === "function " + (null === name ? "" : name) + "() {\n    " + LDKC.NativeFunctionObfuscatedSourceCode[iterator] + "\n}" ||
-                            source === "\nfunction " + (null === name ? "" : name) + "() {\n    " + LDKC.NativeFunctionObfuscatedSourceCode[iterator] + "\n}\n"
+                            source === "function " + (null === name ? "" : name) + "() { " + LDKC.NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE[iterator] + " }" ||
+                            source === "function " + (null === name ? "" : name) + "() {\n    " + LDKC.NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE[iterator] + "\n}" ||
+                            source === "\nfunction " + (null === name ? "" : name) + "() {\n    " + LDKC.NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE[iterator] + "\n}\n"
                         ) return true
                     }
                 }
@@ -761,7 +760,7 @@ var LapysJS = null;
             Functions.numberIsFinite = function numberIsFinite(number) { return Infinity !== number && -Infinity !== number };
             Functions.numberIsNaN = function numberIsNaN(number) { return number !== number };
             Functions.numberIsSafe = function numberIsSafe(number) { return LDKF.numberIsFinite(number) && false === LDKF.numberIsNaN(number) };
-            Functions.numberIsSafeInteger = function numberIsSafeInteger(number) { return -LDKC.MaximumSafeInteger <= number && number <= LDKC.MaximumSafeInteger };
+            Functions.numberIsSafeInteger = function numberIsSafeInteger(number) { return -LDKC.MAXIMUM_SAFE_INTEGER <= number && number <= LDKC.MAXIMUM_SAFE_INTEGER };
             Functions.numberToFraction = function numberToFraction(number) {
                 var fraction = new Fraction(LDKM.trunc(number), +0, 1);
                 var mantissa = number - fraction.whole;
@@ -971,6 +970,7 @@ var LapysJS = null;
             };
 
             Mathematics.itrunc = function itrunc(integer) { return integer | +0 };
+            Mathematics.lerp = function lerp(ratio, start, end) { return start + (ratio * (end - start)) };
             Mathematics.ln = function ln(number) {
                 if (+0 !== number) {
                     var evaluation = +0;
@@ -1023,7 +1023,7 @@ var LapysJS = null;
 
             Mathematics.perc = function perc(number, exponent) { return number * ((undefined === exponent ? 1 : exponent) / 100) };
             Mathematics.pow = function pow(number, exponent) { return exponent % 1 ? LDKM.root(number, 1 / exponent) : LDKM.ipow(number, exponent) };
-            Mathematics.random = function random() { return RANDOMIZER.next() };
+            Mathematics.random = function random() { return LDKC.RANDOMIZER.next() };
             Mathematics.root = function root(number, exponent) {
                 if (+0 === ((1 / exponent) % 1)) return LDKM.ipow(number, 1 / exponent);
                 else if (exponent % 1) {
@@ -1092,14 +1092,34 @@ var LapysJS = null;
             };
 
             Mathematics.wrap = function wrap(number, start, end) {
+                var delta, difference, end = end, start = start;
+                var number = number;
+
                 if (undefined === end) { end = start; start = +0 }
-                else if (end < start) { var dummy = start; start = end; end = dummy }
+                difference = end - start;
+
+                do {
+                    for (delta = difference / 2; number < start; number += delta) {
+                        if (end < number - delta) { number -= delta; delta = difference }
+                        else {
+                            delta *= 2;
+                            if (LDKC.MAXIMUM_SAFE_INTEGER < delta) delta = difference
+                        }
+                    }
+
+                    for (delta = difference / 2; number > end; number -= delta) {
+                        if (end < number - delta) { number -= delta; delta = difference }
+                        else { delta *= 2; if (LDKC.MAXIMUM_SAFE_INTEGER < delta) delta = difference }
+                    }
+                } while (number < start);
+
+                return number
             };
 
             /* Natives */
             Natives.Function = LDKF.inspectFeature(GLOBAL, "Function")
-                .assert(function functor() {
-                    try { return new CURRENT("Function", "return Function instanceof Function")(CURRENT) }
+                .assert(function functor(Function) {
+                    try { return new Function("Function", "return Function instanceof Function")(Function) }
                     catch (error) {}
 
                     /* ... */
@@ -1107,8 +1127,8 @@ var LapysJS = null;
             .evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, LDKF.CONSTRUCTOR, null);
 
             Natives.Function$prototype$toString = LDKF.inspectFeature(LDKN.Function.prototype, "toString")
-                .assert(function() {
-                    try { if ("function" === typeof CURRENT && false === ("prototype" in CURRENT) && CURRENT === CURRENT.toString && LDKF.isNativeFunction(CURRENT, "toString")) { try { CURRENT() } catch (error) { CURRENT = null } if (null === CURRENT) return true } }
+                .assert(function(toString) {
+                    try { if ("function" === typeof toString && false === ("prototype" in toString) && toString === toString.toString && LDKF.isNativeFunction(toString, "toString")) { try { toString() } catch (error) { toString = null } if (null === toString) return true } }
                     catch (error) { /* Do nothing... */ }
 
                     throw new LDKE.Error(LDKE.MODIFIED, "Expected the `Function.prototype.toString(...)` method to be evaluable & un-modified")
@@ -1116,8 +1136,8 @@ var LapysJS = null;
             .evaluate(LDKE.INACCESSIBLE | LDKE.MISSING, LDKF.METHOD, ["Function", "prototype", "toString"]);
 
             Natives.Function$prototype$call = LDKF.inspectFeature(LDKN.Function.prototype, "call")
-                .assert(function() {
-                    try { if ("function" === typeof CURRENT && CURRENT.toString === LDKN.Function$prototype$toString && LDKF.isNativeFunction(CURRENT, "call")) return true }
+                .assert(function(call) {
+                    try { if ("function" === typeof call && call.toString === LDKN.Function$prototype$toString && LDKF.isNativeFunction(call, "call")) return true }
                     catch (error) { /* Do nothing... */ }
 
                     throw new LDKE.Error(LDKE.MODIFIED, "Expected the `Function.prototype.call(...)` method to be evaluable & un-modified")
@@ -1127,10 +1147,10 @@ var LapysJS = null;
 
             Natives.Function$prototype$bind = LDKF.inspectFeature(LDKN.Function.prototype, "bind")
                 .assert(LDKF.isNativeFunction)
-                .then(function() {
+                .then(function(bind) {
                     LDKF.functionRebindCall = function functionRebindCall() {};
 
-                    LDKN.Function$prototype$bind = CURRENT;
+                    LDKN.Function$prototype$bind = bind;
                     LDKN.Function$prototype$call = LDKF.functionBind(LDKN.Function$prototype$call, LDKN.Function$prototype$call);
 
                     LDKS.Function$prototype$bind = true
@@ -1139,15 +1159,17 @@ var LapysJS = null;
 
             /* Supports */
             Supports.Object$prototype$__proto__ = (function() {
-                CURRENT = {__proto__: ANY};
+                var object = {__proto__: ANY};
 
-                delete CURRENT["__proto__"];
-                return ANY === CURRENT.__proto__
+                delete object["__proto__"];
+                return ANY === object.__proto__
             })();
 
         /* ... */
-        RANDOMIZER = new RNG(0x45); // ->> `Mathematics.trunc(...)` had to be defined first.
-        (LDKS.Object$prototype$__proto__ || LDKS.Object$setPrototypeOf) && LDKF.objectSetPrototype(LapysDevelopmentKit, null)
+        Constants.RANDOMIZER = new RNG(0x45);
+        if (LDKS.Object$prototype$__proto__ || LDKS.Object$setPrototypeOf) {
+            LDKF.objectSetPrototype(LapysDevelopmentKit, null)
+        }
     }
 })();
 
