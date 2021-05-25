@@ -122,6 +122,7 @@ var LapysJS = null;
             log: null,
             max: null,
             min: null,
+            mod: null,
             perc: null,
             pow: null,
             random: null,
@@ -838,17 +839,17 @@ var LapysJS = null;
             Mathematics.asin = function asin(number) {
                 var evaluation = number;
 
-                var currentTermDenominator = 1, currentTermNumerand = number, currentTermNumerator = 1;
+                var denominator = 1, numerand = number, numerator = 1;
                 var recent;
 
                 // ...
                 for (var iterator = +0; ; ) {
-                    currentTermNumerator *= ++iterator;
-                    currentTermNumerand *= number * number;
-                    currentTermDenominator *= ++iterator;
+                    numerator *= ++iterator;
+                    numerand *= number * number;
+                    denominator *= ++iterator;
 
                     recent = evaluation;
-                    evaluation += (currentTermNumerator / currentTermDenominator) * (currentTermNumerand / (iterator + 1));
+                    evaluation += (numerator / denominator) * (numerand / (iterator + 1));
 
                     // UPDATE (Lapys) -> Requires a better halt to the series used here.
                     if (false === LDKF.numberIsSafe(evaluation)) { evaluation = recent; break }
@@ -1021,6 +1022,7 @@ var LapysJS = null;
                 return evaluation
             };
 
+            Mathematics.mod = function mod(dividend, divisor) { return ((dividend % divisor) + divisor) % divisor };
             Mathematics.perc = function perc(number, exponent) { return number * ((undefined === exponent ? 1 : exponent) / 100) };
             Mathematics.pow = function pow(number, exponent) { return exponent % 1 ? LDKM.root(number, 1 / exponent) : LDKM.ipow(number, exponent) };
             Mathematics.random = function random() { return LDKC.RANDOMIZER.next() };
@@ -1091,30 +1093,7 @@ var LapysJS = null;
                 return evaluation * (signed ? -1 : 1)
             };
 
-            Mathematics.wrap = function wrap(number, start, end) {
-                var delta, difference, end = end, start = start;
-                var number = number;
-
-                if (undefined === end) { end = start; start = +0 }
-                difference = end - start;
-
-                do {
-                    for (delta = difference / 2; number < start; number += delta) {
-                        if (end < number - delta) { number -= delta; delta = difference }
-                        else {
-                            delta *= 2;
-                            if (LDKC.MAXIMUM_SAFE_INTEGER < delta) delta = difference
-                        }
-                    }
-
-                    for (delta = difference / 2; number > end; number -= delta) {
-                        if (end < number - delta) { number -= delta; delta = difference }
-                        else { delta *= 2; if (LDKC.MAXIMUM_SAFE_INTEGER < delta) delta = difference }
-                    }
-                } while (number < start);
-
-                return number
-            };
+            Mathematics.wrap = function wrap(number, start, end) { return LDKM.mod(number - start, end - (start - 1)) };
 
             /* Natives */
             Natives.Function = LDKF.inspectFeature(GLOBAL, "Function")
