@@ -14,7 +14,7 @@ var Lapys = new (
   (function() {
     var author      = "Lapys";
     var description = "General-purpose standard library for JavaScript";
-    var version     = "‘who knows…’";
+    var version     = "'who knows…'";
 
     return (function(prototype) {
       function Lapys() {}
@@ -29,7 +29,7 @@ var Lapys = new (
       description: description,
       version    : version,
 
-      "__proto__": null
+      "__proto__": null,
       toString   : function() { /* [private code] */ return "Lapys v" + version + "]: " + description }
     })
   })()
@@ -50,8 +50,8 @@ var Lapys = new (
     /* Constants */
     var Constants = {
       MAXIMUM_BITWISE_INTEGER               : null,
+      MAXIMUM_SAFE_INTEGER                  : null,
       MAXIMUM_NUMBER                        : null,
-      MAXIMUM_INTEGER                       : null,
       NATIVE_FUNCTION_OBFUSCATED_SOURCE_CODE: null,
       TYPE_ERROR                            : null
     };
@@ -80,6 +80,7 @@ var Lapys = new (
       functionToString    : null,
       inspectFeature      : null,
       numberIsFinite      : null,
+      numberIsInteger     : null,
       numberIsNaN         : null,
       numberIsSafe        : null,
       numberIsSafeInteger : null,
@@ -144,7 +145,6 @@ var Lapys = new (
       ipow          : null,
       iroot         : null,
       isqrt         : null,
-      itrunc        : null,
       jsf           : null,
       knuth_b       : null,
       laguerre      : null,
@@ -361,8 +361,8 @@ var Lapys = new (
 
                   // ...
                   if (undefined !== descriptor) {
-                    if (control & Enumerations.GETTER) { if ("get" in descriptor) throw throw new Error(Enumerations.GETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a getter of " + objectSource) }
-                    if (control & Enumerations.SETTER) { if ("set" in descriptor) throw throw new Error(Enumerations.SETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a setter of " + objectSource) }
+                    if (control & Enumerations.GETTER) { if ("get" in descriptor) throw new Error(Enumerations.GETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a getter of " + objectSource) }
+                    if (control & Enumerations.SETTER) { if ("set" in descriptor) throw new Error(Enumerations.SETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a setter of " + objectSource) }
 
                     break
                   }
@@ -449,13 +449,12 @@ var Lapys = new (
        return new Inspector(identifier, object)
     };
 
-    Functions.numberIsFinite = function numberIsFinite(number) {
-      return Infinity !== number && -Infinity !== number
-    };
+    Functions.numberIsFinite      = function numberIsFinite     (number) { return Infinity !== number && -Infinity !== number };
+    Functions.numberIsInteger     = function numberIsInteger    (number) { return number === Mathematics.trunc(number) };
+    Functions.numberIsNaN         = function numberIsNaN        (number) { return number !== number };
+    Functions.numberIsSafe        = function numberIsSafe       (number) { return -Constants.MAXIMUM_NUMBER <= number && number <= Constants.MAXIMUM_NUMBER && Functions.numberIsFinite(number) && false === Functions.numberIsNaN(number) };
+    Functions.numberIsSafeInteger = function numberIsSafeInteger(number) { return -Constants.MAXIMUM_SAFE_INTEGER <= number && number <= Constants.MAXIMUM_SAFE_INTEGER && Functions.numberIsInteger(number) };
 
-    Functions.numberIsNaN = null;
-    Functions.numberIsSafe = null;
-    Functions.numberIsSafeInteger = null;
     Functions.numberToFraction = null;
     Functions.numberToString = null;
     Functions.objectDefineProperty = null;
@@ -469,6 +468,90 @@ var Lapys = new (
       return false === (identifier in object)
     };
 
+    Functions.stringFrom = null;
 
-    Functions.stringFrom = null
+    /* Mathematics > ... */
+    Mathematics.ipow = function integer_power(base, exponent) {
+      var power = 1;
+
+      for (var base = base, exponent = exponent; ; ) {
+        var odd = exponent % 2;
+
+        if (odd) power *= base;
+        exponent = (exponent / 2) - (odd ? 0.5 : 0.0);
+        if (0 === exponent) break; base *= base
+      }
+
+      return power
+    };
+
+    Mathematics.trunc = function truncate(number) {
+      if (-1.0 < number && number < +1.0) return +0;
+      if (-Constants.MAXIMUM_BITWISE_INTEGER <= number && number <= Constants.MAXIMUM_BITWISE_INTEGER) return number | +0;
+
+      var Modes = {ADD: 0b000001, EXPONENTIATE: 0b000010, INCREMENT: 0b000100, MULTIPLY: 0b001000, RADIX: 0b010000, SELF: 0b100000};
+      var increment = +0, nextIncrement;
+      var integer   = 1,  nextInteger;
+      var modes     = [Modes.SELF | Modes.EXPONENTIATE, Modes.SELF | Modes.MULTIPLY, Modes.SELF | Modes.RADIX, Modes.SELF | Modes.ADD, Modes.EXPONENTIATE, Modes.MULTIPLY, Modes.RADIX, Modes.ADD, Modes.INCREMENT]; // ->> in order of progression
+      var precision = 1; // WARN (Lapys) -> Speeds get pessimistic if greater than `1` ->> Greater than `1` if `number` is large enough i.e.: `number === number + 1`
+      var radix     = 10;
+      var self      = true; // ->> Allow increments by updating the `integer` only, not its `increment`
+      var signed    = number < +0.0;
+
+      // ...
+      for (var index = +0; integer < number; self = self && (modes[index] & Modes.SELF)) {
+        switch (modes[index]) {
+          case Modes.ADD         : nextIncrement = increment + increment;                  break;
+          case Modes.EXPONENTIATE: nextIncrement = Mathematics.ipow(increment, increment); break;
+          case Modes.INCREMENT   : nextIncrement = increment + precision;                  break;
+          case Modes.MULTIPLY    : nextIncrement = increment * increment;                  break;
+          case Modes.RADIX       : nextIncrement = increment * radix;                      break;
+
+          case Modes.SELF | Modes.ADD         : nextInteger = integer + integer;                  break;
+          case Modes.SELF | Modes.EXPONENTIATE: nextInteger = Mathematics.ipow(integer, integer); break;
+          case Modes.SELF | Modes.MULTIPLY    : nextInteger = integer * integer;                  break;
+          case Modes.SELF | Modes.RADIX       : nextInteger = integer * radix
+        }
+
+        // ...
+        if (self) {
+          // ... ->> `integer` progression too large or redundant
+          if (nextInteger === integer || nextInteger > number || false === Functions.numberIsSafe(nextInteger)) {
+            if (++index === modes.length) break;
+            continue
+          }
+
+          index -= +0 !== index
+        }
+
+        else {
+          self = false;
+
+          // ... ->> `increment` progression too large or redundant
+          if (nextIncrement === increment || false === Functions.numberIsSafe(nextIncrement)) {
+            if (++index === modes.length) break;
+            continue
+          }
+
+          // ... ->> `integer` progression too large or redundant
+          nextInteger = nextIncrement + integer;
+
+          if (nextInteger === integer || nextInteger > number || false === Functions.numberIsSafe(nextInteger)) {
+            if (++index === modes.length) {
+              if (+0 === increment && false === Functions.numberIsSafe(precision *= 2)) break;
+              for (increment = index = +0; modes[index] & Modes.SELF; ++index) continue
+            }
+
+            continue
+          }
+
+          increment = nextIncrement;
+          index    -= +0 !== index && +0 === (modes[index - 1] & Modes.SELF)
+        }
+
+        integer = nextInteger
+      }
+
+      return signed ? -integer : integer
+    }
 })();
