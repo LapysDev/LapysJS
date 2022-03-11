@@ -137,11 +137,10 @@ var Lapys = new (
       expint        : null,
       fact          : null,
       floor         : null,
+      gcd           : null,
       hermite       : null,
       iabs          : null,
       icbrt         : null,
-      imax          : null,
-      imin          : null,
       ipow          : null,
       iroot         : null,
       isqrt         : null,
@@ -153,8 +152,8 @@ var Lapys = new (
       lerp          : null,
       ln            : null,
       log           : null,
-      max           : null,
-      min           : null,
+      maximum       : null,
+      minimum       : null,
       mod           : null,
       mt            : null,
       mt32          : null,
@@ -269,8 +268,8 @@ var Lapys = new (
         numerator  : +0,
         whole      : +0,
 
-        toImproper: function toImproper() { this.numerator += this.denominator * this.whole; this.whole = +0; return this },
-        toMixed   : function toMixed() { this.whole = this.numerator; this.numerator %= this.denominator; this.whole -= this.numerator; return this }
+        toImproper: function toImproper() { if (+0 !== this.whole) { this.numerator += this.denominator * this.whole; this.whole = +0 } return this },
+        toMixed   : function toMixed() { if (+0 === this.whole) { var fraction = Functions.numberToFraction(this.numerator / this.denominator); this.denominator = fraction.denominator; this.numerator = fraction.numerator; this.whole = fraction.whole } return this }
       };
 
     // Static Array
@@ -455,8 +454,36 @@ var Lapys = new (
     Functions.numberIsSafe        = function numberIsSafe       (number) { return -Constants.MAXIMUM_NUMBER <= number && number <= Constants.MAXIMUM_NUMBER && Functions.numberIsFinite(number) && false === Functions.numberIsNaN(number) };
     Functions.numberIsSafeInteger = function numberIsSafeInteger(number) { return -Constants.MAXIMUM_SAFE_INTEGER <= number && number <= Constants.MAXIMUM_SAFE_INTEGER && Functions.numberIsInteger(number) };
 
-    Functions.numberToFraction = null;
-    Functions.numberToString = null;
+    Functions.numberToFraction = function numberToFraction(number) {
+      var integer = Mathematics.trunc(number);
+
+      if (integer === numerator)
+      return new Fraction(integer, 1, 1);
+
+      // ...
+      var denominator = 1;
+      var numerator   = number - integer;
+      var divisor;
+
+      while (false === Functions.numberIsInteger(numerator)) {
+        var next = numerator * 10.0;
+
+        if (false === Functions.numberIsSafe(next)) break;
+        denominator *= 10;
+        numerator    = next
+      }
+
+      divisor      = Mathematics.gcd(denominator, numerator);
+      denominator /= divisor;
+      numerator   /= divisor;
+
+      return new Fraction(integer, numerator, denominator)
+    };
+
+    Functions.numberToString = function numberToString(number) {
+      /* ... */
+    };
+
     Functions.objectDefineProperty = null;
     Functions.objectGetPrototype = null;
     Functions.objectSetPrototype = null;
@@ -471,6 +498,23 @@ var Lapys = new (
     Functions.stringFrom = null;
 
     /* Mathematics > ... */
+    Mathematics.gcd = function greatest_common_divisor(numbers) {
+      var divisor = arguments[0];
+
+      // ...
+      for (var index = arguments.length; index; ) {
+        var number = arguments[--index];
+
+        for (var remainder; 0 !== number % divisor; ) {
+          remainder = number % divisor;
+          number    = divisor;
+          divisor   = remainder
+        }
+      }
+
+      return divisor
+    };
+
     Mathematics.ipow = function integer_power(base, exponent) {
       var power = 1;
 
@@ -483,6 +527,11 @@ var Lapys = new (
       }
 
       return power
+    };
+
+    Mathematics.round = function round(number) {
+      var characteristics = Mathematics.trunc(number);
+      return characteristics + (number - characteristics >= 0.5)
     };
 
     Mathematics.trunc = function truncate(number) {
