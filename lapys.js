@@ -71,7 +71,6 @@ var Lapys = new (
 
     /* Functions ->> Convenience/ safe abstractions over native features */
     var Functions = {
-      characterAt         : null,
       constructorIsNative : null,
       functionApply       : null,
       functionAssertApply : null,
@@ -79,6 +78,7 @@ var Lapys = new (
       functionIsNative    : null,
       functionToString    : null,
       inspectFeature      : null,
+      numberFromDigit     : null,
       numberIsFinite      : null,
       numberIsInteger     : null,
       numberIsNaN         : null,
@@ -90,7 +90,9 @@ var Lapys = new (
       objectGetPrototype  : null,
       objectRemoveProperty: null,
       objectSetPrototype  : null,
-      stringFrom          : null
+      stringAt            : null,
+      stringFrom          : null,
+      stringIsDigit       : null
     };
 
     /* Mathematics */
@@ -410,7 +412,6 @@ var Lapys = new (
     Constants.MAXIMUM_BITWISE_INTEGER                = 2147483647;                                                                                                                                                                                                                                                                                                            // --> (1 << 31) - 1
 
     /* Functions > ... */
-    Functions.characterAt = null;
     Functions.constructorIsNative = null;
 
     Functions.functionApply = function functionApply(functor, that, arguments) {
@@ -448,6 +449,21 @@ var Lapys = new (
        return new Inspector(identifier, object)
     };
 
+    Functions.numberFromDigit = function numberFromDigit(digit) {
+      switch (digit) {
+        case 0: case '0': return +0;
+        case 1: case '1': return 1;
+        case 2: case '2': return 2;
+        case 3: case '3': return 3;
+        case 4: case '4': return 4;
+        case 5: case '5': return 5;
+        case 6: case '6': return 6;
+        case 7: case '7': return 7;
+        case 8: case '8': return 8;
+        case 9: case '9': return 9
+      }
+    };
+
     Functions.numberIsFinite      = function numberIsFinite     (number) { return Infinity !== number && -Infinity !== number };
     Functions.numberIsInteger     = function numberIsInteger    (number) { return number === Mathematics.trunc(number) };
     Functions.numberIsNaN         = function numberIsNaN        (number) { return number !== number };
@@ -481,7 +497,7 @@ var Lapys = new (
     };
 
     Functions.numberToString = function numberToString(number) {
-      /* ... */
+      return number + ""
     };
 
     Functions.objectDefineProperty = null;
@@ -495,7 +511,13 @@ var Lapys = new (
       return false === (identifier in object)
     };
 
+    Functions.stringAt = null;
     Functions.stringFrom = null;
+
+    Functions.stringIsDigit = function stringIsDigit(character) {
+      switch (character) { case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9': return true }
+      return false
+    };
 
     /* Mathematics > ... */
     Mathematics.gcd = function greatest_common_divisor(numbers) {
@@ -534,18 +556,55 @@ var Lapys = new (
       return characteristics + (number - characteristics >= 0.5)
     };
 
-    Mathematics.trunc = function truncate(number) {
+    Mathematics.trunc = GLOBAL.trunc = function truncate(number) {
       if (-1.0 < number && number < +1.0) return +0;
       if (-Constants.MAXIMUM_BITWISE_INTEGER <= number && number <= Constants.MAXIMUM_BITWISE_INTEGER) return number | +0;
 
+      if (Supports.String$prototype$charAt) {
+        Functions.stringAt = function stringAt(string, index) { return string[index] };
+        var string               = Functions.numberToString(number);
+        var signedness           = Functions.stringAt(string, +0) === '-';
+        var scientificSignedness = false;
+        var scientificExponent   = +0;
+        var mantissaIndex        = +0;
+        var mantissaEnd          = +0;
+        var characteristics      = +0;
+
+        // ...
+        for (var index = +signedness, length = string.length; index !== length; ++index) {
+          var character = Functions.stringAt(string, index);
+
+          // ...
+          if (+0 === mantissaIndex) {
+            if (character === '.') { mantissaEnd = length; mantissaIndex = ++index; continue }
+            else if (Functions.stringIsDigit(character)) { characteristics = Functions.numberFromDigit(character) + (characteristics * 10); continue }
+          }
+
+          if (character === 'e') {
+            mantissaEnd          = index;
+            scientificSignedness = Functions.stringAt(string, ++index) === '-';
+            while (++index !== length) scientificExponent = Functions.numberFromDigit(Functions.stringAt(string, index)) + (scientificExponent * 10);
+
+            break
+          }
+        }
+
+        while (scientificExponent--) {
+          if (scientificSignedness) { if (characteristics < 10) { characteristics = 0; break } characteristics /= 10 }
+          else { characteristics *= 10; if (mantissaEnd !== mantissaIndex) characteristics += Functions.numberFromDigit(Functions.stringAt(string, mantissaIndex++)) }
+        }
+
+        return characteristics
+      }
+
       var Modes = {ADD: 0b000001, EXPONENTIATE: 0b000010, INCREMENT: 0b000100, MULTIPLY: 0b001000, RADIX: 0b010000, SELF: 0b100000};
-      var increment = +0, nextIncrement;
-      var integer   = 1,  nextInteger;
-      var modes     = [Modes.SELF | Modes.EXPONENTIATE, Modes.SELF | Modes.MULTIPLY, Modes.SELF | Modes.RADIX, Modes.SELF | Modes.ADD, Modes.EXPONENTIATE, Modes.MULTIPLY, Modes.RADIX, Modes.ADD, Modes.INCREMENT]; // ->> in order of progression
-      var precision = 1; // WARN (Lapys) -> Speeds get pessimistic if greater than `1` ->> Greater than `1` if `number` is large enough i.e.: `number === number + 1`
-      var radix     = 10;
-      var self      = true; // ->> Allow increments by updating the `integer` only, not its `increment`
-      var signed    = number < +0.0;
+      var increment  = +0, nextIncrement;
+      var integer    = 1,  nextInteger;
+      var modes      = [Modes.SELF | Modes.EXPONENTIATE, Modes.SELF | Modes.MULTIPLY, Modes.SELF | Modes.RADIX, Modes.SELF | Modes.ADD, Modes.EXPONENTIATE, Modes.MULTIPLY, Modes.RADIX, Modes.ADD, Modes.INCREMENT]; // ->> in order of progression
+      var precision  = 1; // WARN (Lapys) -> Speeds get pessimistic if greater than `1` ->> Greater than `1` if `number` is large enough i.e.: `number === number + 1`
+      var radix      = 10;
+      var self       = true; // ->> Allow increments by updating the `integer` only, not its `increment`
+      var signedness = number < +0.0;
 
       // ...
       for (var index = +0; integer < number; self = self && (modes[index] & Modes.SELF)) {
@@ -601,6 +660,6 @@ var Lapys = new (
         integer = nextInteger
       }
 
-      return signed ? -integer : integer
+      return signedness ? -integer : integer
     }
 })();
