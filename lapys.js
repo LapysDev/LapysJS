@@ -38,18 +38,23 @@ var Lapys = new (
 /* ... */
 (function() {
   /* Constant > ... */
-  var ANY    = new function bruh() {}; // {};                                                                                      // ->> Represents a non-unique value (though its value is distinct)
+  var ANY    = new function() {};                                                                       // ->> Represents a non-unique value (though its value is distinct)
   var ERROR  = {message: "", name: "Error", toString: function toString() { return "Uncaught Error" }}; // ->> Represents an exception instance (always a unique value)
   var GLOBAL = "undefined" === typeof frames ? ("undefined" === typeof self ? ("undefined" === typeof window ? ("undefined" === typeof global ? ("undefined" === typeof globalThis ? (function() { return this })() : globalThis) : global) : window) : self) : frames;
 
   /* Global */
     /* Constants */
     var Constants = {
+      JS_ENVIRONMENT                   : null,
+        JS__NODE__ENVIRONMENT  : 0x1,
+        JS_BROWSER_ENVIRONMENT : 0x2,
+        JS_TERMINAL_ENVIRONMENT: 0x4,
+        JS_WORKER_ENVIRONMENT  : 0x8,
       MAXIMUM_BITWISE_INTEGER          : null,
       MAXIMUM_DEPTH_ARRAY_DEPTH        : null,
       MAXIMUM_DEPTH_ARRAY_LENGTH       : null,
-      MAXIMUM_SAFE_INTEGER             : null,
       MAXIMUM_NUMBER                   : null,
+      MAXIMUM_SAFE_INTEGER             : null,
       MAXIMUM_STATIC_ARRAY_LENGTH      : null,
       MAXIMUM_STATIC_STRING_LENGTH     : null,
       NATIVE_FUNCTION_OBFUSCATED_SOURCE: null,
@@ -529,13 +534,14 @@ var Lapys = new (
 
   /* Modification */
     /* Constants > ... */
+    Constants.JS_ENVIRONMENT                    = "object" === typeof process && "function" === typeof require ? JS__NODE__ENVIRONMENT : "object" === typeof window ? JS_BROWSER_ENVIRONMENT : "function" === typeof importScripts ? JS_WORKER_ENVIRONMENT : JS_TERMINAL_ENVIRONMENT; // UPDATE (Lapys)
+    Constants.MAXIMUM_BITWISE_INTEGER           = 2147483647;                                                                                                                                                                                                                                                                                                            // --> (1 << 31) - 1
     Constants.MAXIMUM_DEPTH_ARRAY_DEPTH         = 255;
     Constants.MAXIMUM_DEPTH_ARRAY_LENGTH        = 255;
+    Constants.MAXIMUM_NUMBER                    = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 1 << 1024
     Constants.MAXIMUM_SAFE_INTEGER              = 9007199254740991;                                                                                                                                                                                                                                                                                                      // --> (1 << 53) - 1
     Constants.MAXIMUM_STATIC_ARRAY_LENGTH       = 255;
     Constants.MAXIMUM_STATIC_STRING_LENGTH      = 255;
-    Constants.MAXIMUM_NUMBER                    = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 1 << 1024
-    Constants.MAXIMUM_BITWISE_INTEGER           = 2147483647;                                                                                                                                                                                                                                                                                                            // --> (1 << 31) - 1
     Constants.NATIVE_FUNCTION_OBFUSCATED_SOURCE = [
       /* --> "[Command Line API]" */ new StaticString('[', 'C', 'o', 'm', 'm', 'a', 'n', 'd', ' ', 'L', 'i', 'n', 'e', ' ', 'A', 'P', 'I', ']'),
       /* --> "[native code]"      */ new StaticString('[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']')
