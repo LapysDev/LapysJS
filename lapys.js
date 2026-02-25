@@ -2,848 +2,1754 @@
   --- NOTE ---
     #Lapys:
       • Code standard built for all JavaScript versions
-      • Native features are validated, or internally shimmed otherwise
+      • Native features are validated (or internally shimmed otherwise)
+      • Unique character generated for validation tests: `ඞ` (or `\u0D9E`)
+      • Unique token generated for throwing `ReferenceError`s: `ㅤ` (or `\u3164`)
 
   --- RULES ---
     #Lapys:
-      • Code indirection should be minimal (due to prototype-chain lookup)
-      • Function arity is a maximum of 255
+      • Enforce maximum of 255 arguments per function
+      • Minimize code indirection (due to prototype-chain lookup)
       • Prefer declared function arguments over the exotic `arguments` object
+
+  --- TODO ---
+    #Lapys:
+      Validate `Function.prototype.toString()` against this ES6+ spoof:
+
+        Function.prototype.toString = ((native, invoke) => {
+          let subnative = new Proxy(native, {apply: (target, that, arguments) => invoke(native, [subnative === that ? native : that, arguments])});
+          return subnative
+        })(Function.prototype.toString, Function.prototype.apply.bind(Function.prototype.apply));
+
+  --- WARN ---
+    #Lapys:
+      Must be evaluated in "Sloppy Mode"
+
+      Negligibly ignored errors:
+      • Out-of-Memory errors raised by a `RecursionOverflowError` instance
+
+      Notably ignored legacy features:
+      • Array.observe(…)
+      • Array.unobserve(…)
+      • Object.getNotifier(…)
+      • Object.observe(…)
+      • Object.prototype.__count__
+      • Object.prototype.__iterator__
+      • Object.prototype.__noSuchMethod__
+      • Object.prototype.toSource(…)
+      • Object.prototype.unwatch(…)
+      • Object.prototype.watch(…)
+      • Object.unobserve(…)
+      • Proxy::hasOwn(…)
+
+      Possibly modified enumerables:
+      • Function.prototype.toString(…)
+      • Object.prototype.toString(…)
+
+      Possibly modified values:
+      • Error.prototype.name
+      • InternalError.prototype.name
+      • Object.prototype.name
+      • RangeError.prototype.name
+      • TypeError.prototype.name
 */
-var Lapys = new (
-  (function() {
-    var author      = "Lapys";
-    var description = "General-purpose standard library for JavaScript";
-    var version     = "'who knows…'";
+var Lapys = (function() {
+  var description = "General-purpose standard library for JavaScript";
+  var version     = "0.0.1";
 
-    return (function(prototype) {
-      function Lapys() {}
+  // ...
+  return new function(prototype) {
+    function Lapys() {}
 
-      Lapys.prototype = prototype;
-      delete prototype["constructor"];
-      delete prototype["__proto__"];
+    Lapys.prototype = prototype;
+    Lapys           = new Lapys;
+    Lapys.__proto__ = null;
 
-      return Lapys
-    })({
-      author     : author,
-      description: description,
-      version    : version,
+    delete prototype["constructor"];
+    delete prototype["__proto__"];
 
-      "__proto__": null,
-      toString   : function() { /* [private code] */ return "Lapys v" + version + "]: " + description }
-    })
-  })()
-);
+    return Lapys
+  }({
+    "__proto__": null,
+    toString   : function toString() { /* [private code] */ return "Lapys v" + version + "]: " + description }
+  })
+})();
+
+/* Namespace > ... */
+var Console = {
+  print: null
+};
+
+var DOM = {
+  createElement         : null,
+  getElementByClassName : null,
+  getElementsByClassName: null,
+  getElementById        : null,
+  getElementsById       : null,
+  getElementBySelector  : null,
+  getElementsBySelector : null,
+  getElementByTagName   : null,
+  getElementsByTagName  : null
+};
+
+var Event = {
+  addListener   : null,
+  removeListener: null
+};
 
 /* ... */
-(function() {
+void function() {
   /* Constant > ... */
-  var ANY    = new function() {};                                                                       // ->> Represents a non-unique value (though its value is distinct)
-  var ERROR  = {message: "", name: "Error", toString: function toString() { return "Uncaught Error" }}; // ->> Represents an exception instance (always a unique value)
-  var GLOBAL = "undefined" === typeof frames ? ("undefined" === typeof self ? ("undefined" === typeof window ? ("undefined" === typeof global ? ("undefined" === typeof globalThis ? (function() { return this })() : globalThis) : global) : window) : self) : frames;
+  var COMPLETED = false;
+  var ERROR     = new PseudoError; // WARN (Lapys) -> Subject to modification when exception raised
+  var GLOBAL    = "undefined" !== typeof this ? this : "undefined" !== typeof globalThis ? globalThis : "undefined" !== typeof frames ? frames : "undefined" !== typeof self ? self : "undefined" !== typeof window ? window : "undefined" !== typeof global ? global : (function() { return this })();
+  var VOID      = /void/; // NOTE (Lapys) -> Invalidity or nullity
 
-  /* Global */
-    /* Constants */
-    var Constants = {
-      JS_ENVIRONMENT                   : null,
-        JS__NODE__ENVIRONMENT  : 0x1,
-        JS_BROWSER_ENVIRONMENT : 0x2,
-        JS_TERMINAL_ENVIRONMENT: 0x4,
-        JS_WORKER_ENVIRONMENT  : 0x8,
-      MAXIMUM_BITWISE_INTEGER          : null,
-      MAXIMUM_DEPTH_ARRAY_DEPTH        : null,
-      MAXIMUM_DEPTH_ARRAY_LENGTH       : null,
-      MAXIMUM_NUMBER                   : null,
-      MAXIMUM_SAFE_INTEGER             : null,
-      MAXIMUM_STATIC_ARRAY_LENGTH      : null,
-      MAXIMUM_STATIC_STRING_LENGTH     : null,
-      NATIVE_FUNCTION_OBFUSCATED_SOURCE: null,
-      TYPE_ERROR                       : null
-    };
+  var RECURSION_OVERFLOW_ERROR = VOID;
+  var REFERENCE_ERROR          = VOID;
+  var TYPE_ERROR               = VOID;
 
-    /* Enumerations ->> Constant used for conditional control flow */
-    var Enumerations = {
-      GETTER      : 0b000001,
-      INACCESSIBLE: 0b000010,
-      INHERITED   : 0b000100,
-      MISSING     : 0b001000,
-      MODIFIED    : 0b010000,
-      SETTER      : 0b100000,
+  /* Class */
+    /* Static Array ->> Array alternative before validating `Array.prototype.push(…)` */
+    function StaticArray(elements) {
+      this.length = arguments.length;
 
-      INSPECT_CONSTRUCTOR: 0b01,
-      INSPECT_METHOD     : 0b10
-    };
-
-    /* Functions ->> Convenience/ safe abstractions over native features */
-    var Functions = {
-      constructorIsNative       : null,
-      functionApply             : null,
-      functionAssertApply       : null,
-      functionBind              : null,
-      functionIsNative          : null,
-      functionToString          : null,
-      inspectFeature            : null,
-      numberFromDigit           : null,
-      numberIsFinite            : null,
-      numberIsInteger           : null,
-      numberIsNaN               : null,
-      numberIsSafe              : null,
-      numberIsSafeInteger       : null,
-      numberToFraction          : null,
-      numberToString            : null,
-      objectDefineProperty      : null,
-      objectGetPrototype        : null,
-      objectRemoveProperty      : null,
-      objectSetPrototype        : null,
-      stringAt                  : null,
-      stringCompare             : null,
-      stringFrom                : null,
-      stringIsDigit             : null,
-      stringIsIdentifier        : null,
-      stringIsIdentifierContinue: null,
-      stringIsIdentifierStart   : null,
-      stringIsReservedIdentifier: null,
-      stringIsSpace             : null
-    };
-
-    /* Mathematics */
-    var Mathematics = {
-      E      : 2.718281828459045,
-      E_GAMMA: 0.57721566490153286060651209008240243104215933593992,
-      ETA    : 245850922 / 156513558,
-      LN10   : 2.302585092994046,
-      LN2    : 0.6931471805599453,
-      LOG10E : 0.4342944819032518,
-      LOG2E  : 1.4426950408889634,
-      PHI    : 1.618033988749894848204586834,
-      PI     : 245850922 / 78256779,
-      SQRT2  : 665857 / 470832,
-      SQRT3  : 97 / 56,
-      SQRT5  : 51841 / 23184,
-
-      abs           : null,
-      acos          : null,
-      acosh         : null,
-      acot          : null,
-      acoth         : null,
-      acsc          : null,
-      acsch         : null,
-      asec          : null,
-      asech         : null,
-      asin          : null,
-      asinh         : null,
-      atan          : null,
-      atanh         : null,
-      beta          : null,
-      cbrt          : null,
-      ceil          : null,
-      clamp         : null,
-      cos           : null,
-      cot           : null,
-      coth          : null,
-      csc           : null,
-      csch          : null,
-      cyl_bessel    : null,
-      cyl_neumann   : null,
-      ellint        : null,
-      exp           : null,
-      expint        : null,
-      fact          : null,
-      floor         : null,
-      gcd           : null,
-      hermite       : null,
-      iabs          : null,
-      icbrt         : null,
-      ipow          : null,
-      iroot         : null,
-      isqrt         : null,
-      jsf           : null,
-      knuth_b       : null,
-      laguerre      : null,
-      lcg           : null,
-      legendre      : null,
-      lerp          : null,
-      ln            : null,
-      log           : null,
-      maximum       : null,
-      minimum       : null,
-      mod           : null,
-      mt            : null,
-      mt32          : null,
-      mt64          : null,
-      mulberry      : null,
-      mulberry32    : null,
-      perc          : null,
-      pow           : null,
-      randint       : null,
-      random        : null,
-      riemann_zeta  : null,
-      root          : null,
-      round         : null,
-      sec           : null,
-      sech          : null,
-      sin           : null,
-      sinh          : null,
-      sph_bessel    : null,
-      sph_legendre  : null,
-      sph_neumann   : null,
-      sqrt          : null,
-      tan           : null,
-      tanh          : null,
-      trunc         : null,
-      wrap          : null,
-      xorshift      : null,
-      xorshift128   : null,
-      xorshift128_p : null, // ->> Default random number generation seed
-      xorshift128_s : null,
-      xorshift256   : null,
-      xorshift256_p : null,
-      xorshift256_ss: null,
-      xorshift_p    : null,
-      xorshift_s    : null,
-      xorshift_ss   : null,
-      xorwow        : null
-    };
-
-    /* Natives ->> Native APIs and features */
-    var Natives = {
-      Function                         : null,
-      Function$prototype$apply         : null,
-      Function$prototype$bind          : null,
-      Function$prototype$toString      : null,
-      Object$create                    : null,
-      Object$defineProperty            : null,
-      Object$getOwnPropertyDescriptor  : null,
-      Object$getPrototypeOf            : null,
-      Object$setPrototypeOf            : null,
-      Object$prototype$hasOwnProperty  : null,
-      Object$prototype$__defineGetter__: null,
-      Object$prototype$__defineSetter__: null,
-      Object$prototype$__lookupGetter__: null,
-      Object$prototype$__lookupSetter__: null,
-      String$prototype$charAt          : null
-    };
-
-    /* Supports ->> Supported native APIs and features */
-    var Supports = {
-      Element$defineProperty           : false,
-      Element$getOwnPropertyDescriptor : false,
-      Function$prototype$apply         : false,
-      Function$prototype$bind          : false,
-      Object$create                    : false,
-      Object$defineProperty            : false,
-      Object$getOwnPropertyDescriptor  : false,
-      Object$getPrototypeOf            : false,
-      Object$setPrototypeOf            : false,
-      Object$prototype$hasOwnProperty  : false,
-      Object$prototype$__defineGetter__: false,
-      Object$prototype$__defineSetter__: false,
-      Object$prototype$__lookupGetter__: false,
-      Object$prototype$__lookupSetter__: false,
-      Object$prototype$__proto__       : false,
-      String$prototype$charAt          : false
-    };
-
-  /* Class > ... */
-    // Depth Array
-    window.DepthArray = DepthArray;
-    Object.defineProperty(Constants, "MAXIMUM_DEPTH_ARRAY_DEPTH", {get: function() { return 3 }});
-    Object.defineProperty(Constants, "MAXIMUM_DEPTH_ARRAY_LENGTH", {get: function() { return 3 }});
-    function DepthArray(elements) {
-      for (var index = +0, length = arguments.length; index !== length; ++index)
-      this.add(arguments[index])
+      while (arguments.length--) // ->> Assumed `arguments.length < 256`
+      this[arguments.length] = arguments[arguments.length]
     }
-      DepthArray.prototype = {
-        0: undefined, 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined, 6: undefined, 7: undefined, 8: undefined, 9: undefined, 10: undefined, 11: undefined, 12: undefined, 13: undefined, 14: undefined, 15: undefined, 16: undefined, 17: undefined, 18: undefined, 19: undefined, 20: undefined, 21: undefined, 22: undefined, 23: undefined, 24: undefined, 25: undefined, 26: undefined, 27: undefined, 28: undefined, 29: undefined, 30: undefined, 31: undefined, 32: undefined, 33: undefined, 34: undefined, 35: undefined, 36: undefined, 37: undefined, 38: undefined, 39: undefined, 40: undefined, 41: undefined, 42: undefined, 43: undefined, 44: undefined, 45: undefined, 46: undefined, 47: undefined, 48: undefined, 49: undefined, 50: undefined, 51: undefined, 52: undefined, 53: undefined, 54: undefined, 55: undefined, 56: undefined, 57: undefined, 58: undefined, 59: undefined, 60: undefined, 61: undefined, 62: undefined, 63: undefined, 64: undefined, 65: undefined, 66: undefined, 67: undefined, 68: undefined, 69: undefined, 70: undefined, 71: undefined, 72: undefined, 73: undefined, 74: undefined, 75: undefined, 76: undefined, 77: undefined, 78: undefined, 79: undefined, 80: undefined, 81: undefined, 82: undefined, 83: undefined, 84: undefined, 85: undefined, 86: undefined, 87: undefined, 88: undefined, 89: undefined, 90: undefined, 91: undefined, 92: undefined, 93: undefined, 94: undefined, 95: undefined, 96: undefined, 97: undefined, 98: undefined, 99: undefined, 100: undefined, 101: undefined, 102: undefined, 103: undefined, 104: undefined, 105: undefined, 106: undefined, 107: undefined, 108: undefined, 109: undefined, 110: undefined, 111: undefined, 112: undefined, 113: undefined, 114: undefined, 115: undefined, 116: undefined, 117: undefined, 118: undefined, 119: undefined, 120: undefined, 121: undefined, 122: undefined, 123: undefined, 124: undefined, 125: undefined, 126: undefined, 127: undefined, 128: undefined, 129: undefined, 130: undefined, 131: undefined, 132: undefined, 133: undefined, 134: undefined, 135: undefined, 136: undefined, 137: undefined, 138: undefined, 139: undefined, 140: undefined, 141: undefined, 142: undefined, 143: undefined, 144: undefined, 145: undefined, 146: undefined, 147: undefined, 148: undefined, 149: undefined, 150: undefined, 151: undefined, 152: undefined, 153: undefined, 154: undefined, 155: undefined, 156: undefined, 157: undefined, 158: undefined, 159: undefined, 160: undefined, 161: undefined, 162: undefined, 163: undefined, 164: undefined, 165: undefined, 166: undefined, 167: undefined, 168: undefined, 169: undefined, 170: undefined, 171: undefined, 172: undefined, 173: undefined, 174: undefined, 175: undefined, 176: undefined, 177: undefined, 178: undefined, 179: undefined, 180: undefined, 181: undefined, 182: undefined, 183: undefined, 184: undefined, 185: undefined, 186: undefined, 187: undefined, 188: undefined, 189: undefined, 190: undefined, 191: undefined, 192: undefined, 193: undefined, 194: undefined, 195: undefined, 196: undefined, 197: undefined, 198: undefined, 199: undefined, 200: undefined, 201: undefined, 202: undefined, 203: undefined, 204: undefined, 205: undefined, 206: undefined, 207: undefined, 208: undefined, 209: undefined, 210: undefined, 211: undefined, 212: undefined, 213: undefined, 214: undefined, 215: undefined, 216: undefined, 217: undefined, 218: undefined, 219: undefined, 220: undefined, 221: undefined, 222: undefined, 223: undefined, 224: undefined, 225: undefined, 226: undefined, 227: undefined, 228: undefined, 229: undefined, 230: undefined, 231: undefined, 232: undefined, 233: undefined, 234: undefined, 235: undefined, 236: undefined, 237: undefined, 238: undefined, 239: undefined, 240: undefined, 241: undefined, 242: undefined, 243: undefined, 244: undefined, 245: undefined, 246: undefined, 247: undefined, 248: undefined, 249: undefined, 250: undefined, 251: undefined, 252: undefined, 253: undefined, 254: undefined, 255: undefined,
-        depth : +0,
-        length: +0,
+      StaticArray.prototype = {
+        0: null, 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null, 11: null, 12: null, 13: null, 14: null, 15: null, 16: null, 17: null, 18: null, 19: null, 20: null, 21: null, 22: null, 23: null, 24: null, 25: null, 26: null, 27: null, 28: null, 29: null, 30: null, 31: null, 32: null, 33: null, 34: null, 35: null, 36: null, 37: null, 38: null, 39: null, 40: null, 41: null, 42: null, 43: null, 44: null, 45: null, 46: null, 47: null, 48: null, 49: null, 50: null, 51: null, 52: null, 53: null, 54: null, 55: null, 56: null, 57: null, 58: null, 59: null, 60: null, 61: null, 62: null, 63: null, 64: null, 65: null, 66: null, 67: null, 68: null, 69: null, 70: null, 71: null, 72: null, 73: null, 74: null, 75: null, 76: null, 77: null, 78: null, 79: null, 80: null, 81: null, 82: null, 83: null, 84: null, 85: null, 86: null, 87: null, 88: null, 89: null, 90: null, 91: null, 92: null, 93: null, 94: null, 95: null, 96: null, 97: null, 98: null, 99: null, 100: null, 101: null, 102: null, 103: null, 104: null, 105: null, 106: null, 107: null, 108: null, 109: null, 110: null, 111: null, 112: null, 113: null, 114: null, 115: null, 116: null, 117: null, 118: null, 119: null, 120: null, 121: null, 122: null, 123: null, 124: null, 125: null, 126: null, 127: null, 128: null, 129: null, 130: null, 131: null, 132: null, 133: null, 134: null, 135: null, 136: null, 137: null, 138: null, 139: null, 140: null, 141: null, 142: null, 143: null, 144: null, 145: null, 146: null, 147: null, 148: null, 149: null, 150: null, 151: null, 152: null, 153: null, 154: null, 155: null, 156: null, 157: null, 158: null, 159: null, 160: null, 161: null, 162: null, 163: null, 164: null, 165: null, 166: null, 167: null, 168: null, 169: null, 170: null, 171: null, 172: null, 173: null, 174: null, 175: null, 176: null, 177: null, 178: null, 179: null, 180: null, 181: null, 182: null, 183: null, 184: null, 185: null, 186: null, 187: null, 188: null, 189: null, 190: null, 191: null, 192: null, 193: null, 194: null, 195: null, 196: null, 197: null, 198: null, 199: null, 200: null, 201: null, 202: null, 203: null, 204: null, 205: null, 206: null, 207: null, 208: null, 209: null, 210: null, 211: null, 212: null, 213: null, 214: null, 215: null, 216: null, 217: null, 218: null, 219: null, 220: null, 221: null, 222: null, 223: null, 224: null, 225: null, 226: null, 227: null, 228: null, 229: null, 230: null, 231: null, 232: null, 233: null, 234: null, 235: null, 236: null, 237: null, 238: null, 239: null, 240: null, 241: null, 242: null, 243: null, 244: null, 245: null, 246: null, 247: null, 248: null, 249: null, 250: null, 251: null, 252: null, 253: null, 254: null, 255: null,
+        length: 0,
 
-        add: function add(elements) {
-          for (var index = +0, length = arguments.length; index !== length; ++index) {
-            var next = this.next();
+        assign: function assign(index, element) {
+          if (index < this.length)
+          this[index] = element;
 
-            // ...
-            // console.log("...", next);
-            if (null === next || Constants.MAXIMUM_DEPTH_ARRAY_LENGTH === next.length) {
-              var array = new DepthArray();
+          return element
+        },
 
-              // ...
-              if (Constants.MAXIMUM_DEPTH_ARRAY_DEPTH === this.depth) return null;
-              for (var count = ++this.depth; count; --count) { array.add(new DepthArray()); array = array[0] }
+        at: function at(index) {
+          return index > this.length ? VOID : this[index]
+        },
 
-              array.add(arguments[index]);
-              this[0]     = new DepthArray(this[0], this[1], this[2]/*, this[3], this[4], this[5], this[6], this[7], this[8], this[9], this[10], this[11], this[12], this[13], this[14], this[15], this[16], this[17], this[18], this[19], this[20], this[21], this[22], this[23], this[24], this[25], this[26], this[27], this[28], this[29], this[30], this[31], this[32], this[33], this[34], this[35], this[36], this[37], this[38], this[39], this[40], this[41], this[42], this[43], this[44], this[45], this[46], this[47], this[48], this[49], this[50], this[51], this[52], this[53], this[54], this[55], this[56], this[57], this[58], this[59], this[60], this[61], this[62], this[63], this[64], this[65], this[66], this[67], this[68], this[69], this[70], this[71], this[72], this[73], this[74], this[75], this[76], this[77], this[78], this[79], this[80], this[81], this[82], this[83], this[84], this[85], this[86], this[87], this[88], this[89], this[90], this[91], this[92], this[93], this[94], this[95], this[96], this[97], this[98], this[99], this[100], this[101], this[102], this[103], this[104], this[105], this[106], this[107], this[108], this[109], this[110], this[111], this[112], this[113], this[114], this[115], this[116], this[117], this[118], this[119], this[120], this[121], this[122], this[123], this[124], this[125], this[126], this[127], this[128], this[129], this[130], this[131], this[132], this[133], this[134], this[135], this[136], this[137], this[138], this[139], this[140], this[141], this[142], this[143], this[144], this[145], this[146], this[147], this[148], this[149], this[150], this[151], this[152], this[153], this[154], this[155], this[156], this[157], this[158], this[159], this[160], this[161], this[162], this[163], this[164], this[165], this[166], this[167], this[168], this[169], this[170], this[171], this[172], this[173], this[174], this[175], this[176], this[177], this[178], this[179], this[180], this[181], this[182], this[183], this[184], this[185], this[186], this[187], this[188], this[189], this[190], this[191], this[192], this[193], this[194], this[195], this[196], this[197], this[198], this[199], this[200], this[201], this[202], this[203], this[204], this[205], this[206], this[207], this[208], this[209], this[210], this[211], this[212], this[213], this[214], this[215], this[216], this[217], this[218], this[219], this[220], this[221], this[222], this[223], this[224], this[225], this[226], this[227], this[228], this[229], this[230], this[231], this[232], this[233], this[234], this[235], this[236], this[237], this[238], this[239], this[240], this[241], this[242], this[243], this[244], this[245], this[246], this[247], this[248], this[249], this[250], this[251], this[252], this[253], this[254], this[255]*/);
-              this[1]     = array;
-              this[2]     = ANY;
-              this.length = 2;
+        includes: function includes(element) {
+          return VOID !== this.index(element)
+        },
 
-              break
-            }
+        index: function index(element) {
+          for (var index = this.length; index; )
+          if (element === this[--index]) return index;
 
-            next[next.length++] = arguments[index]
+          return VOID
+        },
+
+        pop: function pop() {
+          return 0 === this.length ? VOID : this[--this.length]
+        },
+
+        push: function push(elements) {
+          if (Constant.MAXIMUM_STATIC_ARRAY_LENGTH < arguments.length + this.length)
+          return this.length;
+
+          // ...
+          for (var index = arguments.length; index--; )
+          this[index + this.length] = arguments[index];
+
+          return (this.length += arguments.length)
+        },
+
+        splice: function splice(index, elements) /* ->> Expects `index <= this.length` */ {
+          if (Constant.MAXIMUM_STATIC_ARRAY_LENGTH >= arguments.length + this.length) {
+            arguments.length -= 1;
+
+            for (var start = this.length, end = start + arguments.length; index !== start--; )
+            this[--end] = this[start];
+
+            index       += arguments.length;
+            this.length += arguments.length;
+
+            while (arguments.length)
+            this[--index] = arguments[arguments.length--]
           }
 
           return this
-        },
-
-        at: function at(index) {},
-        includes: function includes(element) {},
-        next: function next() {
-          var index   = this.depth - 1;
-          var indexes = new Array(this.depth).fill(0);//new StaticArray().fill(+0, this.depth);
-
-          // ...
-          for (var count = 20; count; --count) {
-            var array = this;
-
-            // ...
-            // console.log("...", [...indexes]);
-            for (var depth = this.depth, subindex = +0; depth; --depth) array = array[indexes[subindex++]];
-
-            if (ANY === array) {
-              var count = this.depth;
-              var subarray = this;
-              var dubdub = new DepthArray(), dubdubdub = dubdub;
-
-              for (var depth = this.depth, subindex = +0; --depth; ) {
-                dubdubdub.add(new DepthArray());
-                dubdubdub = dubdubdub[0];
-                subarray = subarray[indexes[subindex++]]
-              }
-              subarray[indexes[this.depth - 1]] = dubdub;
-              if (Constants.MAXIMUM_DEPTH_ARRAY_LENGTH - 1 !== indexes[this.depth - 1]) subarray[++indexes[this.depth - 1]] = ANY;
-
-              return dubdub
-            }
-            if (+0 === this.depth || Constants.MAXIMUM_DEPTH_ARRAY_LENGTH !== array.length) return array;
-            if (Constants.MAXIMUM_DEPTH_ARRAY_LENGTH - 1 === indexes[index]) { if (+0 === index) return array; --index; continue }
-
-            ++indexes[index]
-          }
-
-          return null
         }
       };
 
-    // Error
-    function Error(name, message) {
-      ERROR.message = null === message ? "" : message;
-
-      switch (name) {
-        case Enumerations.GETTER                      : ERROR.name = "UnexpectedGetterError";     break;
-        case Enumerations.GETTER | Enumerations.SETTER: ERROR.name = "UnexpectedPropertyError";   break;
-        case Enumerations.INACCESSIBLE                : ERROR.name = "InaccessiblePropertyError"; break;
-        case Enumerations.INHERITED                   : ERROR.name = "InheritedPropertyError";    break;
-        case Enumerations.MISSING                     : ERROR.name = "MissingFeatureError";       break;
-        case Enumerations.MODIFIED                    : ERROR.name = "ModifiedFeatureError";      break;
-        case Enumerations.SETTER                      : ERROR.name = "UnexpectedSetterError";     break;
-        case 0x0                                      : ERROR.name = Error.prototype.name;        break;
-        default                                       : ERROR.name = name
-      }
-
-      return ERROR
+    /* Assertion Error */
+    function AssertionError(message, name) {
+      return new Error("Assertion failed" + (arguments.length > 0 ? ": " + message : ""), arguments.length > 1 ? name : "AssertionError")
     }
-      Error.prototype = {
-        message: null,
-        name   : "Error",
 
-        toString: function toString() { return '[' + ERROR.name + ']' + (null === ERROR.message || "" === ERROR.message ? "" : ": ") + ERROR.message }
+    /* CSS Selector Descriptor */
+    function CSSSelectorDescriptor(source) {
+      this.attributes = new DepthArray;
+      this.classList  = new DepthArray;
+      this.source     = source
+    }
+      CSSSelectorDescriptor.prototype = {
+        attributes: new StaticArray,
+        classList : new StaticArray,
+        id        : null,
+        source    : "",
+        tagName   : null
       };
 
-    // Fraction
+    /* Depth Array ->> Alternative to `class StaticArray` for variable length beyond `Constant.MAXIMUM_STATIC_ARRAY_LENGTH` */
+    function DepthArray(elements) {
+      for (var length = arguments.length, index = 0; index !== length; ++index)
+      this.push(arguments[index]) // ->> Assumed `Constant.MAXIMUM_DEPTH_ARRAY_LENGTH > 1`
+    }
+      DepthArray.prototype = {
+        0: null, 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null, 11: null, 12: null, 13: null, 14: null, 15: null, 16: null, 17: null, 18: null, 19: null, 20: null, 21: null, 22: null, 23: null, 24: null, 25: null, 26: null, 27: null, 28: null, 29: null, 30: null, 31: null, 32: null, 33: null, 34: null, 35: null, 36: null, 37: null, 38: null, 39: null, 40: null, 41: null, 42: null, 43: null, 44: null, 45: null, 46: null, 47: null, 48: null, 49: null, 50: null, 51: null, 52: null, 53: null, 54: null, 55: null, 56: null, 57: null, 58: null, 59: null, 60: null, 61: null, 62: null, 63: null, 64: null, 65: null, 66: null, 67: null, 68: null, 69: null, 70: null, 71: null, 72: null, 73: null, 74: null, 75: null, 76: null, 77: null, 78: null, 79: null, 80: null, 81: null, 82: null, 83: null, 84: null, 85: null, 86: null, 87: null, 88: null, 89: null, 90: null, 91: null, 92: null, 93: null, 94: null, 95: null, 96: null, 97: null, 98: null, 99: null, 100: null, 101: null, 102: null, 103: null, 104: null, 105: null, 106: null, 107: null, 108: null, 109: null, 110: null, 111: null, 112: null, 113: null, 114: null, 115: null, 116: null, 117: null, 118: null, 119: null, 120: null, 121: null, 122: null, 123: null, 124: null, 125: null, 126: null, 127: null, 128: null, 129: null, 130: null, 131: null, 132: null, 133: null, 134: null, 135: null, 136: null, 137: null, 138: null, 139: null, 140: null, 141: null, 142: null, 143: null, 144: null, 145: null, 146: null, 147: null, 148: null, 149: null, 150: null, 151: null, 152: null, 153: null, 154: null, 155: null, 156: null, 157: null, 158: null, 159: null, 160: null, 161: null, 162: null, 163: null, 164: null, 165: null, 166: null, 167: null, 168: null, 169: null, 170: null, 171: null, 172: null, 173: null, 174: null, 175: null, 176: null, 177: null, 178: null, 179: null, 180: null, 181: null, 182: null, 183: null, 184: null, 185: null, 186: null, 187: null, 188: null, 189: null, 190: null, 191: null, 192: null, 193: null, 194: null, 195: null, 196: null, 197: null, 198: null, 199: null, 200: null, 201: null, 202: null, 203: null, 204: null, 205: null, 206: null, 207: null, 208: null, 209: null, 210: null, 211: null, 212: null, 213: null, 214: null, 215: null, 216: null, 217: null, 218: null, 219: null, 220: null, 221: null, 222: null, 223: null, 224: null, 225: null, 226: null, 227: null, 228: null, 229: null, 230: null, 231: null, 232: null, 233: null, 234: null, 235: null, 236: null, 237: null, 238: null, 239: null, 240: null, 241: null, 242: null, 243: null, 244: null, 245: null, 246: null, 247: null, 248: null, 249: null, 250: null, 251: null, 252: null, 253: null, 254: null, 255: null,
+        depth : 0,
+        length: 0,
+        parent: null,
+
+        assign: function assign(index, element) /* ->> Repeated code: see `DepthArray.prototype.at(…)` */ {
+          if (index < this.length) {
+            var array    = this;
+            var capacity = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+            // ...
+            while (capacity < this.length)
+            capacity *= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+            while (array.depth) {
+              capacity /= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+              array     = array[Mathematics.trunc(index / capacity)];
+              index    -= capacity * Mathematics.trunc(index / capacity)
+            }
+
+            array[index] = element
+          }
+
+          return element
+        },
+
+        at: function at(index) /* ->> Repeated code: see `DepthArray.prototype.assign(…)` */ {
+          if (index > this.length) return VOID;
+
+          var array    = this;
+          var capacity = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+          // ...
+          while (capacity < this.length)
+          capacity *= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+          while (array.depth) {
+            capacity /= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+            array     = array[Mathematics.trunc(index / capacity)];
+            index    -= capacity * Mathematics.trunc(index / capacity)
+          }
+
+          return array[index]
+        },
+
+        includes: function includes(element) {
+          return VOID !== this.index(element)
+        },
+
+        index: function index(element) {
+          for (var index = this.length; index; )
+          if (element === this.at(--index)) return index;
+
+          return VOID
+        },
+
+        pop: function pop() {
+          if (0 === this.length) return VOID;
+          if (Constant.MAXIMUM_DEPTH_ARRAY_LENGTH > this.length) return this[--this.length];
+
+          /* ... */
+          var array    = this;
+          var capacity = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+          var element  = VOID;
+
+          // ...
+          while (capacity < this.length)
+          capacity *= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+          if (this.length - (capacity / Constant.MAXIMUM_DEPTH_ARRAY_LENGTH) === 1) {
+            element      = this[1];
+            this.depth  -= 1;
+            this.length -= 1;
+
+            for (var depth = element.depth; depth--; ) element = element[0];
+            for (var index = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH; index--; ) this[index] = this[0][index];
+
+            return element[0]
+          }
+
+          for (var depth = this.depth; depth--; ) {
+            var lastIndex = array.length === capacity ? Constant.MAXIMUM_DEPTH_ARRAY_LENGTH - 1 : -1;
+
+            // ...
+            capacity /= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+            lastIndex = lastIndex === -1 ? Mathematics.trunc(array.length / capacity) : lastIndex;
+
+            array = array[lastIndex]
+          }
+
+          element                 = array[array.length - 1]
+          array[array.length - 1] = VOID;
+
+          while (null !== array) {
+            --array.length;
+            array = array.parent
+          }
+
+          return element
+        },
+
+        push: function push(elements) {
+          for (var length = arguments.length, index = 0; index !== length; ++index, ++this.length) {
+            var array    = this;
+            var capacity = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+            // ...
+            for (var depth = this.depth; depth--; )
+            capacity *= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+            for (var depth = this.depth; depth--; ) {
+              var lastIndex = array.length === capacity ? Constant.MAXIMUM_DEPTH_ARRAY_LENGTH - 1 : -1;
+
+              // ...
+              capacity /= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+              lastIndex = lastIndex === -1 ? Mathematics.trunc(array.length / capacity) : lastIndex;
+
+              if (Constant.MAXIMUM_DEPTH_ARRAY_LENGTH !== lastIndex + 1)
+              array[lastIndex + 1] = VOID;
+
+              if (VOID === array[lastIndex]) {
+                var subarray = new DepthArray;
+
+                subarray[0]      = VOID;
+                subarray.depth   = depth;
+                subarray.parent  = array;
+                array[lastIndex] = subarray
+              }
+
+              array = array[lastIndex]
+            }
+
+            if (Constant.MAXIMUM_DEPTH_ARRAY_LENGTH === array.length) {
+              var full     = false;
+              var subarray = new DepthArray;
+
+              // ...
+              capacity = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH;
+
+              while (capacity === array.length) {
+                if (this === array) { full = true; break }
+                array     = array.parent;
+                capacity *= Constant.MAXIMUM_DEPTH_ARRAY_LENGTH
+              }
+
+              if (full) {
+                array           = new DepthArray;
+                array.depth     = subarray.depth  = this.depth;
+                array.parent    = subarray.parent = this;
+                subarray.length = this.length;
+
+                for (var subindex = Constant.MAXIMUM_DEPTH_ARRAY_LENGTH; subindex--; )
+                subarray[subindex] = this[subindex];
+
+                this[0] = subarray;
+                this[1] = array;
+                ++this.depth;
+
+                for (var depth = this.depth; --depth; ) {
+                  subarray        = new DepthArray;
+                  subarray.depth  = array.depth - 1;
+                  subarray.parent = array;
+
+                  array[0] = subarray;
+                  array    = subarray
+                }
+              }
+            }
+
+            if (Constant.MAXIMUM_DEPTH_ARRAY_LENGTH !== array.length + 1) array[array.length + 1] = VOID;
+            for (array[array.length] = arguments[index]; this !== array; array = array.parent) ++array.length
+          }
+
+          return this.length
+        },
+
+        splice: function splice(index, elements) /* ->> Expects `index <= this.length` */ {
+          arguments.length -= 1;
+          index            += arguments.length;
+
+          for (var count = arguments.length, subindex = this.length - count; count; --count, ++subindex)
+          this.push(this.at(subindex));
+
+          for (var subindex = this.length - arguments.length; index <= subindex; --subindex)
+          this.assign(subindex, this.at(subindex - arguments.length));
+
+          while (arguments.length)
+          this.assign(--index, arguments[arguments.length--]);
+
+          return this
+        }
+      };
+
+    /* DOM Tree */
+    function DOMTree() {}
+      DOMTree.prototype = DepthArray.prototype;
+
+    /* Error ->> Abstraction wrapper over `class Error` */
+    function Error(message, name) {
+      return new TypeError(message, arguments.length > 1 ? name : "Error")
+    }
+
+    /* Fraction */
     function Fraction(whole, numerator, denominator) {
       this.denominator = denominator;
       this.numerator   = numerator;
       this.whole       = whole
     }
       Fraction.prototype = {
-        denominator: +0,
-        numerator  : +0,
-        whole      : +0,
+        denominator: 0,
+        numerator  : 0,
+        whole      : 0,
 
-        toImproper: function toImproper() { if (+0 !== this.whole) { this.numerator += this.denominator * this.whole; this.whole = +0 } return this },
-        toMixed   : function toMixed() { if (+0 === this.whole) { var fraction = Functions.numberToFraction(this.numerator / this.denominator); this.denominator = fraction.denominator; this.numerator = fraction.numerator; this.whole = fraction.whole } return this }
+        toImproper: function toImproper() {
+          this.numerator += this.denominator * this.whole;
+          this.whole      = 0;
+
+          return this
+        },
+
+        toMixed: function toMixed() {
+          if (0 === this.whole) {
+            var fraction = Functions.numberToFraction(this.numerator / this.denominator);
+
+            this.denominator = fraction.denominator;
+            this.numerator   = fraction.numerator;
+            this.whole       = fraction.whole
+          }
+
+          return this
+        }
       };
 
-    // Static Array ->> Arrays whose elements are already defined on its `prototype`
-    function StaticArray(elements) {
-      var length = arguments.length;
+    /* Pseudo ->> Dummy class type for specific native validations */
+    function Pseudo() {}
 
-      for (var index = (this.length = length < 255 ? length : 255); index--; )
-      this[index] = arguments[index]
+    /* Pseudo Error ->> Dummy exception for triggering `catch` blocks only */
+    function PseudoError() {
+      return ERROR
     }
-      StaticArray.prototype = {
-        0: undefined, 1: undefined, 2: undefined, 3: undefined, 4: undefined, 5: undefined, 6: undefined, 7: undefined, 8: undefined, 9: undefined, 10: undefined, 11: undefined, 12: undefined, 13: undefined, 14: undefined, 15: undefined, 16: undefined, 17: undefined, 18: undefined, 19: undefined, 20: undefined, 21: undefined, 22: undefined, 23: undefined, 24: undefined, 25: undefined, 26: undefined, 27: undefined, 28: undefined, 29: undefined, 30: undefined, 31: undefined, 32: undefined, 33: undefined, 34: undefined, 35: undefined, 36: undefined, 37: undefined, 38: undefined, 39: undefined, 40: undefined, 41: undefined, 42: undefined, 43: undefined, 44: undefined, 45: undefined, 46: undefined, 47: undefined, 48: undefined, 49: undefined, 50: undefined, 51: undefined, 52: undefined, 53: undefined, 54: undefined, 55: undefined, 56: undefined, 57: undefined, 58: undefined, 59: undefined, 60: undefined, 61: undefined, 62: undefined, 63: undefined, 64: undefined, 65: undefined, 66: undefined, 67: undefined, 68: undefined, 69: undefined, 70: undefined, 71: undefined, 72: undefined, 73: undefined, 74: undefined, 75: undefined, 76: undefined, 77: undefined, 78: undefined, 79: undefined, 80: undefined, 81: undefined, 82: undefined, 83: undefined, 84: undefined, 85: undefined, 86: undefined, 87: undefined, 88: undefined, 89: undefined, 90: undefined, 91: undefined, 92: undefined, 93: undefined, 94: undefined, 95: undefined, 96: undefined, 97: undefined, 98: undefined, 99: undefined, 100: undefined, 101: undefined, 102: undefined, 103: undefined, 104: undefined, 105: undefined, 106: undefined, 107: undefined, 108: undefined, 109: undefined, 110: undefined, 111: undefined, 112: undefined, 113: undefined, 114: undefined, 115: undefined, 116: undefined, 117: undefined, 118: undefined, 119: undefined, 120: undefined, 121: undefined, 122: undefined, 123: undefined, 124: undefined, 125: undefined, 126: undefined, 127: undefined, 128: undefined, 129: undefined, 130: undefined, 131: undefined, 132: undefined, 133: undefined, 134: undefined, 135: undefined, 136: undefined, 137: undefined, 138: undefined, 139: undefined, 140: undefined, 141: undefined, 142: undefined, 143: undefined, 144: undefined, 145: undefined, 146: undefined, 147: undefined, 148: undefined, 149: undefined, 150: undefined, 151: undefined, 152: undefined, 153: undefined, 154: undefined, 155: undefined, 156: undefined, 157: undefined, 158: undefined, 159: undefined, 160: undefined, 161: undefined, 162: undefined, 163: undefined, 164: undefined, 165: undefined, 166: undefined, 167: undefined, 168: undefined, 169: undefined, 170: undefined, 171: undefined, 172: undefined, 173: undefined, 174: undefined, 175: undefined, 176: undefined, 177: undefined, 178: undefined, 179: undefined, 180: undefined, 181: undefined, 182: undefined, 183: undefined, 184: undefined, 185: undefined, 186: undefined, 187: undefined, 188: undefined, 189: undefined, 190: undefined, 191: undefined, 192: undefined, 193: undefined, 194: undefined, 195: undefined, 196: undefined, 197: undefined, 198: undefined, 199: undefined, 200: undefined, 201: undefined, 202: undefined, 203: undefined, 204: undefined, 205: undefined, 206: undefined, 207: undefined, 208: undefined, 209: undefined, 210: undefined, 211: undefined, 212: undefined, 213: undefined, 214: undefined, 215: undefined, 216: undefined, 217: undefined, 218: undefined, 219: undefined, 220: undefined, 221: undefined, 222: undefined, 223: undefined, 224: undefined, 225: undefined, 226: undefined, 227: undefined, 228: undefined, 229: undefined, 230: undefined, 231: undefined, 232: undefined, 233: undefined, 234: undefined, 235: undefined, 236: undefined, 237: undefined, 238: undefined, 239: undefined, 240: undefined, 241: undefined, 242: undefined, 243: undefined, 244: undefined, 245: undefined, 246: undefined, 247: undefined, 248: undefined, 249: undefined, 250: undefined, 251: undefined, 252: undefined, 253: undefined, 254: undefined, 255: undefined,
-        length: +0,
+      PseudoError.prototype = {
+        message: "",
+        name   : "Error"
+      };
 
-        add: function add(elements) {
-          var length = arguments.length;
+    /* Native Assertion Error ->> `nativeof(…)` exception */
+    function NativeAssertionError(message, name) {
+      return new Error(message, arguments.length > 1 ? name : "NativeAssertionError")
+    }
 
-          //...
-          if (length + this.length > 255) return null;
-          for (var index = +0; index !== length; ++index) this[this.length++] = arguments[index];
+    /* Native Assertion Promise ->> `nativeof(…)` evaluation */
+    function NativeAssertionPromise(object, key, options, name) {
+      this.object      = object;
+      this.objectName  = name;
+      this.options     = options;
+      this.propertyKey = key
+    }
+      NativeAssertionPromise.prototype = {
+        native     : VOID,
+        object     : VOID,
+        objectName : null,
+        onerror    : function onerror(object, key, options, native) { return ERROR },
+        onfail     : null,
+        onpass     : null,
+        options    : 0x0000000,
+        propertyKey: null,
 
-          return this
-        },
+        "catch": (function() {
+          // ... ->> Strictly compare function `source` to its native defaults
+          function isNativeFunctionSource(promise, source) {
+            for (var index = Constant.NATIVE_FUNCTION_SOURCE.length; index; ) {
+              var nativeSource = Constant.NATIVE_FUNCTION_SOURCE[--index].toString();
 
-        empty: function empty() {
-          this.length = +0;
-          return this
-        },
+              if ( // ->> Expects `promise.options & (Enumeration.NAMED_FUNCTION | Enumeration.UNNAMED_FUNCTION)`
+                (((promise.options & Enumeration.UNNAMED_FUNCTION) || false == (promise.options & Enumeration.NAMED_FUNCTION)) && (
+                  source === "function() { "        + nativeSource + " }"  ||
+                  source === "function() {\n    "   + nativeSource + "\n}" ||
+                  source === "\nfunction() {\n    " + nativeSource + "\n}\n"
+                )) ||
+                (((promise.options & Enumeration.NAMED_FUNCTION) || false == (promise.options & Enumeration.UNNAMED_FUNCTION)) && (
+                  source === "function "   + promise.propertyKey + "() { "      + nativeSource + " }"  ||
+                  source === "function "   + promise.propertyKey + "() {\n    " + nativeSource + "\n}" ||
+                  source === "\nfunction " + promise.propertyKey + "() {\n    " + nativeSource + "\n}\n"
+                ))
+              ) return true
+            }
 
-        fill: function fill(value, count) {
-          if (count < 255) {
-            for (var index = (this.length = +0); count !== index; ++index)
-            this[index] = value;
+            return false
+          }
+
+          // ...
+          return function(handler) {
+            this.onfail = handler;
+
+            try { this.native = this.onpass(this.object, this.propertyKey, this.options, this.native) }
+            catch (error) { this.native = ERROR }
+
+            this.onpass = null;
+
+            // ... ->> `NativeAssertionPromise::onpass(…)` failed
+            if (ERROR === this.native)
+            return this["throw"]();
+
+            // ... ->> Sloppy native assertion
+            if (false === (
+              ((this.options & Enumeration.AS_BIGINT)             && ("bigint"    === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_BOOLEAN)            && ("boolean"   === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_CLASS_FUNCTION)     && ("function"  === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_DATE)               && ("date"      === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_FUNCTION)           && ("function"  === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_GENERATOR_FUNCTION) && ("function"  === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_GETTER_FUNCTION)    && ("function"  === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_NUMBER)             && ("number"    === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_OBJECT)             && ("object"    === typeof this.native && null !== this.native))            ||
+              ((this.options & Enumeration.AS_OBJECT_FUNCTION)    && ("function"  === typeof this.native || "object" === typeof this.native)) ||
+              ((this.options & Enumeration.AS_SETTER_FUNCTION)    && ("function"  === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_STRING)             && ("string"    === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_SYMBOL)             && ("symbol"    === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_UNDEFINED)          && ("undefined" === typeof this.native))                                    ||
+              ((this.options & Enumeration.AS_UNKNOWN)            && ("unknown"   === typeof this.native))                                    ||
+
+              ((this.options & Enumeration.AS_NULL)     && null === this.native) ||
+              ((this.options & Enumeration.AS_PROPERTY) && false === this.propertyKey in this.object)
+            )) return this["throw"]();
+
+            // ... ->> Strict native assertion
+            if (this.options & Enumeration.STRICT) {
+              // ... ->> Assert property descriptor
+              if (this.options & (Enumeration.CONFIGURABLE_PROPERTY | Enumeration.ENUMERABLE_PROPERTY | Enumeration.GETTER_PROPERTY | Enumeration.OWN_PROPERTY | Enumeration.SETTER_PROPERTY | Enumeration.VALUE_PROPERTY | Enumeration.WRITABLE_PROPERTY)) {
+                var descriptor = Functions.describeProperty(this.object, this.propertyKey);
+
+                if (
+                  ((this.options & Enumeration.CONFIGURABLE_PROPERTY) && (VOID === descriptor.configurable || false === descriptor.configurable)) ||
+                  ((this.options & Enumeration.ENUMERABLE_PROPERTY)   && (VOID === descriptor.enumerable   || false === descriptor.enumerable))   ||
+                  ((this.options & Enumeration.WRITABLE_PROPERTY)     && (VOID === descriptor.writable     || false === descriptor.writable))     ||
+                  ((this.options & Enumeration.GETTER_PROPERTY)       && VOID  === descriptor.get)                                                ||
+                  ((this.options & Enumeration.SETTER_PROPERTY)       && VOID  === descriptor.set)                                                ||
+                  ((this.options & Enumeration.VALUE_PROPERTY)        && VOID  === descriptor.value)                                              ||
+                  ((this.options & Enumeration.OWN_PROPERTY)          && false === descriptor.own)
+                ) return this["throw"]()
+              }
+
+              // ... ->> Assert as built-in native
+              if (this.options & (Enumeration.AS_CLASS_FUNCTION | Enumeration.AS_FUNCTION | Enumeration.AS_GENERATOR_FUNCTION | Enumeration.AS_GETTER_FUNCTION | Enumeration.AS_OBJECT_FUNCTION | Enumeration.AS_SETTER_FUNCTION)) {
+                var prototyped  = false;
+                var source      = null;
+
+                // ... ->> Fails in non-standard JavaScript implementations that have built-in functions with the `prototype` property
+                try {
+                  // ... --> Proxy::deleteProperty(…), Proxy::has(…)
+                  if (this.options & (Enumeration.AS_CLASS_FUNCTION | Enumeration.AS_FUNCTION | Enumeration.AS_GENERATOR_FUNCTION | Enumeration.AS_OBJECT_FUNCTION))
+                  if ("prototype" in this.native || false === delete this.native["prototype"]) throw new PseudoError()
+                } catch (error) { prototyped = true }
+
+                if (prototyped)
+                return this["throw"]();
+
+                // ... ->> Function name assertion
+                if ((this.options & Enumeration.NAMED_FUNCTION) && Support.FUNCTION_INHERITS_NAME_PROPERTY) {
+                  var removed = false;
+                  var renamed = false;
+
+                  // ...
+                  try { this.native.name = ERROR }
+                  catch (error) { renamed = false === delete this.native["name"]; removed = true }
+
+                  renamed = renamed || (false === removed && this.native.name !== this.propertyKey);
+                  if (renamed) return this["throw"]()
+                }
+
+                // ... ->> Function source assertion
+                if (
+                  VOID !== Native.Function$prototype$apply && VOID !== Native.Function$prototype$toString &&
+                  false === (this.propertyKey === "apply" && (this.object === Native.Function$prototype || this.object === Native.Function$prototype$apply))
+                ) {
+                  if (VOID !== Native.Function$prototype$bind)
+                    // ... --> Function.prototype.apply.bind(Function.prototype.apply)(Function.prototype.toString, […])
+                    source = Native.Function$prototype$apply(Native.Function$prototype$toString, [this.native]);
+
+                  else if (assert(Native.Function$prototype$apply, Enumeration.STRICT)) {
+                    // ... --> Function.prototype.apply.apply(Function.prototype.toString, […])
+                    source = Native.Function$prototype$apply.apply(Native.Function$prototype$toString, [this.native]);
+
+                    if ("string" !== typeof source || source.length < Mathematics.max(Constant.NATIVE_FUNCTION_SOURCE[0], Constant.NATIVE_FUNCTION_SOURCE[1] /* , … */) + (
+                      this.options & Enumeration.AS_CLASS_FUNCTION     ? "class{}"      .length + (this.options & Enumeration.NAMED_FUNCTION ? this.propertyKey.length + ' '.length : 0) :
+                      this.options & Enumeration.AS_GENERATOR_FUNCTION ? "function*(){}".length + (this.options & Enumeration.NAMED_FUNCTION ? this.propertyKey.length + ' '.length : 0) :
+                      this.options & Enumeration.AS_GETTER_FUNCTION    ? "get _(){}"    .length + (this.options & Enumeration.NAMED_FUNCTION ? this.propertyKey.length - '_'.length : 0) :
+                      this.options & Enumeration.AS_OBJECT_FUNCTION    ? "function(){}" .length + (this.options & Enumeration.NAMED_FUNCTION ? this.propertyKey.length + ' '.length : 0) :
+                      this.options & Enumeration.AS_SETTER_FUNCTION    ? "set _(){}"    .length + (this.options & Enumeration.NAMED_FUNCTION ? this.propertyKey.length - '_'.length : 0) :
+                      this.options & Enumeration.AS_FUNCTION           ? 13 : 0
+                    )) throw new NativeAssertionError("Unable to evaluate `Function.prototype.apply(\u2026)` as built-in native")
+                  }
+
+                  else
+                    return this["throw"]();
+
+                  // ... ->> Programmatically compare function source to its native defaults
+                  if (false === isNativeFunctionSource(this, source)) {
+                    var delimiters = new DepthArray();
+                    var match      = false;
+
+                    // ...
+                    if (assert(Functions.stringAt, Enumeration.STRICT)) {
+                      // ... ->> Inspect the source of the function head
+                      if (this.options & (Enumeration.NAMED_FUNCTION | Enumeration.UNNAMED_FUNCTION)) {
+                        var declarators = [
+                          new StaticString('c', 'l', 'a', 's', 's'),
+                          new StaticString('f', 'u', 'n', 'c', 't', 'i', 'o', 'n'),
+                          new StaticString('g', 'e', 't'),
+                          new StaticString('s', 'e', 't')
+                        ];
+
+                        // ...
+                        parse_head:
+                        for (var declaratorsIndex = declarators.length; declaratorsIndex; ) {
+                          var declarator       = declarators[--declaratorsIndex];
+                          var declaratorOffset = 0;
+                          var sourceOffset     = 0;
+
+                          // ...
+                          while (Functions.stringAt(source, sourceOffset++) === declarator[declaratorOffset++]) {
+                            // ... ->> Source substring match found for `declarator`
+                            if (declaratorOffset === declarator.length) {
+                              var commentMatch             = false;    // ->> Ignore multi-line comment
+                              var name                     = ["", ""]; // ->> `name[0]` is the (trimmed) function name; `name[1]` is the trimmed whitespace
+                              var generatorDeclaratorMatch = false;    // ->> Note generator function declarator
+
+                              // ... ->> Ensure `declarator` matches expected function source
+                              if (this.options & Enumeration.AS_FUNCTION) { if (declarator.toString() !== "class" && declarator.toString() !== "function" && declarator.toString() !== "get" && declarator.toString() !== "set") break }
+                              else if (this.options & Enumeration.AS_CLASS_FUNCTION)  { if (declarator.toString() !== "class") break }
+                              else if (this.options & Enumeration.AS_GETTER_FUNCTION) { if (declarator.toString() !== "get")   break }
+                              else if (this.options & Enumeration.AS_SETTER_FUNCTION) { if (declarator.toString() !== "set")   break }
+                              else if (this.options & (Enumeration.AS_GENERATOR_FUNCTION | Enumeration.AS_OBJECT_FUNCTION)) { if (declarator.toString() !== "function") break }
+
+                              // ... ->> Parse source of the function name
+                              for (var sourceIndex = sourceOffset; sourceIndex !== source.length; ++sourceIndex) {
+                                var character = Functions.stringAt(source, sourceIndex);
+
+                                // ... ->> Ignore multi-line comment
+                                if (commentMatch) { commentMatch = false === (character === '*' && Functions.stringAt(source, sourceIndex + 1) === '/'); continue }
+                                if (character === '/' && Functions.stringAt(source, sourceIndex + 1) === '*') { commentMatch = true; continue }
+
+                                // ... ->> Note generator function declarator
+                                if (character === '*') {
+                                  if (generatorDeclaratorMatch || false === (this.options & (Enumeration.AS_FUNCTION | Enumeration.AS_GENERATOR_FUNCTION))) break;
+                                  generatorDeclaratorMatch = true
+                                }
+
+                                // ... ->> Found function parameter list declarator
+                                if (character === '(') {
+                                  match = (this.options & Enumeration.NAMED_FUNCTION) && (this.options & Enumeration.UNNAMED_FUNCTION)
+                                    ? name[0] === this.propertyKey || "" === name[0]
+                                    : name[0] === (this.options & Enumeration.NAMED_FUNCTION ? this.propertyKey : "");
+                                  break parse_head
+                                }
+
+                                // ...
+                                if (Functions.stringIsWhitespace(character)) name[1] += "" === name[0] ? "" : character;
+                                else { name[0] += name[1] + character; name[1] = "" }
+                              }
+
+                              break
+                            }
+
+                            // ...
+                            if (sourceOffset === source.length)
+                            break
+                          }
+                        }
+
+                        if (false === match)
+                        return this["throw"]()
+                      }
+
+                      // ... ->> Inspect the source of the function body
+                      parse_body:
+                      for (var sourceIndex = 0; sourceIndex !== source.length; ++sourceIndex) {
+                        var character = Functions.stringAt(source, sourceIndex);
+                        var delimiter = delimiters.length ? delimiters.at(0) : null;
+
+                        // ...
+                        do {
+                          // ... ->> Ignore multi-line comments or string literals
+                          switch (delimiter) {
+                            case '\"': case '\'': if (character !== delimiter) continue parse_body; break;
+                            case '/':             if (character !== '*' || Functions.stringAt(source, sourceIndex + 1) !== '/') continue parse_body
+                          }
+
+                          // ... ->> Note delimiter starts (and ends)
+                          switch (character) {
+                            case '(': delimiters.splice(0, delimiter = '('); continue;
+                            case '[': delimiters.splice(0, delimiter = '['); continue;
+                            case '{': delimiters.splice(0, delimiter = '{'); continue;
+                            case '/': if (Functions.stringAt(source, sourceIndex + 1) === '*') delimiters.splice(0, delimiter = '/'); continue;
+
+                            case '*':                     if (Functions.stringAt(source, sourceIndex + 1) !== '/') continue; break;
+                            case '\"': case '\'':         if (character !== delimiter) { delimiters.splice(0, character); continue } break;
+                            case ')': case ']': case '}': if ((character !== ')' || delimiter !== '(') && (character !== ']' || delimiter !== '[') && (character !== '}' || delimiter !== '{')) continue; break;
+
+                            default: continue
+                          }
+
+                          // ... ->> Note delimiter ends
+                          for (var length = delimiters.length, index = 1; index < length; ++index)
+                          delimiters.assign(index - 1, delimiters.at(index - 0));
+
+                          delimiters.pop()
+                        } while (false);
+
+                        // ... ->> Source substring match found for native function source
+                        for (var nativeSourcesIndex = Constant.NATIVE_FUNCTION_SOURCE.length; nativeSourcesIndex; ) {
+                          var nativeSource       = Constant.NATIVE_FUNCTION_SOURCE[--nativeSourcesIndex];
+                          var nativeSourceOffset = 0;
+                          var sourceOffset       = sourceIndex;
+
+                          // ...
+                          while (Functions.stringAt(source, sourceOffset++) === nativeSource[nativeSourceOffset++]) {
+                            if (nativeSourceOffset === nativeSource.length)
+                            if (delimiter === '[') {
+                              match = true;
+                              break parse_body
+                            }
+
+                            // ...
+                            if (sourceOffset === source.length)
+                            break
+                          }
+                        }
+                      }
+                    }
+
+                    if (false === match)
+                    return this["throw"]()
+                  }
+                }
+
+                else if ("toString" in Native.Function$prototype && "toString" in Native.Object$prototype) {
+                  var Function$prototype$toString = VOID !== Native.Function$prototype$toString ? this.object === Native.Function$prototype && this.propertyKey === "toString" ? this.native : Native.Function$prototype$toString : /* ->> unexpected */ Native.Function$prototype.toString; // --> Function.prototype.toString(…)
+
+                  // ...
+                  if (false === (delete Native.Function$prototype["toString"] && delete Native.Object$prototype["toString"] && delete this.native["toString"])) {
+                    Native.Function$prototype.toString = Function$prototype$toString;
+                    Native.Object$prototype  .toString = Native.Object$prototype$toString$;
+
+                    return this["throw"]()
+                  }
+
+                  Native.Function$prototype.toString = Function$prototype$toString;
+                  try { source = this.native.toString() } catch (error) {}
+
+                  Native.Object$prototype.toString = Native.Object$prototype$toString$;
+                  if (false === isNativeFunctionSource(this, source)) return this["throw"]()
+                }
+
+                else
+                  // ... ->> Could not acquire function source
+                  return this["throw"]()
+              }
+            }
+
+            // ... ->> Primed for calls to only `NativeAssertionPromise.prototype.finally(…)`, `NativeAssertionPromise.prototype.throw(…)`, and `NativeAssertionPromise.prototype.valueOf(…)`
+            this["catch"] = null;
+            this["get"]   = null;
+            this["try"]   = null;
 
             return this
           }
+        })(),
 
-          return null
-        }
-      };
+        "finally": function(handler) {
+          var value = ERROR;
 
-    // Static String ->> Immutable strings; forgoes the use of the `String.prototype.charAt(…)` method
-    function StaticString(characters) {
-      var length = arguments.length;
+          // ...
+          if (null === handler) value = ERROR === this.native ? VOID : this.native;
+          else try { value = handler(this.native) } catch (error) {}
 
-      for (var index = (this.length = length < 255 ? length : 255); index--; )
-      this[index] = arguments[index]
-    }
-      StaticString.prototype = {
-        0: '\0', 1: '\0', 2: '\0', 3: '\0', 4: '\0', 5: '\0', 6: '\0', 7: '\0', 8: '\0', 9: '\0', 10: '\0', 11: '\0', 12: '\0', 13: '\0', 14: '\0', 15: '\0', 16: '\0', 17: '\0', 18: '\0', 19: '\0', 20: '\0', 21: '\0', 22: '\0', 23: '\0', 24: '\0', 25: '\0', 26: '\0', 27: '\0', 28: '\0', 29: '\0', 30: '\0', 31: '\0', 32: '\0', 33: '\0', 34: '\0', 35: '\0', 36: '\0', 37: '\0', 38: '\0', 39: '\0', 40: '\0', 41: '\0', 42: '\0', 43: '\0', 44: '\0', 45: '\0', 46: '\0', 47: '\0', 48: '\0', 49: '\0', 50: '\0', 51: '\0', 52: '\0', 53: '\0', 54: '\0', 55: '\0', 56: '\0', 57: '\0', 58: '\0', 59: '\0', 60: '\0', 61: '\0', 62: '\0', 63: '\0', 64: '\0', 65: '\0', 66: '\0', 67: '\0', 68: '\0', 69: '\0', 70: '\0', 71: '\0', 72: '\0', 73: '\0', 74: '\0', 75: '\0', 76: '\0', 77: '\0', 78: '\0', 79: '\0', 80: '\0', 81: '\0', 82: '\0', 83: '\0', 84: '\0', 85: '\0', 86: '\0', 87: '\0', 88: '\0', 89: '\0', 90: '\0', 91: '\0', 92: '\0', 93: '\0', 94: '\0', 95: '\0', 96: '\0', 97: '\0', 98: '\0', 99: '\0', 100: '\0', 101: '\0', 102: '\0', 103: '\0', 104: '\0', 105: '\0', 106: '\0', 107: '\0', 108: '\0', 109: '\0', 110: '\0', 111: '\0', 112: '\0', 113: '\0', 114: '\0', 115: '\0', 116: '\0', 117: '\0', 118: '\0', 119: '\0', 120: '\0', 121: '\0', 122: '\0', 123: '\0', 124: '\0', 125: '\0', 126: '\0', 127: '\0', 128: '\0', 129: '\0', 130: '\0', 131: '\0', 132: '\0', 133: '\0', 134: '\0', 135: '\0', 136: '\0', 137: '\0', 138: '\0', 139: '\0', 140: '\0', 141: '\0', 142: '\0', 143: '\0', 144: '\0', 145: '\0', 146: '\0', 147: '\0', 148: '\0', 149: '\0', 150: '\0', 151: '\0', 152: '\0', 153: '\0', 154: '\0', 155: '\0', 156: '\0', 157: '\0', 158: '\0', 159: '\0', 160: '\0', 161: '\0', 162: '\0', 163: '\0', 164: '\0', 165: '\0', 166: '\0', 167: '\0', 168: '\0', 169: '\0', 170: '\0', 171: '\0', 172: '\0', 173: '\0', 174: '\0', 175: '\0', 176: '\0', 177: '\0', 178: '\0', 179: '\0', 180: '\0', 181: '\0', 182: '\0', 183: '\0', 184: '\0', 185: '\0', 186: '\0', 187: '\0', 188: '\0', 189: '\0', 190: '\0', 191: '\0', 192: '\0', 193: '\0', 194: '\0', 195: '\0', 196: '\0', 197: '\0', 198: '\0', 199: '\0', 200: '\0', 201: '\0', 202: '\0', 203: '\0', 204: '\0', 205: '\0', 206: '\0', 207: '\0', 208: '\0', 209: '\0', 210: '\0', 211: '\0', 212: '\0', 213: '\0', 214: '\0', 215: '\0', 216: '\0', 217: '\0', 218: '\0', 219: '\0', 220: '\0', 221: '\0', 222: '\0', 223: '\0', 224: '\0', 225: '\0', 226: '\0', 227: '\0', 228: '\0', 229: '\0', 230: '\0', 231: '\0', 232: '\0', 233: '\0', 234: '\0', 235: '\0', 236: '\0', 237: '\0', 238: '\0', 239: '\0', 240: '\0', 241: '\0', 242: '\0', 243: '\0', 244: '\0', 245: '\0', 246: '\0', 247: '\0', 248: '\0', 249: '\0', 250: '\0', 251: '\0', 252: '\0', 253: '\0', 254: '\0', 255: '\0',
-        length: +0,
+          if (ERROR === value) {
+            this.onfail = this.onerror;
+            return this["throw"]()
+          }
 
-        toString: function toString() { var string = ""; for (var index = this.length; index; ) string = this[--index] + string; return string },
-        valueOf : function valueOf() { return this.toString() }
-      };
+          // ... ->> Primed for no more `nativeof(…)` method calls
+          this["finally"] = null;
+          this["onfail"]  = null;
+          this["throw"]   = null;
+          this["valueOf"] = null;
 
-    // Inspector ...
-    function InspectorCallback(callback, assert) {
-      this.assert   = assert;
-      this.callback = callback
-    }
-      InspectorCallback.prototype = {
-        assert  : false,
-        callback: null
-      };
-
-    function Inspector(identifier, object) {
-      this.callbacks.length = +0;
-      this.identifier = identifier;
-      this.object     = object
-    }
-      Inspector.prototype = {
-        callbacks : new StaticArray(null, null, null, null, null, null, null, null),
-        identifier: null,
-        object    : null,
-
-        assert: function assert(assertion) {
-          this.callbacks[this.callbacks.length++] = new InspectorCallback(assertion, true);
-          return this
+          return value
         },
 
-        evaluate: function evaluate(control, type, source) {
-          var callbacks  = this.callbacks;
-          var evaluation = ERROR;
-          var identifier = this.identifier;
-          var object     = this.object;
+        get: function get(handler) {
+          if (null === this.onpass) {
+            if (null === handler) return this["try"](null)["catch"](null);
+            return this["try"](arguments.length ? handler : this.valueOf)["catch"](this.onerror)
+          }
 
-          var identifierSource = "symbol" === typeof this.identifier ? Functions.stringFrom(this.identifier) : this.identifier;
-          var objectSource     = "the global object";
-          var typeSource       = Enumerations.INSPECT_CONSTRUCTOR === type ? "constructor" : Enumerations.INSPECT_METHOD === type ? "method" : "";
+          throw new NativeAssertionError("Encountered invalid use of `nativeof(\u2026)` assertion")
+        },
 
-          // ... ->> build source strings
-          if (null !== source) {
-            objectSource     = '`' + source + '`';
-            identifierSource = source + '.' + identifierSource;
+        "throw": function() {
+          if (null === this.onfail)
+            this.native = ERROR;
 
-            switch (type) {
-              case Enumerations.INSPECT_CONSTRUCTOR: identifierSource += "()"; break;
-              case Enumerations.INSPECT_METHOD:      identifierSource += "(…)"
-            }
+          else if (ERROR === this.onfail(this.object, this.propertyKey, this.options, this.native)) {
+            this.native = ERROR;
+            throw new NativeAssertionError("Unable to evaluate " + ("symbol" !== typeof this.propertyKey ? '`' + (null !== this.objectName ? this.objectName + '.' : "") + this.propertyKey + (
+              (this.options & (Enumeration.AS_CLASS_FUNCTION | Enumeration.AS_FUNCTION | Enumeration.AS_GENERATOR_FUNCTION | Enumeration.AS_GETTER_FUNCTION | Enumeration.AS_OBJECT_FUNCTION | Enumeration.AS_SETTER_FUNCTION)) &&
+              false == (this.options & (Enumeration.AS_BIGINT | Enumeration.AS_BOOLEAN | Enumeration.AS_NUMBER | Enumeration.AS_NULL | Enumeration.AS_OBJECT | Enumeration.AS_STRING | Enumeration.AS_SYMBOL | Enumeration.AS_UNDEFINED)) ? "()" : ""
+            ) + '`' : "feature") + " as built-in native")
           }
 
           // ...
-          if (identifier in object) {
-            // ... ->> Assert `identifier`` is owned by `object``
-            if (control & Enumerations.INHERITED)
-            do {
-              var prototype = new Error(Enumerations.INHERITED, "Expected the `" + identifierSource + "` " + typeSource + " to be owned by " + objectSource);
-
-              // ...
-              if (Supports.Object$prototype$__proto__) prototype = object.__proto__;
-              else if (Supports.Object$getPrototypeOf) prototype = Natives.Object$getPrototypeOf(object);
-
-              // ...
-              if (Supports.Object$prototype$hasOwnProperty) { if (false === Functions.functionApply(Natives.Object$prototype$hasOwnProperty, object, [identifier])) throw ERROR; break }
-              if (Supports.Object$getOwnPropertyDescriptor) { if (undefined === Natives.Object$getOwnPropertyDescriptor(object, identifier)) throw ERROR; break }
-              if (ERROR !== prototype) { if (null === prototype ? false === (identifier in object) : identifier in prototype) throw ERROR; break }
-
-              throw new Error(Enumerations.INHERITED, "Features for asserting owned property of objects i.e.:\n\t`Object.getOwnPropertyDescriptor(…)`, `Object.getPrototypeOf(…)`, `Object.prototype.__proto__`, and/ or `Object.prototype.hasOwnProperty(…)` must be supported")
-            } while (false);
-
-            // ... ->> Assert `identifier` is neither an accessor nor mutator of `object`
-            if ((control & Enumerations.GETTER) || (control & Enumerations.SETTER))
-            do {
-              if (control & Enumerations.GETTER) { if (Supports.Object$prototype$__lookupGetter__) { if (undefined === Functions.functionApply(Natives.Object$prototype$__lookupGetter__, object, [identifier])) throw new Error(Enumerations.GETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a getter of " + objectSource); break } }
-              if (control & Enumerations.SETTER) { if (Supports.Object$prototype$__lookupSetter__) { if (undefined === Functions.functionApply(Natives.Object$prototype$__lookupSetter__, object, [identifier])) throw new Error(Enumerations.SETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a setter of " + objectSource); break } }
-              if (Supports.Object$getOwnPropertyDescriptor && (Supports.Object$prototype$__proto__ || Supports.Object$getPrototypeOf)) {
-                for (var prototype = object; null !== prototype; ) {
-                  var descriptor = Natives.Object$getOwnPropertyDescriptor(prototype, identifier);
-
-                  // ...
-                  if (undefined !== descriptor) {
-                    if (control & Enumerations.GETTER) { if ("get" in descriptor) throw new Error(Enumerations.GETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a getter of " + objectSource) }
-                    if (control & Enumerations.SETTER) { if ("set" in descriptor) throw new Error(Enumerations.SETTER, "Expected the `" + identifierSource + "` " + typeSource + " to not be a setter of " + objectSource) }
-
-                    break
-                  }
-
-                  if (Supports.Object$prototype$__proto__) prototype = object.__proto__;
-                  else if (Supports.Object$getPrototypeOf) prototype = Natives.Object$getPrototypeOf(object)
-                }
-
-                break
-              }
-
-              throw new Error((control & Enumerations.GETTER ? Enumerations.GETTER : 0x0) | (control & Enumerations.SETTER ? Enumerations.SETTER : 0x0), "Features for asserting getter/ setter property of objects i.e.:\n\t`Object.getOwnPropertyDescriptor(…)`, `Object.getPrototypeOf(…)`, `Object.prototype.__lookupGetter__`, `Object.prototype.__lookupSetter__`, and/ or `Object.prototype.__proto__` must be supported")
-            } while (false);
-
-            // ...
-            try { evaluation = object[identifier]; }
-            catch (error) { if (control & Enumerations.INACCESSIBLE) throw new Error(Enumerations.MISSING, "Expected the `" + identifierSource + "` " + typeSource + " to be accessible from " + objectSource) }
-
-            for (var index = +0, length = callbacks.length; index !== length; ++index) {
-              var assertion = callbacks[index].callback(evaluation, identifier, object);
-              if (false === assertion && callbacks[index].assert) { evaluation = ERROR; break }
-            }
-          }
-
-          else if (control & Enumerations.MISSING)
-          throw new Error(Enumerations.MISSING, "Expected the `" + identifierSource + "` " + typeSource + " to be available within " + objectSource);
-
-          return evaluation
+          return this
         },
 
-        then: function then(callback) {
-          this.callbacks[this.callbacks.length++] = new InspectorCallback(callback, false);
-          return this
+        "try": function(handler) {
+          if (null === this.onpass) {
+            this.onpass = null === handler ? this.valueOf : handler;
+            return this
+          }
+
+          throw new NativeAssertionError("Encountered invalid use of `nativeof(\u2026)` assertion")
+        },
+
+        valueOf: function valueOf(/* object, key */) {
+          if (VOID === this.native) {
+            var key    = arguments[1];
+            var object = arguments[0];
+
+            // ...
+            if (null !== object && undefined !== object)
+            try {
+              if (
+                "bigint"  === typeof object ||
+                "boolean" === typeof object ||
+                "number"  === typeof object ||
+                "string"  === typeof object ||
+                "symbol"  === typeof object ||
+                key in object // --> Proxy::has(…)
+              ) return object[key] // --> Proxy::get(…)
+            } catch (error) {}
+
+            return ERROR
+          }
+
+          return this.native
         }
       };
 
+    /* Property Descriptor */
+    function PropertyDescriptor() {
+      this.own = true
+    }
+      PropertyDescriptor.prototype = {
+        configurable: VOID,
+        enumerable  : VOID,
+        get         : VOID,
+        own         : false,
+        set         : VOID,
+        value       : VOID,
+        writable    : VOID
+      };
+
+    /* Recursion Overflow Error ->> Abstraction wrapper over `class InternalError` or `class RangeError` */
+    function RecursionOverflowError(message, name) {
+      ERROR = RECURSION_OVERFLOW_ERROR;
+
+      if (VOID === RECURSION_OVERFLOW_ERROR) {
+        try { ERROR = new RecursionOverflowError(arguments.length ? message : "") }
+        catch (error) { ERROR = error }
+      }
+
+      ERROR.message = arguments.length ? message : "";
+      if ("description" in ERROR && false === "description" in Native.RecursionOverflowError$prototype) ERROR.description = ERROR.message;
+      if (RECURSION_OVERFLOW_ERROR === RecursionOverflowError.prototype) ERROR.name = arguments.length > 1 ? name : ERROR.name;
+
+      return (RECURSION_OVERFLOW_ERROR = ERROR)
+    }
+
+    /* Reference Error ->> Abstraction Wrapper over `class ReferenceError` */
+    function ReferenceError(message, name) {
+      ERROR = REFERENCE_ERROR;
+
+      if (VOID === REFERENCE_ERROR) {
+        try { ㅤ } // ->> Identifier must be non-deducible and non-defined
+        catch (error) { ERROR = error }
+      }
+
+      ERROR.message = arguments.length ? message : "";
+      if ("description" in ERROR && false === "description" in Native.ReferenceError$prototype) ERROR.description = ERROR.message;
+      if (REFERENCE_ERROR === ReferenceError.prototype) ERROR.name = arguments.length > 1 ? name : ERROR.name;
+
+      return (REFERENCE_ERROR = ERROR)
+    }
+
+    /* Static String ->> String alternative before evaluating `String.prototype.charAt(…)` */
+    function StaticString(characters) {
+      var string = "";
+
+      // ...
+      this.length   = arguments.length;
+      this.toString = function toString() { return string };
+
+      while (arguments.length--) /* ->> Assumed `arguments.length < 256` */ {
+        string                 = arguments[arguments.length] + string;
+        this[arguments.length] = arguments[arguments.length]
+      }
+    }
+      StaticString.prototype = {
+        0: null, 1: null, 2: null, 3: null, 4: null, 5: null, 6: null, 7: null, 8: null, 9: null, 10: null, 11: null, 12: null, 13: null, 14: null, 15: null, 16: null, 17: null, 18: null, 19: null, 20: null, 21: null, 22: null, 23: null, 24: null, 25: null, 26: null, 27: null, 28: null, 29: null, 30: null, 31: null, 32: null, 33: null, 34: null, 35: null, 36: null, 37: null, 38: null, 39: null, 40: null, 41: null, 42: null, 43: null, 44: null, 45: null, 46: null, 47: null, 48: null, 49: null, 50: null, 51: null, 52: null, 53: null, 54: null, 55: null, 56: null, 57: null, 58: null, 59: null, 60: null, 61: null, 62: null, 63: null, 64: null, 65: null, 66: null, 67: null, 68: null, 69: null, 70: null, 71: null, 72: null, 73: null, 74: null, 75: null, 76: null, 77: null, 78: null, 79: null, 80: null, 81: null, 82: null, 83: null, 84: null, 85: null, 86: null, 87: null, 88: null, 89: null, 90: null, 91: null, 92: null, 93: null, 94: null, 95: null, 96: null, 97: null, 98: null, 99: null, 100: null, 101: null, 102: null, 103: null, 104: null, 105: null, 106: null, 107: null, 108: null, 109: null, 110: null, 111: null, 112: null, 113: null, 114: null, 115: null, 116: null, 117: null, 118: null, 119: null, 120: null, 121: null, 122: null, 123: null, 124: null, 125: null, 126: null, 127: null, 128: null, 129: null, 130: null, 131: null, 132: null, 133: null, 134: null, 135: null, 136: null, 137: null, 138: null, 139: null, 140: null, 141: null, 142: null, 143: null, 144: null, 145: null, 146: null, 147: null, 148: null, 149: null, 150: null, 151: null, 152: null, 153: null, 154: null, 155: null, 156: null, 157: null, 158: null, 159: null, 160: null, 161: null, 162: null, 163: null, 164: null, 165: null, 166: null, 167: null, 168: null, 169: null, 170: null, 171: null, 172: null, 173: null, 174: null, 175: null, 176: null, 177: null, 178: null, 179: null, 180: null, 181: null, 182: null, 183: null, 184: null, 185: null, 186: null, 187: null, 188: null, 189: null, 190: null, 191: null, 192: null, 193: null, 194: null, 195: null, 196: null, 197: null, 198: null, 199: null, 200: null, 201: null, 202: null, 203: null, 204: null, 205: null, 206: null, 207: null, 208: null, 209: null, 210: null, 211: null, 212: null, 213: null, 214: null, 215: null, 216: null, 217: null, 218: null, 219: null, 220: null, 221: null, 222: null, 223: null, 224: null, 225: null, 226: null, 227: null, 228: null, 229: null, 230: null, 231: null, 232: null, 233: null, 234: null, 235: null, 236: null, 237: null, 238: null, 239: null, 240: null, 241: null, 242: null, 243: null, 244: null, 245: null, 246: null, 247: null, 248: null, 249: null, 250: null, 251: null, 252: null, 253: null, 254: null, 255: null,
+        length: 0,
+
+        toString: function toString() {
+          var string = "";
+
+          // ...
+          for (var index = this.length; index; )
+          string = this[--index] + string;
+
+          return string
+        }
+      };
+
+    /* Type Error ->> Abstraction wrapper over `class TypeError` */
+    function TypeError(message, name) {
+      ERROR = TYPE_ERROR;
+
+      if (VOID === TYPE_ERROR) {
+        try { null() }
+        catch (error) { ERROR = error }
+      }
+
+      ERROR.message = arguments.length ? message : "";
+      if ("description" in ERROR && false === "description" in Native.TypeError$prototype) ERROR.description = ERROR.message;
+      if (TYPE_ERROR === TypeError.prototype) ERROR.name = arguments.length > 1 ? name : ERROR.name;
+
+      return (TYPE_ERROR = ERROR)
+    }
+
+    /* Unreachable State Error */
+    function UnreachableStateError(debug) {
+      if (null !== debug) debugger;
+      return new RecursionOverflowError("Unexpected state reached", "UnreachableStateError")
+    }
+
+  /* Namespace */
+    /* Constant */
+    var Constant = {
+      DEPTH_ARRAY_MAXIMUM         : VOID,
+      MAXIMUM_BITWISE_INTEGER     : VOID,
+      MAXIMUM_DEPTH_ARRAY_LENGTH  : VOID,
+      MAXIMUM_NUMBER              : VOID,
+      MAXIMUM_SAFE_INTEGER        : VOID,
+      MAXIMUM_STATIC_ARRAY_LENGTH : VOID,
+      MAXIMUM_STATIC_STRING_LENGTH: VOID,
+      NATIVE_FUNCTION_SOURCE      : VOID
+    };
+
+    /* Enumerations ->> Configuration constants */
+    var Enumeration = {
+      STRICT               : 0x0000001,
+
+      AS_BIGINT            : 0x0000002,
+      AS_BOOLEAN           : 0x0000004,
+      AS_CLASS_FUNCTION    : 0x0000008,
+      AS_DATE              : 0x0000010, // ->> Internet Explorer only
+      AS_FUNCTION          : 0x0000020,
+      AS_GENERATOR_FUNCTION: 0x0000040,
+      AS_GETTER_FUNCTION   : 0x0000080,
+      AS_NULL              : 0x0000100,
+      AS_NUMBER            : 0x0000200,
+      AS_OBJECT            : 0x0000400,
+      AS_OBJECT_FUNCTION   : 0x0000800, // ->> Internet Explorer 8 and before --> ; MSIE 8.×;
+      AS_PROPERTY          : 0x0001000,
+      AS_SETTER_FUNCTION   : 0x0002000,
+      AS_STRING            : 0x0004000,
+      AS_SYMBOL            : 0x0008000,
+      AS_UNDEFINED         : 0x0010000,
+      AS_UNKNOWN           : 0x0020000, // ->> Internet Explorer only
+
+      NAMED_FUNCTION       : 0x0040000,
+      UNNAMED_FUNCTION     : 0x0080000,
+
+      CONFIGURABLE_PROPERTY: 0x0100000,
+      ENUMERABLE_PROPERTY  : 0x0200000,
+      GETTER_PROPERTY      : 0x0400000,
+      OWN_PROPERTY         : 0x0800000,
+      SETTER_PROPERTY      : 0x1000000,
+      WRITABLE_PROPERTY    : 0x2000000,
+      VALUE_PROPERTY       : 0x4000000
+    };
+
+    /* Functions ->> Convenience/ validated abstractions over native features */
+    var Functions = {
+      defineProperty    : VOID,
+      describeProperty  : VOID,
+      describeSelector  : VOID,
+      numberIsFinite    : VOID,
+      numberIsNaN       : VOID,
+      numberIsSafe      : VOID,
+      numberToFraction  : VOID,
+      stringAt          : VOID,
+      stringIsWhitespace: VOID
+    };
+
+    /* Mathematics */
+    var Mathematics = {
+      E      : VOID,
+      E_GAMMA: VOID,
+      ETA    : VOID,
+      LN2    : VOID,
+      LN10   : VOID,
+      LOG2E  : VOID,
+      LOG10E : VOID,
+      PHI    : VOID,
+      PI     : VOID,
+      SQRT2  : VOID,
+      SQRT3  : VOID,
+      SQRT5  : VOID,
+      TAU    : VOID,
+
+      abs           : VOID,
+      acos          : VOID,
+      acosh         : VOID,
+      acot          : VOID,
+      acoth         : VOID,
+      acsc          : VOID,
+      acsch         : VOID,
+      asec          : VOID,
+      asech         : VOID,
+      asin          : VOID,
+      asinh         : VOID,
+      atan          : VOID,
+      atanh         : VOID,
+      beta          : VOID,
+      cbrt          : VOID,
+      ceil          : VOID,
+      clamp         : VOID,
+      cos           : VOID,
+      cot           : VOID,
+      coth          : VOID,
+      csc           : VOID,
+      csch          : VOID,
+      cyl_bessel    : VOID,
+      cyl_neumann   : VOID,
+      ellint        : VOID,
+      exp           : VOID,
+      expint        : VOID,
+      fact          : VOID,
+      floor         : VOID,
+      gcd           : VOID,
+      hermite       : VOID,
+      iabs          : VOID,
+      icbrt         : VOID,
+      imax          : VOID,
+      imin          : VOID,
+      ipow          : VOID,
+      iroot         : VOID,
+      isqrt         : VOID,
+      itrunc        : VOID,
+      jsf           : VOID,
+      knuth_b       : VOID,
+      laguerre      : VOID,
+      lcg           : VOID,
+      legendre      : VOID,
+      lerp          : VOID,
+      ln            : VOID,
+      log           : VOID,
+      max           : VOID,
+      min           : VOID,
+      mod           : VOID,
+      mt            : VOID,
+      mt32          : VOID,
+      mt64          : VOID,
+      mulberry      : VOID,
+      mulberry32    : VOID,
+      perc          : VOID,
+      pow           : VOID,
+      randint       : VOID,
+      random        : VOID,
+      riemann_zeta  : VOID,
+      root          : VOID,
+      round         : VOID,
+      sec           : VOID,
+      sech          : VOID,
+      sin           : VOID,
+      sinh          : VOID,
+      sph_bessel    : VOID,
+      sph_legendre  : VOID,
+      sph_neumann   : VOID,
+      sqrt          : VOID,
+      tan           : VOID,
+      tanh          : VOID,
+      trunc         : VOID,
+      wrap          : VOID,
+      xorshift      : VOID,
+      xorshift128   : VOID,
+      xorshift128_p : VOID, // ->> Default random number generation seed
+      xorshift128_s : VOID,
+      xorshift256   : VOID,
+      xorshift256_p : VOID,
+      xorshift256_ss: VOID,
+      xorshift_p    : VOID,
+      xorshift_s    : VOID,
+      xorshift_ss   : VOID,
+      xorwow        : VOID
+    };
+
+    /* Native ->> Native APIs and features */
+    var Native = {
+      Object$                   : VOID,
+      Object$prototype$toString$: VOID,
+      RecursionOverflowError$   : RecursionOverflowError,
+      ReferenceError$           : ReferenceError,
+      TypeError$                : TypeError,
+
+      clearInterval                            : VOID,
+      clearTimeout                             : VOID,
+      document                                 : VOID,
+      Error$prototype                          : VOID,
+      EventTarget$prototype$addEventListener   : VOID,
+      EventTarget$prototype$attachEvent        : VOID,
+      EventTarget$prototype$detachEvent        : VOID,
+      EventTarget$prototype$removeEventListener: VOID,
+      Function$prototype                       : VOID,
+      Function$prototype$apply                 : VOID,
+      Function$prototype$bind                  : VOID,
+      Function$prototype$toString              : VOID,
+      Object$defineProperty                    : VOID,
+      Object$getOwnPropertyDescriptor          : VOID,
+      Object$prototype                         : VOID,
+      Object$prototype$__defineGetter__        : VOID,
+      Object$prototype$__defineSetter__        : VOID,
+      Object$prototype$__lookupGetter__        : VOID,
+      Object$prototype$__lookupSetter__        : VOID,
+      RecursionOverflowError$prototype         : VOID,
+      ReferenceError$prototype                 : VOID,
+      requestAnimationFrame                    : VOID,
+      setInterval                              : VOID,
+      setTimeout                               : VOID,
+      String$prototype$charAt                  : VOID,
+      TypeError$prototype                      : VOID
+    };
+
+    /* Support ->> Supported native APIs and features */
+    var Support = {
+      FUNCTION_INHERITS_NAME_PROPERTY         : false,
+      STRICT_MODE                             : false,
+      STRING_CHARACTER_ACCESS_BRACKET_NOTATION: false
+    };
+
+  /* Function > ... */
+  function assert(condition, options) {
+    options = arguments.length < 2 ? 0x000000 : options;
+    switch (condition) {
+      case Native.Function$prototype$apply: {
+        if (VOID !== Native.Function$prototype$bind)
+        return true;
+
+        try {
+          return nativeof(Native.Function$prototype, "apply", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Function.prototype").get()["finally"](function(native) {
+            return nativeof(native, "apply", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Function.prototype").get()["finally"](function(subnative) {
+              if (native === subnative && (VOID === Native.Function$prototype$apply ? false === "apply" in Native.Object$prototype && delete Native.Function$prototype["apply"] : Native.Function$prototype$apply === native)) {
+                if (false === "apply" in Native.Function$prototype)
+                Native.Function$prototype.apply = native;
+
+                return true
+              }
+
+              return ERROR
+            })
+          })
+        } catch (error) /* --> NativeAssertionError */ {
+          if (options & Enumeration.STRICT)
+          throw new AssertionError(error.message)
+        }
+
+        return false
+      } break;
+
+      case Functions.stringAt: {
+        try { return VOID !== Native.String$prototype$charAt || 'ඞ' === Functions.stringAt('ඞ', 0) }
+        catch (error) { if (options & Enumeration.STRICT) throw new AssertionError("String subscript indexing feature required") }
+
+        return false
+      }
+    }
+
+    condition = false != condition;
+    if (false === condition && (options & Enumeration.STRICT)) throw new AssertionError();
+
+    return condition
+  }
+
+  function nativeof(object, key, options, name) {
+    // ... --- WARN (Lapys) -> Fails to guard against `Proxy` functions with `apply`, `constructor`, and/ or `deleteProperty` traps
+    if ("string" !== typeof key) throw new NativeAssertionError("Encountered invalid use of `nativeof(\u2026)` assertion");
+    return new NativeAssertionPromise(object, key, options | 0x0000000, arguments.length > 3 ? name : null)
+  }
+
+  /* Modification > Native > ... */
+  try {
+    Pseudo.prototype = GLOBAL.TypeError.prototype;
+
+    if (new TypeError instanceof Pseudo)
+    Native.TypeError$prototype = Pseudo.prototype
+  } catch (error) { /* ->> TypeError */ }
+
+  if (VOID !== Native.TypeError$prototype)
+  try {
+    Pseudo.prototype = GLOBAL.Error.prototype;
+
+    if (new TypeError instanceof Pseudo)
+    Native.Error$prototype = Native.TypeError$prototype === Pseudo.prototype ? VOID : Pseudo.prototype
+  } catch (error) { /* ->> Error */ }
+
+  if (VOID !== Native.Error$prototype)
+  try {
+    Pseudo.prototype = VOID;
+
+    try           { Pseudo.prototype = GLOBAL.InternalError.prototype }
+    catch (error) { Pseudo.prototype = GLOBAL.RangeError   .prototype }
+
+    if (false) {
+      // ... --- WARN (Lapys) -> Safari does not support instantiating `class RecursionOverflowError` through an exception
+      if (new RecursionOverflowError instanceof Pseudo)
+      Native.RecursionOverflowError$prototype = Native.Error$prototype === Pseudo.prototype ? VOID : Pseudo.prototype
+    }
+  } catch (error) { /* ->> RecursionOverflowError */ }
+
+  if (VOID !== Native.Error$prototype)
+  try {
+    Pseudo.prototype = GLOBAL.ReferenceError.prototype;
+
+    if (new ReferenceError instanceof Pseudo)
+    Native.ReferenceError$prototype = Native.Error$prototype === Pseudo.prototype ? VOID : Pseudo.prototype
+  } catch (error) { /* ->> ReferenceError */ }
+
+  try {
+    Native.Object$   = GLOBAL.Object;
+    Pseudo.prototype = Native.Object$prototype;
+
+    if (false === new Pseudo instanceof Native.Object$) throw new PseudoError()
+  } catch (error) { throw new NativeAssertionError("Unable to evaluate `class Object` as built-in native") }
+
+  try {
+    Pseudo.prototype = Native.Object$.prototype;
+    if (false === (Pseudo instanceof Pseudo && ({}) instanceof Pseudo)) throw new PseudoError();
+
+    Native.Object$prototype = Pseudo.prototype
+  } catch (error) { throw new NativeAssertionError("Unable to evaluate `Object.prototype` as built-in native") }
+
   /* Modification */
-    /* Constants > ... */
-    Constants.JS_ENVIRONMENT                    = "object" === typeof process && "function" === typeof require ? JS__NODE__ENVIRONMENT : "object" === typeof window ? JS_BROWSER_ENVIRONMENT : "function" === typeof importScripts ? JS_WORKER_ENVIRONMENT : JS_TERMINAL_ENVIRONMENT; // UPDATE (Lapys)
-    Constants.MAXIMUM_BITWISE_INTEGER           = 2147483647;                                                                                                                                                                                                                                                                                                            // --> (1 << 31) - 1
-    Constants.MAXIMUM_DEPTH_ARRAY_DEPTH         = 255;
-    Constants.MAXIMUM_DEPTH_ARRAY_LENGTH        = 255;
-    Constants.MAXIMUM_NUMBER                    = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368; // --> 1 << 1024
-    Constants.MAXIMUM_SAFE_INTEGER              = 9007199254740991;                                                                                                                                                                                                                                                                                                      // --> (1 << 53) - 1
-    Constants.MAXIMUM_STATIC_ARRAY_LENGTH       = 255;
-    Constants.MAXIMUM_STATIC_STRING_LENGTH      = 255;
-    Constants.NATIVE_FUNCTION_OBFUSCATED_SOURCE = [
+    /* Constant > ... */
+    Constant.MAXIMUM_BITWISE_INTEGER      = 2147483647;
+    Constant.MAXIMUM_DEPTH_ARRAY_LENGTH   = 255;
+    Constant.MAXIMUM_NUMBER               = 179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368;
+    Constant.MAXIMUM_SAFE_INTEGER         = 9007199254740991; // --> `(2 * (1 / Number.EPSILON)) - 1`
+    Constant.MAXIMUM_STATIC_ARRAY_LENGTH  = 255;
+    Constant.MAXIMUM_STATIC_STRING_LENGTH = 255;
+    Constant.NATIVE_FUNCTION_SOURCE       = [
       /* --> "[Command Line API]" */ new StaticString('[', 'C', 'o', 'm', 'm', 'a', 'n', 'd', ' ', 'L', 'i', 'n', 'e', ' ', 'A', 'P', 'I', ']'),
       /* --> "[native code]"      */ new StaticString('[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']')
     ];
-    Constants.TYPE_ERROR = (function TypeError() { try { null() } catch (error) { return ERROR = error } })();
 
     /* Functions > ... */
-    Functions.constructorIsNative = null;
+    Functions.defineProperty = function defineProperty(object, key, descriptor) /* --> Expects `descriptor` to be the same format as `class PropertyDescriptor` */ {
+      if (descriptor.own) try {
+        if (VOID === Native.Object$defineProperty && VOID === Native.Object$prototype$__lookupGetter__ && VOID === Native.Object$prototype$__lookupSetter__) {
+          if (VOID === descriptor.value || false === descriptor.writable)
+          return false;
 
-    Functions.functionApply = function functionApply(functor, that, arguments) {
-      if (Supports.Function$prototype$bind)
-      return Natives.Function$prototype$apply(functor, [that, arguments]);
-
-      Functions.functionAssertApply();
-      return Natives.Function$prototype$apply.apply(functor, [that, arguments])
-    };
-
-    Functions.functionAssertApply = function functionAssertApply() {
-      new Error(Enumerations.MODIFIED, "Unexpected `Function.prototype.apply(…)` method");
-
-      if (false === Functions.objectRemoveProperty(Natives.Function$prototype$apply, "apply")) throw ERROR;
-      Natives.Function$prototype$apply.apply = Natives.Function$prototype$apply
-    };
-
-    Functions.functionBind = function functionBind(functor, that) {
-      var bound = new StaticArray(that);
-
-      // ...
-      for (var index = 2, length = arguments.length; index < length; ++index)
-      bound.add(arguments[index]);
-
-      return Functions.functionApply(Natives.Function$prototype$bind, functor, bound)
-    };
-
-    Functions.functionIsNative = function functionIsNative(functor, name) {
-      var name   = null === name ? "" : name;
-      var source = false === Supports.Function$prototype$apply ? "" + functor : Functions.functionToString(functor);
-
-      // ... ->> Ensure `functor` is of same type as native functions
-      if ("function" !== typeof functor && "object" !== typeof functor)
-      return false;
-
-      // ... ->> Basic source comparison to verify if `functor` is native
-      for (var index = Constants.NATIVE_FUNCTION_OBFUSCATED_SOURCE.length; index; ) {
-        var obfuscatedSource = Constants.NATIVE_FUNCTION_OBFUSCATED_SOURCE[--index];
-
-        if (
-          source === "function() { "                     + obfuscatedSource + " }"    ||
-          source === "function() {\n    "                + obfuscatedSource + "\n}"   ||
-          source === "\nfunction() {\n    "              + obfuscatedSource + "\n}\n" ||
-          source === "function "   + name + "() { "      + obfuscatedSource + " }"    ||
-          source === "function "   + name + "() {\n    " + obfuscatedSource + "\n}"   ||
-          source === "\nfunction " + name + "() {\n    " + obfuscatedSource + "\n}\n"
-        ) return true
-      }
-
-      // ... ->> Basic parse to evaluate if `functor` is native
-      if (Supports.String$prototype$charAt && Functions.stringCompare(source, "function", +0, +0, 8)) {
-        var Modes   = {BODY: 0x01, HEAD: 0x02, NAME: 0x04, PARAMETERS: 0x08, PARAMETER_DESTRUCTURED_NAME: 0x10, PARAMETER_DEFAULT: 0x20, PARAMETER_NAME: 0x40, PARAMETER_VALUE: 0x80};
-        var depths  = new StaticArray();
-        var mode    = Modes.HEAD;
-
-        // ...
-        for (var index = 8, offset = +0, length = source.length; index < length; ++index) {
-          var character = Functions.stringAt(source, index);
-
-          // ...
-          if (character === '/') { while ('*' !== Functions.stringAt(source, index) && '/' !== Functions.stringAt(source, index + 1)) ++index; continue }
-          if (Functions.stringIsSpace(character)) continue;
-
-          // ...
-          if (mode & Modes.BODY) {}
-
-          // ... ->> Parse function parameters
-          else if (mode & Modes.PARAMETERS) {
-            // if (character === ')') { if (+0 !== depths.length) return false; mode |= Modes.BODY; mode &= ~(Modes.PARAMETERS | Modes.PARAMETER_DEFAULT | Modes.PARAMETER_DESTRUCTURED_NAME | Modes.PARAMETER_NAME | Modes.PARAMETER_VALUE); continue }
-            // if (character === ',') { if (niladic) return false; mode &= ~(Modes.PARAMETER_DEFAULT | Modes.PARAMETER_DESTRUCTURED_NAME | Modes.PARAMETER_NAME | Modes.PARAMETER_VALUE); continue }
-
-            // // ...
-            // if (mode & Modes.PARAMETER_DEFAULT) {}
-
-            // else if (mode & Modes.PARAMETER_DESTRUCTURED_NAME) {
-            //   if (character === '=') {
-            //     if (+0 === offset) return false;
-            //   }
-            //   if (false === Functions.stringIsIdentifierStart(character)) return false;
-            //   mode |= Modes.PARAMETER_NAME;
-
-            //   ++offset
-            // }
-
-            // else if (mode & Modes.PARAMETER_NAME) {
-            //   if (character === '=') { mode &= ~Modes.PARAMETER_NAME; mode |= Modes.PARAMETER_DEFAULT; }
-            //   else if (false === Functions.stringIsIdentifierContinue(character)) return false;
-
-            //   ++offset
-            // }
-
-            // else {
-            //   mode    |= Modes.PARAMETER_NAME;
-            //   niladic  = false;
-
-            //   if (false === Functions.stringIsIdentifierStart(character)) {
-            //     if (character === '[') {
-            //       while (true) {
-            //         if (index++ === length)
-            //         return false;
-
-            //         if ('[' === Functions.stringAt(source, index++)) {
-            //           if (Constants.MAXIMUM_STATIC_ARRAY_LENGTH === depths.length) return false;
-            //           depths[depths.length++] = '['
-            //         }
-
-            //         break
-            //       }
-            //     }
-
-            //     else if (character === '{') { depths[0] = '{'; depths.length = 1 }
-            //     else return false;
-
-            //     mode |= Modes.PARAMETER_DESTRUCTURED_NAME;
-            //     mode &= ~Modes.PARAMETER_NAME
-            //   }
-            // }
-          }
-
-          else if ('(' === character)
-            mode |= Modes.PARAMETERS;
-
-          else if ("" !== name && Functions.stringCompare(source, name, index, +0)) {
-            index += name.length;
-            mode  |= Modes.NAME
-          }
-
-          return "bruh :v"
+          object[key] = descriptor.value
         }
-      }
 
-      // ...
+        else if (VOID !== Native.Object$defineProperty)
+          Native.Object$defineProperty(descriptor, key, VOID === descriptor.value
+            ? {"configurable": descriptor.configurable, "enumerable": descriptor.enumerable, "get": descriptor.get, "set": descriptor.set}
+            : {"configurable": descriptor.configurable, "enumerable": descriptor.enumerable, "value": descriptor.value, "writable": false !== descriptor.writable}
+          );
+
+        else {
+          if (VOID !== descriptor.value) {
+            if (false === descriptor.writable) return false;
+            object[key] = descriptor.value
+          }
+
+          else {
+            if (VOID === Native.Object$prototype$__defineGetter__ || VOID === Native.Object$prototype$__defineGetter__)
+            return false;
+
+            if (VOID !== Native.Function$prototype$bind) {
+              Native.Function$prototype$apply(Native.Object$prototype$__defineGetter__, [object, [key, descriptor.get]]);
+              Native.Function$prototype$apply(Native.Object$prototype$__defineSetter__, [object, [key, descriptor.set]])
+            }
+
+            else {
+              if (false === assert(Native.Function$prototype$apply, Enumeration.STRICT)) return false;
+              Native.Function$prototype$apply.apply(Native.Object$prototype$__defineGetter__, [object, [key, descriptor.get]]);
+
+              if (false === assert(Native.Function$prototype$apply, Enumeration.STRICT)) return false;
+              Native.Function$prototype$apply.apply(Native.Object$prototype$__defineSetter__, [object, [key, descriptor.set]])
+            }
+          }
+        }
+
+        return true
+      } catch (error) {}
+
       return false
     };
 
-    Functions.functionToString = function functionToString(functor) {
-       return Functions.functionApply(Natives.Function$prototype$toString, functor)
-    };
-
-    Functions.inspectFeature = function inspectFeature(object, identifier) {
-       return new Inspector(identifier, object)
-    };
-
-    Functions.numberFromDigit = function numberFromDigit(digit) {
-      switch (digit) {
-        case 0: case '0': return +0;
-        case 1: case '1': return 1;
-        case 2: case '2': return 2;
-        case 3: case '3': return 3;
-        case 4: case '4': return 4;
-        case 5: case '5': return 5;
-        case 6: case '6': return 6;
-        case 7: case '7': return 7;
-        case 8: case '8': return 8;
-        case 9: case '9': return 9
-      }
-    };
-
-    Functions.numberIsFinite      = function numberIsFinite     (number) { return Infinity !== number && -Infinity !== number };
-    Functions.numberIsInteger     = function numberIsInteger    (number) { return number === Mathematics.trunc(number) };
-    Functions.numberIsNaN         = function numberIsNaN        (number) { return number !== number };
-    Functions.numberIsSafe        = function numberIsSafe       (number) { return -Constants.MAXIMUM_NUMBER <= number && number <= Constants.MAXIMUM_NUMBER && Functions.numberIsFinite(number) && false === Functions.numberIsNaN(number) };
-    Functions.numberIsSafeInteger = function numberIsSafeInteger(number) { return -Constants.MAXIMUM_SAFE_INTEGER <= number && number <= Constants.MAXIMUM_SAFE_INTEGER && Functions.numberIsInteger(number) };
-
-    Functions.numberToFraction = function numberToFraction(number) {
-      var integer = Mathematics.trunc(number);
-
-      if (integer === numerator)
-      return new Fraction(integer, 1, 1);
+    Functions.describeProperty = function describeProperty(object, key) {
+      var descriptor = new PropertyDescriptor;
 
       // ...
-      var denominator = 1;
-      var numerator   = number - integer;
-      var divisor;
+      if (null === object || undefined === object)
+        descriptor.own = false;
 
-      while (false === Functions.numberIsInteger(numerator)) {
-        var next = numerator * 10.0;
+      else {
+        for (var subkey in object)
+        if (key === subkey) {
+          descriptor.enumerable = true;
+          break
+        }
 
-        if (false === Functions.numberIsSafe(next)) break;
-        denominator *= 10;
-        numerator    = next
-      }
+        // ...
+        if (VOID !== Native.Object$getOwnPropertyDescriptor) {
+          var subdescriptor = Native.Object$getOwnPropertyDescriptor(object, key);
 
-      divisor      = Mathematics.gcd(denominator, numerator);
-      denominator /= divisor;
-      numerator   /= divisor;
+          // ...
+          descriptor.own = false;
 
-      return new Fraction(integer, numerator, denominator)
-    };
+          if (undefined !== subdescriptor) {
+            descriptor.configurable = subdescriptor.configurable;
+            descriptor.enumerable   = subdescriptor.enumerable;
+            descriptor.own          = true;
 
-    Functions.numberToString = function numberToString(number) {
-      return number + ""
-    };
+            if ("value" in descriptor) {
+              descriptor.value    = subdescriptor.value;
+              descriptor.writable = subdescriptor.writable
+            }
 
-    Functions.objectDefineProperty = null;
-    Functions.objectGetPrototype = null;
-    Functions.objectSetPrototype = null;
-
-    Functions.objectRemoveProperty = function objectRemoveProperty(object, identifier, redefine) {
-      if (true === redefine) Functions.objectDefineProperty(object, identifier, {configurable: true, value: null, writable: true});
-      try { return delete object[identifier] } catch (error) {}
-
-      return false === (identifier in object)
-    };
-
-    Functions.stringAt = function stringAt(string, index) {
-      return "string" === typeof string ? null : string[index]
-    };
-
-    Functions.stringCompare = function stringCompare(stringA, stringB, indexA, indexB, count) {
-      var indexA = arguments.length > 2 ? indexA : +0;
-      var indexB = arguments.length > 2 ? indexB : +0;
-      var count  = arguments.length > 4 ? count : Mathematics.minimum(stringA.length - indexA, stringB.length - indexB);
-
-      // ...
-      while (count--) {
-        if (Functions.stringAt(stringA, indexA++) !== Functions.stringAt(stringB, indexB++))
-        return false
-      }
-
-      return arguments.length > 2 || stringA.length === stringB.length
-    };
-
-    Functions.stringFrom = null;
-
-    Functions.stringIsDigit = function stringIsDigit(character) {
-      return character === '0' || character === '1' || character === '2' || character === '3' || character === '4' || character === '5' || character === '6' || character === '7' || character === '8' || character === '9'
-    };
-
-    Functions.stringIsIdentifier = function stringIsIdentifier(string) {
-      var continueCodes = [new StaticString('0', '3', '0', '0'), new StaticString('0', '3', '6', 'F'), new StaticString('0', '4', '8', '3'), new StaticString('0', '4', '8', '7'), new StaticString('0', '5', '9', '1'), new StaticString('0', '5', 'B', 'D'), new StaticString('0', '5', 'B', 'F'), new StaticString('0', '5', 'C', '1'), new StaticString('0', '5', 'C', '2'), new StaticString('0', '5', 'C', '4'), new StaticString('0', '5', 'C', '5'), new StaticString('0', '5', 'C', '7'), new StaticString('0', '6', '1', '0'), new StaticString('0', '6', '1', 'A'), new StaticString('0', '6', '4', 'B'), new StaticString('0', '6', '6', '9'), new StaticString('0', '6', '7', '0'), new StaticString('0', '6', 'D', '6'), new StaticString('0', '6', 'D', 'C'), new StaticString('0', '6', 'D', 'F'), new StaticString('0', '6', 'E', '4'), new StaticString('0', '6', 'E', '7'), new StaticString('0', '6', 'E', '8'), new StaticString('0', '6', 'E', 'A'), new StaticString('0', '6', 'E', 'D'), new StaticString('0', '6', 'F', '0'), new StaticString('0', '6', 'F', '9'), new StaticString('0', '7', '1', '1'), new StaticString('0', '7', '3', '0'), new StaticString('0', '7', '4', 'A'), new StaticString('0', '7', 'A', '6'), new StaticString('0', '7', 'B', '0'), new StaticString('0', '7', 'C', '0'), new StaticString('0', '7', 'C', '9'), new StaticString('0', '7', 'E', 'B'), new StaticString('0', '7', 'F', '3'), new StaticString('0', '8', '1', '6'), new StaticString('0', '8', '1', '9'), new StaticString('0', '8', '1', 'B'), new StaticString('0', '8', '2', '3'), new StaticString('0', '8', '2', '5'), new StaticString('0', '8', '2', '7'), new StaticString('0', '8', '2', '9'), new StaticString('0', '8', '2', 'D'), new StaticString('0', '8', '5', '9'), new StaticString('0', '8', '5', 'B'), new StaticString('0', '8', 'E', '4'), new StaticString('0', '8', 'F', 'E'), new StaticString('0', '9', '0', '0'), new StaticString('0', '9', '0', '3'), new StaticString('0', '9', '3', 'A'), new StaticString('0', '9', '3', 'C'), new StaticString('0', '9', '3', 'E'), new StaticString('0', '9', '4', 'F'), new StaticString('0', '9', '5', '1'), new StaticString('0', '9', '5', '7'), new StaticString('0', '9', '6', '2'), new StaticString('0', '9', '6', '3'), new StaticString('0', '9', '6', '6'), new StaticString('0', '9', '6', 'F'), new StaticString('0', '9', '8', '1'), new StaticString('0', '9', '8', '3'), new StaticString('0', '9', 'B', 'C'), new StaticString('0', '9', 'B', 'E'), new StaticString('0', '9', 'C', '4'), new StaticString('0', '9', 'C', '7'), new StaticString('0', '9', 'C', '8'), new StaticString('0', '9', 'C', 'B'), new StaticString('0', '9', 'C', 'D'), new StaticString('0', '9', 'D', '7'), new StaticString('0', '9', 'E', '2'), new StaticString('0', '9', 'E', '3'), new StaticString('0', '9', 'E', '6'), new StaticString('0', '9', 'E', 'F'), new StaticString('0', 'A', '0', '1'), new StaticString('0', 'A', '0', '3'), new StaticString('0', 'A', '3', 'C'), new StaticString('0', 'A', '3', 'E'), new StaticString('0', 'A', '4', '2'), new StaticString('0', 'A', '4', '7'), new StaticString('0', 'A', '4', '8'), new StaticString('0', 'A', '4', 'B'), new StaticString('0', 'A', '4', 'D'), new StaticString('0', 'A', '5', '1'), new StaticString('0', 'A', '6', '6'), new StaticString('0', 'A', '7', '1'), new StaticString('0', 'A', '7', '5'), new StaticString('0', 'A', '8', '1'), new StaticString('0', 'A', '8', '3'), new StaticString('0', 'A', 'B', 'C'), new StaticString('0', 'A', 'B', 'E'), new StaticString('0', 'A', 'C', '5'), new StaticString('0', 'A', 'C', '7'), new StaticString('0', 'A', 'C', '9'), new StaticString('0', 'A', 'C', 'B'), new StaticString('0', 'A', 'C', 'D'), new StaticString('0', 'A', 'E', '2'), new StaticString('0', 'A', 'E', '3'), new StaticString('0', 'A', 'E', '6'), new StaticString('0', 'A', 'E', 'F'), new StaticString('0', 'B', '0', '1'), new StaticString('0', 'B', '0', '3'), new StaticString('0', 'B', '3', 'C'), new StaticString('0', 'B', '3', 'E'), new StaticString('0', 'B', '4', '4'), new StaticString('0', 'B', '4', '7'), new StaticString('0', 'B', '4', '8'), new StaticString('0', 'B', '4', 'B'), new StaticString('0', 'B', '4', 'D'), new StaticString('0', 'B', '5', '6'), new StaticString('0', 'B', '5', '7'), new StaticString('0', 'B', '6', '2'), new StaticString('0', 'B', '6', '3'), new StaticString('0', 'B', '6', '6'), new StaticString('0', 'B', '6', 'F'), new StaticString('0', 'B', '8', '2'), new StaticString('0', 'B', 'B', 'E'), new StaticString('0', 'B', 'C', '2'), new StaticString('0', 'B', 'C', '6'), new StaticString('0', 'B', 'C', '8'), new StaticString('0', 'B', 'C', 'A'), new StaticString('0', 'B', 'C', 'D'), new StaticString('0', 'B', 'D', '7'), new StaticString('0', 'B', 'E', '6'), new StaticString('0', 'B', 'E', 'F'), new StaticString('0', 'C', '0', '1'), new StaticString('0', 'C', '0', '3'), new StaticString('0', 'C', '3', 'E'), new StaticString('0', 'C', '4', '4'), new StaticString('0', 'C', '4', '6'), new StaticString('0', 'C', '4', '8'), new StaticString('0', 'C', '4', 'A'), new StaticString('0', 'C', '4', 'D'), new StaticString('0', 'C', '5', '5'), new StaticString('0', 'C', '5', '6'), new StaticString('0', 'C', '6', '2'), new StaticString('0', 'C', '6', '3'), new StaticString('0', 'C', '6', '6'), new StaticString('0', 'C', '6', 'F'), new StaticString('0', 'C', '8', '2'), new StaticString('0', 'C', '8', '3'), new StaticString('0', 'C', 'B', 'C'), new StaticString('0', 'C', 'B', 'E'), new StaticString('0', 'C', 'C', '4'), new StaticString('0', 'C', 'C', '6'), new StaticString('0', 'C', 'C', '8'), new StaticString('0', 'C', 'C', 'A'), new StaticString('0', 'C', 'C', 'D'), new StaticString('0', 'C', 'D', '5'), new StaticString('0', 'C', 'D', '6'), new StaticString('0', 'C', 'E', '2'), new StaticString('0', 'C', 'E', '3'), new StaticString('0', 'C', 'E', '6'), new StaticString('0', 'C', 'E', 'F'), new StaticString('0', 'D', '0', '2'), new StaticString('0', 'D', '0', '3'), new StaticString('0', 'D', '3', 'E'), new StaticString('0', 'D', '4', '4'), new StaticString('0', 'D', '4', '6'), new StaticString('0', 'D', '4', '8'), new StaticString('0', 'D', '4', 'A'), new StaticString('0', 'D', '4', 'D'), new StaticString('0', 'D', '5', '7'), new StaticString('0', 'D', '6', '2'), new StaticString('0', 'D', '6', '3'), new StaticString('0', 'D', '6', '6'), new StaticString('0', 'D', '6', 'F'), new StaticString('0', 'D', '8', '2'), new StaticString('0', 'D', '8', '3'), new StaticString('0', 'D', 'C', 'A'), new StaticString('0', 'D', 'C', 'F'), new StaticString('0', 'D', 'D', '4'), new StaticString('0', 'D', 'D', '6'), new StaticString('0', 'D', 'D', '8'), new StaticString('0', 'D', 'D', 'F'), new StaticString('0', 'D', 'F', '2'), new StaticString('0', 'D', 'F', '3'), new StaticString('0', 'E', '3', '1'), new StaticString('0', 'E', '3', '4'), new StaticString('0', 'E', '3', 'A'), new StaticString('0', 'E', '4', '7'), new StaticString('0', 'E', '4', 'E'), new StaticString('0', 'E', '5', '0'), new StaticString('0', 'E', '5', '9'), new StaticString('0', 'E', 'B', '1'), new StaticString('0', 'E', 'B', '4'), new StaticString('0', 'E', 'B', '9'), new StaticString('0', 'E', 'B', 'B'), new StaticString('0', 'E', 'B', 'C'), new StaticString('0', 'E', 'C', '8'), new StaticString('0', 'E', 'C', 'D'), new StaticString('0', 'E', 'D', '0'), new StaticString('0', 'E', 'D', '9'), new StaticString('0', 'F', '1', '8'), new StaticString('0', 'F', '1', '9'), new StaticString('0', 'F', '2', '0'), new StaticString('0', 'F', '2', '9'), new StaticString('0', 'F', '3', '5'), new StaticString('0', 'F', '3', '7'), new StaticString('0', 'F', '3', '9'), new StaticString('0', 'F', '3', 'E'), new StaticString('0', 'F', '3', 'F'), new StaticString('0', 'F', '7', '1'), new StaticString('0', 'F', '8', '4'), new StaticString('0', 'F', '8', '6'), new StaticString('0', 'F', '8', '7'), new StaticString('0', 'F', '8', 'D'), new StaticString('0', 'F', '9', '7'), new StaticString('0', 'F', '9', '9'), new StaticString('0', 'F', 'B', 'C'), new StaticString('0', 'F', 'C', '6'), new StaticString('1', '0', '2', 'B'), new StaticString('1', '0', '3', 'E'), new StaticString('1', '0', '4', '0'), new StaticString('1', '0', '4', '9'), new StaticString('1', '0', '5', '6'), new StaticString('1', '0', '5', '9'), new StaticString('1', '0', '5', 'E'), new StaticString('1', '0', '6', '0'), new StaticString('1', '0', '6', '2'), new StaticString('1', '0', '6', '4'), new StaticString('1', '0', '6', '7'), new StaticString('1', '0', '6', 'D'), new StaticString('1', '0', '7', '1'), new StaticString('1', '0', '7', '4'), new StaticString('1', '0', '8', '2'), new StaticString('1', '0', '8', 'D'), new StaticString('1', '0', '8', 'F'), new StaticString('1', '0', '9', 'D'), new StaticString('1', '3', '5', 'D'), new StaticString('1', '3', '5', 'F'), new StaticString('1', '7', '1', '2'), new StaticString('1', '7', '1', '4'), new StaticString('1', '7', '3', '2'), new StaticString('1', '7', '3', '4'), new StaticString('1', '7', '5', '2'), new StaticString('1', '7', '5', '3'), new StaticString('1', '7', '7', '2'), new StaticString('1', '7', '7', '3'), new StaticString('1', '7', 'B', '4'), new StaticString('1', '7', 'D', '3'), new StaticString('1', '7', 'D', 'D'), new StaticString('1', '7', 'E', '0'), new StaticString('1', '7', 'E', '9'), new StaticString('1', '8', '0', 'B'), new StaticString('1', '8', '0', 'D'), new StaticString('1', '8', '1', '0'), new StaticString('1', '8', '1', '9'), new StaticString('1', '8', 'A', '9'), new StaticString('1', '9', '2', '0'), new StaticString('1', '9', '2', 'B'), new StaticString('1', '9', '3', '0'), new StaticString('1', '9', '3', 'B'), new StaticString('1', '9', '4', '6'), new StaticString('1', '9', '4', 'F'), new StaticString('1', '9', 'B', '0'), new StaticString('1', '9', 'C', '0'), new StaticString('1', '9', 'C', '8'), new StaticString('1', '9', 'C', '9'), new StaticString('1', '9', 'D', '0'), new StaticString('1', '9', 'D', '9'), new StaticString('1', 'A', '1', '7'), new StaticString('1', 'A', '1', 'B'), new StaticString('1', 'A', '5', '5'), new StaticString('1', 'A', '5', 'E'), new StaticString('1', 'A', '6', '0'), new StaticString('1', 'A', '7', 'C'), new StaticString('1', 'A', '7', 'F'), new StaticString('1', 'A', '8', '9'), new StaticString('1', 'A', '9', '0'), new StaticString('1', 'A', '9', '9'), new StaticString('1', 'B', '0', '0'), new StaticString('1', 'B', '0', '4'), new StaticString('1', 'B', '3', '4'), new StaticString('1', 'B', '4', '4'), new StaticString('1', 'B', '5', '0'), new StaticString('1', 'B', '5', '9'), new StaticString('1', 'B', '6', 'B'), new StaticString('1', 'B', '7', '3'), new StaticString('1', 'B', '8', '0'), new StaticString('1', 'B', '8', '2'), new StaticString('1', 'B', 'A', '1'), new StaticString('1', 'B', 'A', 'D'), new StaticString('1', 'B', 'B', '0'), new StaticString('1', 'B', 'B', '9'), new StaticString('1', 'B', 'E', '6'), new StaticString('1', 'B', 'F', '3'), new StaticString('1', 'C', '2', '4'), new StaticString('1', 'C', '3', '7'), new StaticString('1', 'C', '4', '0'), new StaticString('1', 'C', '4', '9'), new StaticString('1', 'C', '5', '0'), new StaticString('1', 'C', '5', '9'), new StaticString('1', 'C', 'D', '0'), new StaticString('1', 'C', 'D', '2'), new StaticString('1', 'C', 'D', '4'), new StaticString('1', 'C', 'E', '8'), new StaticString('1', 'C', 'E', 'D'), new StaticString('1', 'C', 'F', '2'), new StaticString('1', 'C', 'F', '4'), new StaticString('1', 'D', 'C', '0'), new StaticString('1', 'D', 'E', '6'), new StaticString('1', 'D', 'F', 'C'), new StaticString('1', 'D', 'F', 'F'), new StaticString('2', '0', '0', 'C'), new StaticString('2', '0', '0', 'D'), new StaticString('2', '0', '3', 'F'), new StaticString('2', '0', '4', '0'), new StaticString('2', '0', '5', '4'), new StaticString('2', '0', 'D', '0'), new StaticString('2', '0', 'D', 'C'), new StaticString('2', '0', 'E', '1'), new StaticString('2', '0', 'E', '5'), new StaticString('2', '0', 'F', '0'), new StaticString('2', 'C', 'E', 'F'), new StaticString('2', 'C', 'F', '1'), new StaticString('2', 'D', '7', 'F'), new StaticString('2', 'D', 'E', '0'), new StaticString('2', 'D', 'F', 'F'), new StaticString('3', '0', '2', 'A'), new StaticString('3', '0', '2', 'F'), new StaticString('3', '0', '9', '9'), new StaticString('3', '0', '9', 'A'), new StaticString('A', '6', '2', '0'), new StaticString('A', '6', '2', '9'), new StaticString('A', '6', '6', 'F'), new StaticString('A', '6', '7', '4'), new StaticString('A', '6', '7', 'D'), new StaticString('A', '6', '9', 'F'), new StaticString('A', '6', 'F', '0'), new StaticString('A', '6', 'F', '1'), new StaticString('A', '8', '0', '2'), new StaticString('A', '8', '0', '6'), new StaticString('A', '8', '0', 'B'), new StaticString('A', '8', '2', '3'), new StaticString('A', '8', '2', '7'), new StaticString('A', '8', '8', '0'), new StaticString('A', '8', '8', '1'), new StaticString('A', '8', 'B', '4'), new StaticString('A', '8', 'C', '4'), new StaticString('A', '8', 'D', '0'), new StaticString('A', '8', 'D', '9'), new StaticString('A', '8', 'E', '0'), new StaticString('A', '8', 'F', '1'), new StaticString('A', '9', '0', '0'), new StaticString('A', '9', '0', '9'), new StaticString('A', '9', '2', '6'), new StaticString('A', '9', '2', 'D'), new StaticString('A', '9', '4', '7'), new StaticString('A', '9', '5', '3'), new StaticString('A', '9', '8', '0'), new StaticString('A', '9', '8', '3'), new StaticString('A', '9', 'B', '3'), new StaticString('A', '9', 'C', '0'), new StaticString('A', '9', 'D', '0'), new StaticString('A', '9', 'D', '9'), new StaticString('A', 'A', '2', '9'), new StaticString('A', 'A', '3', '6'), new StaticString('A', 'A', '4', '3'), new StaticString('A', 'A', '4', 'C'), new StaticString('A', 'A', '4', 'D'), new StaticString('A', 'A', '5', '0'), new StaticString('A', 'A', '5', '9'), new StaticString('A', 'A', '7', 'B'), new StaticString('A', 'A', 'B', '0'), new StaticString('A', 'A', 'B', '2'), new StaticString('A', 'A', 'B', '4'), new StaticString('A', 'A', 'B', '7'), new StaticString('A', 'A', 'B', '8'), new StaticString('A', 'A', 'B', 'E'), new StaticString('A', 'A', 'B', 'F'), new StaticString('A', 'A', 'C', '1'), new StaticString('A', 'A', 'E', 'B'), new StaticString('A', 'A', 'E', 'F'), new StaticString('A', 'A', 'F', '5'), new StaticString('A', 'A', 'F', '6'), new StaticString('A', 'B', 'E', '3'), new StaticString('A', 'B', 'E', 'A'), new StaticString('A', 'B', 'E', 'C'), new StaticString('A', 'B', 'E', 'D'), new StaticString('A', 'B', 'F', '0'), new StaticString('A', 'B', 'F', '9'), new StaticString('F', 'B', '1', 'E'), new StaticString('F', 'E', '0', '0'), new StaticString('F', 'E', '0', 'F'), new StaticString('F', 'E', '2', '0'), new StaticString('F', 'E', '2', '6'), new StaticString('F', 'E', '3', '3'), new StaticString('F', 'E', '3', '4'), new StaticString('F', 'E', '4', 'D'), new StaticString('F', 'E', '4', 'F'), new StaticString('F', 'F', '1', '0'), new StaticString('F', 'F', '1', '9'), new StaticString('F', 'F', '3', 'F')];
-      var startCodes    = [new StaticString('0', '0', 'A', 'A'), new StaticString('0', '0', 'B', '5'), new StaticString('0', '0', 'B', 'A'), new StaticString('0', '0', 'C', '0'), new StaticString('0', '0', 'D', '6'), new StaticString('0', '0', 'D', '8'), new StaticString('0', '0', 'F', '6'), new StaticString('0', '0', 'F', '8'), new StaticString('0', '2', 'C', '1'), new StaticString('0', '2', 'C', '6'), new StaticString('0', '2', 'D', '1'), new StaticString('0', '2', 'E', '0'), new StaticString('0', '2', 'E', '4'), new StaticString('0', '2', 'E', 'C'), new StaticString('0', '2', 'E', 'E'), new StaticString('0', '3', '7', '0'), new StaticString('0', '3', '7', '4'), new StaticString('0', '3', '7', '6'), new StaticString('0', '3', '7', '7'), new StaticString('0', '3', '7', 'A'), new StaticString('0', '3', '7', 'D'), new StaticString('0', '3', '8', '6'), new StaticString('0', '3', '8', '8'), new StaticString('0', '3', '8', 'A'), new StaticString('0', '3', '8', 'C'), new StaticString('0', '3', '8', 'E'), new StaticString('0', '3', 'A', '1'), new StaticString('0', '3', 'A', '3'), new StaticString('0', '3', 'F', '5'), new StaticString('0', '3', 'F', '7'), new StaticString('0', '4', '8', '1'), new StaticString('0', '4', '8', 'A'), new StaticString('0', '5', '2', '7'), new StaticString('0', '5', '3', '1'), new StaticString('0', '5', '5', '6'), new StaticString('0', '5', '5', '9'), new StaticString('0', '5', '6', '1'), new StaticString('0', '5', '8', '7'), new StaticString('0', '5', 'D', '0'), new StaticString('0', '5', 'E', 'A'), new StaticString('0', '5', 'F', '0'), new StaticString('0', '5', 'F', '2'), new StaticString('0', '6', '2', '0'), new StaticString('0', '6', '4', 'A'), new StaticString('0', '6', '6', 'E'), new StaticString('0', '6', '6', 'F'), new StaticString('0', '6', '7', '1'), new StaticString('0', '6', 'D', '3'), new StaticString('0', '6', 'D', '5'), new StaticString('0', '6', 'E', '5'), new StaticString('0', '6', 'E', '6'), new StaticString('0', '6', 'E', 'E'), new StaticString('0', '6', 'E', 'F'), new StaticString('0', '6', 'F', 'A'), new StaticString('0', '6', 'F', 'C'), new StaticString('0', '6', 'F', 'F'), new StaticString('0', '7', '1', '0'), new StaticString('0', '7', '1', '2'), new StaticString('0', '7', '2', 'F'), new StaticString('0', '7', '4', 'D'), new StaticString('0', '7', 'A', '5'), new StaticString('0', '7', 'B', '1'), new StaticString('0', '7', 'C', 'A'), new StaticString('0', '7', 'E', 'A'), new StaticString('0', '7', 'F', '4'), new StaticString('0', '7', 'F', '5'), new StaticString('0', '7', 'F', 'A'), new StaticString('0', '8', '0', '0'), new StaticString('0', '8', '1', '5'), new StaticString('0', '8', '1', 'A'), new StaticString('0', '8', '2', '4'), new StaticString('0', '8', '2', '8'), new StaticString('0', '8', '4', '0'), new StaticString('0', '8', '5', '8'), new StaticString('0', '8', 'A', '0'), new StaticString('0', '8', 'A', '2'), new StaticString('0', '8', 'A', 'C'), new StaticString('0', '9', '0', '4'), new StaticString('0', '9', '3', '9'), new StaticString('0', '9', '3', 'D'), new StaticString('0', '9', '5', '0'), new StaticString('0', '9', '5', '8'), new StaticString('0', '9', '6', '1'), new StaticString('0', '9', '7', '1'), new StaticString('0', '9', '7', '7'), new StaticString('0', '9', '7', '9'), new StaticString('0', '9', '7', 'F'), new StaticString('0', '9', '8', '5'), new StaticString('0', '9', '8', 'C'), new StaticString('0', '9', '8', 'F'), new StaticString('0', '9', '9', '0'), new StaticString('0', '9', '9', '3'), new StaticString('0', '9', 'A', '8'), new StaticString('0', '9', 'A', 'A'), new StaticString('0', '9', 'B', '0'), new StaticString('0', '9', 'B', '2'), new StaticString('0', '9', 'B', '6'), new StaticString('0', '9', 'B', '9'), new StaticString('0', '9', 'B', 'D'), new StaticString('0', '9', 'C', 'E'), new StaticString('0', '9', 'D', 'C'), new StaticString('0', '9', 'D', 'D'), new StaticString('0', '9', 'D', 'F'), new StaticString('0', '9', 'E', '1'), new StaticString('0', '9', 'F', '0'), new StaticString('0', '9', 'F', '1'), new StaticString('0', 'A', '0', '5'), new StaticString('0', 'A', '0', 'A'), new StaticString('0', 'A', '0', 'F'), new StaticString('0', 'A', '1', '0'), new StaticString('0', 'A', '1', '3'), new StaticString('0', 'A', '2', '8'), new StaticString('0', 'A', '2', 'A'), new StaticString('0', 'A', '3', '0'), new StaticString('0', 'A', '3', '2'), new StaticString('0', 'A', '3', '3'), new StaticString('0', 'A', '3', '5'), new StaticString('0', 'A', '3', '6'), new StaticString('0', 'A', '3', '8'), new StaticString('0', 'A', '3', '9'), new StaticString('0', 'A', '5', '9'), new StaticString('0', 'A', '5', 'C'), new StaticString('0', 'A', '5', 'E'), new StaticString('0', 'A', '7', '2'), new StaticString('0', 'A', '7', '4'), new StaticString('0', 'A', '8', '5'), new StaticString('0', 'A', '8', 'D'), new StaticString('0', 'A', '8', 'F'), new StaticString('0', 'A', '9', '1'), new StaticString('0', 'A', '9', '3'), new StaticString('0', 'A', 'A', '8'), new StaticString('0', 'A', 'A', 'A'), new StaticString('0', 'A', 'B', '0'), new StaticString('0', 'A', 'B', '2'), new StaticString('0', 'A', 'B', '3'), new StaticString('0', 'A', 'B', '5'), new StaticString('0', 'A', 'B', '9'), new StaticString('0', 'A', 'B', 'D'), new StaticString('0', 'A', 'D', '0'), new StaticString('0', 'A', 'E', '0'), new StaticString('0', 'A', 'E', '1'), new StaticString('0', 'B', '0', '5'), new StaticString('0', 'B', '0', 'C'), new StaticString('0', 'B', '0', 'F'), new StaticString('0', 'B', '1', '0'), new StaticString('0', 'B', '1', '3'), new StaticString('0', 'B', '2', '8'), new StaticString('0', 'B', '2', 'A'), new StaticString('0', 'B', '3', '0'), new StaticString('0', 'B', '3', '2'), new StaticString('0', 'B', '3', '3'), new StaticString('0', 'B', '3', '5'), new StaticString('0', 'B', '3', '9'), new StaticString('0', 'B', '3', 'D'), new StaticString('0', 'B', '5', 'C'), new StaticString('0', 'B', '5', 'D'), new StaticString('0', 'B', '5', 'F'), new StaticString('0', 'B', '6', '1'), new StaticString('0', 'B', '7', '1'), new StaticString('0', 'B', '8', '3'), new StaticString('0', 'B', '8', '5'), new StaticString('0', 'B', '8', 'A'), new StaticString('0', 'B', '8', 'E'), new StaticString('0', 'B', '9', '0'), new StaticString('0', 'B', '9', '2'), new StaticString('0', 'B', '9', '5'), new StaticString('0', 'B', '9', '9'), new StaticString('0', 'B', '9', 'A'), new StaticString('0', 'B', '9', 'C'), new StaticString('0', 'B', '9', 'E'), new StaticString('0', 'B', '9', 'F'), new StaticString('0', 'B', 'A', '3'), new StaticString('0', 'B', 'A', '4'), new StaticString('0', 'B', 'A', '8'), new StaticString('0', 'B', 'A', 'A'), new StaticString('0', 'B', 'A', 'E'), new StaticString('0', 'B', 'B', '9'), new StaticString('0', 'B', 'D', '0'), new StaticString('0', 'C', '0', '5'), new StaticString('0', 'C', '0', 'C'), new StaticString('0', 'C', '0', 'E'), new StaticString('0', 'C', '1', '0'), new StaticString('0', 'C', '1', '2'), new StaticString('0', 'C', '2', '8'), new StaticString('0', 'C', '2', 'A'), new StaticString('0', 'C', '3', '3'), new StaticString('0', 'C', '3', '5'), new StaticString('0', 'C', '3', '9'), new StaticString('0', 'C', '3', 'D'), new StaticString('0', 'C', '5', '8'), new StaticString('0', 'C', '5', '9'), new StaticString('0', 'C', '6', '0'), new StaticString('0', 'C', '6', '1'), new StaticString('0', 'C', '8', '5'), new StaticString('0', 'C', '8', 'C'), new StaticString('0', 'C', '8', 'E'), new StaticString('0', 'C', '9', '0'), new StaticString('0', 'C', '9', '2'), new StaticString('0', 'C', 'A', '8'), new StaticString('0', 'C', 'A', 'A'), new StaticString('0', 'C', 'B', '3'), new StaticString('0', 'C', 'B', '5'), new StaticString('0', 'C', 'B', '9'), new StaticString('0', 'C', 'B', 'D'), new StaticString('0', 'C', 'D', 'E'), new StaticString('0', 'C', 'E', '0'), new StaticString('0', 'C', 'E', '1'), new StaticString('0', 'C', 'F', '1'), new StaticString('0', 'C', 'F', '2'), new StaticString('0', 'D', '0', '5'), new StaticString('0', 'D', '0', 'C'), new StaticString('0', 'D', '0', 'E'), new StaticString('0', 'D', '1', '0'), new StaticString('0', 'D', '1', '2'), new StaticString('0', 'D', '3', 'A'), new StaticString('0', 'D', '3', 'D'), new StaticString('0', 'D', '4', 'E'), new StaticString('0', 'D', '6', '0'), new StaticString('0', 'D', '6', '1'), new StaticString('0', 'D', '7', 'A'), new StaticString('0', 'D', '7', 'F'), new StaticString('0', 'D', '8', '5'), new StaticString('0', 'D', '9', '6'), new StaticString('0', 'D', '9', 'A'), new StaticString('0', 'D', 'B', '1'), new StaticString('0', 'D', 'B', '3'), new StaticString('0', 'D', 'B', 'B'), new StaticString('0', 'D', 'B', 'D'), new StaticString('0', 'D', 'C', '0'), new StaticString('0', 'D', 'C', '6'), new StaticString('0', 'E', '0', '1'), new StaticString('0', 'E', '3', '0'), new StaticString('0', 'E', '3', '2'), new StaticString('0', 'E', '3', '3'), new StaticString('0', 'E', '4', '0'), new StaticString('0', 'E', '4', '6'), new StaticString('0', 'E', '8', '1'), new StaticString('0', 'E', '8', '2'), new StaticString('0', 'E', '8', '4'), new StaticString('0', 'E', '8', '7'), new StaticString('0', 'E', '8', '8'), new StaticString('0', 'E', '8', 'A'), new StaticString('0', 'E', '8', 'D'), new StaticString('0', 'E', '9', '4'), new StaticString('0', 'E', '9', '7'), new StaticString('0', 'E', '9', '9'), new StaticString('0', 'E', '9', 'F'), new StaticString('0', 'E', 'A', '1'), new StaticString('0', 'E', 'A', '3'), new StaticString('0', 'E', 'A', '5'), new StaticString('0', 'E', 'A', '7'), new StaticString('0', 'E', 'A', 'A'), new StaticString('0', 'E', 'A', 'B'), new StaticString('0', 'E', 'A', 'D'), new StaticString('0', 'E', 'B', '0'), new StaticString('0', 'E', 'B', '2'), new StaticString('0', 'E', 'B', '3'), new StaticString('0', 'E', 'B', 'D'), new StaticString('0', 'E', 'C', '0'), new StaticString('0', 'E', 'C', '4'), new StaticString('0', 'E', 'C', '6'), new StaticString('0', 'E', 'D', 'C'), new StaticString('0', 'E', 'D', 'F'), new StaticString('0', 'F', '0', '0'), new StaticString('0', 'F', '4', '0'), new StaticString('0', 'F', '4', '7'), new StaticString('0', 'F', '4', '9'), new StaticString('0', 'F', '6', 'C'), new StaticString('0', 'F', '8', '8'), new StaticString('0', 'F', '8', 'C'), new StaticString('1', '0', '0', '0'), new StaticString('1', '0', '2', 'A'), new StaticString('1', '0', '3', 'F'), new StaticString('1', '0', '5', '0'), new StaticString('1', '0', '5', '5'), new StaticString('1', '0', '5', 'A'), new StaticString('1', '0', '5', 'D'), new StaticString('1', '0', '6', '1'), new StaticString('1', '0', '6', '5'), new StaticString('1', '0', '6', '6'), new StaticString('1', '0', '6', 'E'), new StaticString('1', '0', '7', '0'), new StaticString('1', '0', '7', '5'), new StaticString('1', '0', '8', '1'), new StaticString('1', '0', '8', 'E'), new StaticString('1', '0', 'A', '0'), new StaticString('1', '0', 'C', '5'), new StaticString('1', '0', 'C', '7'), new StaticString('1', '0', 'C', 'D'), new StaticString('1', '0', 'D', '0'), new StaticString('1', '0', 'F', 'A'), new StaticString('1', '0', 'F', 'C'), new StaticString('1', '2', '4', '8'), new StaticString('1', '2', '4', 'A'), new StaticString('1', '2', '4', 'D'), new StaticString('1', '2', '5', '0'), new StaticString('1', '2', '5', '6'), new StaticString('1', '2', '5', '8'), new StaticString('1', '2', '5', 'A'), new StaticString('1', '2', '5', 'D'), new StaticString('1', '2', '6', '0'), new StaticString('1', '2', '8', '8'), new StaticString('1', '2', '8', 'A'), new StaticString('1', '2', '8', 'D'), new StaticString('1', '2', '9', '0'), new StaticString('1', '2', 'B', '0'), new StaticString('1', '2', 'B', '2'), new StaticString('1', '2', 'B', '5'), new StaticString('1', '2', 'B', '8'), new StaticString('1', '2', 'B', 'E'), new StaticString('1', '2', 'C', '0'), new StaticString('1', '2', 'C', '2'), new StaticString('1', '2', 'C', '5'), new StaticString('1', '2', 'C', '8'), new StaticString('1', '2', 'D', '6'), new StaticString('1', '2', 'D', '8'), new StaticString('1', '3', '1', '0'), new StaticString('1', '3', '1', '2'), new StaticString('1', '3', '1', '5'), new StaticString('1', '3', '1', '8'), new StaticString('1', '3', '5', 'A'), new StaticString('1', '3', '8', '0'), new StaticString('1', '3', '8', 'F'), new StaticString('1', '3', 'A', '0'), new StaticString('1', '3', 'F', '4'), new StaticString('1', '4', '0', '1'), new StaticString('1', '6', '6', 'C'), new StaticString('1', '6', '6', 'F'), new StaticString('1', '6', '7', 'F'), new StaticString('1', '6', '8', '1'), new StaticString('1', '6', '9', 'A'), new StaticString('1', '6', 'A', '0'), new StaticString('1', '6', 'E', 'A'), new StaticString('1', '6', 'E', 'E'), new StaticString('1', '6', 'F', '0'), new StaticString('1', '7', '0', '0'), new StaticString('1', '7', '0', 'C'), new StaticString('1', '7', '0', 'E'), new StaticString('1', '7', '1', '1'), new StaticString('1', '7', '2', '0'), new StaticString('1', '7', '3', '1'), new StaticString('1', '7', '4', '0'), new StaticString('1', '7', '5', '1'), new StaticString('1', '7', '6', '0'), new StaticString('1', '7', '6', 'C'), new StaticString('1', '7', '6', 'E'), new StaticString('1', '7', '7', '0'), new StaticString('1', '7', '8', '0'), new StaticString('1', '7', 'B', '3'), new StaticString('1', '7', 'D', '7'), new StaticString('1', '7', 'D', 'C'), new StaticString('1', '8', '2', '0'), new StaticString('1', '8', '7', '7'), new StaticString('1', '8', '8', '0'), new StaticString('1', '8', 'A', '8'), new StaticString('1', '8', 'A', 'A'), new StaticString('1', '8', 'B', '0'), new StaticString('1', '8', 'F', '5'), new StaticString('1', '9', '0', '0'), new StaticString('1', '9', '1', 'C'), new StaticString('1', '9', '5', '0'), new StaticString('1', '9', '6', 'D'), new StaticString('1', '9', '7', '0'), new StaticString('1', '9', '7', '4'), new StaticString('1', '9', '8', '0'), new StaticString('1', '9', 'A', 'B'), new StaticString('1', '9', 'C', '1'), new StaticString('1', '9', 'C', '7'), new StaticString('1', 'A', '0', '0'), new StaticString('1', 'A', '1', '6'), new StaticString('1', 'A', '2', '0'), new StaticString('1', 'A', '5', '4'), new StaticString('1', 'A', 'A', '7'), new StaticString('1', 'B', '0', '5'), new StaticString('1', 'B', '3', '3'), new StaticString('1', 'B', '4', '5'), new StaticString('1', 'B', '4', 'B'), new StaticString('1', 'B', '8', '3'), new StaticString('1', 'B', 'A', '0'), new StaticString('1', 'B', 'A', 'E'), new StaticString('1', 'B', 'A', 'F'), new StaticString('1', 'B', 'B', 'A'), new StaticString('1', 'B', 'E', '5'), new StaticString('1', 'C', '0', '0'), new StaticString('1', 'C', '2', '3'), new StaticString('1', 'C', '4', 'D'), new StaticString('1', 'C', '4', 'F'), new StaticString('1', 'C', '5', 'A'), new StaticString('1', 'C', '7', 'D'), new StaticString('1', 'C', 'E', '9'), new StaticString('1', 'C', 'E', 'C'), new StaticString('1', 'C', 'E', 'E'), new StaticString('1', 'C', 'F', '1'), new StaticString('1', 'C', 'F', '5'), new StaticString('1', 'C', 'F', '6'), new StaticString('1', 'D', '0', '0'), new StaticString('1', 'D', 'B', 'F'), new StaticString('1', 'E', '0', '0'), new StaticString('1', 'F', '1', '5'), new StaticString('1', 'F', '1', '8'), new StaticString('1', 'F', '1', 'D'), new StaticString('1', 'F', '2', '0'), new StaticString('1', 'F', '4', '5'), new StaticString('1', 'F', '4', '8'), new StaticString('1', 'F', '4', 'D'), new StaticString('1', 'F', '5', '0'), new StaticString('1', 'F', '5', '7'), new StaticString('1', 'F', '5', '9'), new StaticString('1', 'F', '5', 'B'), new StaticString('1', 'F', '5', 'D'), new StaticString('1', 'F', '5', 'F'), new StaticString('1', 'F', '7', 'D'), new StaticString('1', 'F', '8', '0'), new StaticString('1', 'F', 'B', '4'), new StaticString('1', 'F', 'B', '6'), new StaticString('1', 'F', 'B', 'C'), new StaticString('1', 'F', 'B', 'E'), new StaticString('1', 'F', 'C', '2'), new StaticString('1', 'F', 'C', '4'), new StaticString('1', 'F', 'C', '6'), new StaticString('1', 'F', 'C', 'C'), new StaticString('1', 'F', 'D', '0'), new StaticString('1', 'F', 'D', '3'), new StaticString('1', 'F', 'D', '6'), new StaticString('1', 'F', 'D', 'B'), new StaticString('1', 'F', 'E', '0'), new StaticString('1', 'F', 'E', 'C'), new StaticString('1', 'F', 'F', '2'), new StaticString('1', 'F', 'F', '4'), new StaticString('1', 'F', 'F', '6'), new StaticString('1', 'F', 'F', 'C'), new StaticString('2', '0', '7', '1'), new StaticString('2', '0', '7', 'F'), new StaticString('2', '0', '9', '0'), new StaticString('2', '0', '9', 'C'), new StaticString('2', '1', '0', '2'), new StaticString('2', '1', '0', '7'), new StaticString('2', '1', '0', 'A'), new StaticString('2', '1', '1', '3'), new StaticString('2', '1', '1', '5'), new StaticString('2', '1', '1', '9'), new StaticString('2', '1', '1', 'D'), new StaticString('2', '1', '2', '4'), new StaticString('2', '1', '2', '6'), new StaticString('2', '1', '2', '8'), new StaticString('2', '1', '2', 'A'), new StaticString('2', '1', '2', 'D'), new StaticString('2', '1', '2', 'F'), new StaticString('2', '1', '3', '9'), new StaticString('2', '1', '3', 'C'), new StaticString('2', '1', '3', 'F'), new StaticString('2', '1', '4', '5'), new StaticString('2', '1', '4', '9'), new StaticString('2', '1', '4', 'E'), new StaticString('2', '1', '6', '0'), new StaticString('2', '1', '8', '8'), new StaticString('2', 'C', '0', '0'), new StaticString('2', 'C', '2', 'E'), new StaticString('2', 'C', '3', '0'), new StaticString('2', 'C', '5', 'E'), new StaticString('2', 'C', '6', '0'), new StaticString('2', 'C', 'E', '4'), new StaticString('2', 'C', 'E', 'B'), new StaticString('2', 'C', 'E', 'E'), new StaticString('2', 'C', 'F', '2'), new StaticString('2', 'C', 'F', '3'), new StaticString('2', 'D', '0', '0'), new StaticString('2', 'D', '2', '5'), new StaticString('2', 'D', '2', '7'), new StaticString('2', 'D', '2', 'D'), new StaticString('2', 'D', '3', '0'), new StaticString('2', 'D', '6', '7'), new StaticString('2', 'D', '6', 'F'), new StaticString('2', 'D', '8', '0'), new StaticString('2', 'D', '9', '6'), new StaticString('2', 'D', 'A', '0'), new StaticString('2', 'D', 'A', '6'), new StaticString('2', 'D', 'A', '8'), new StaticString('2', 'D', 'A', 'E'), new StaticString('2', 'D', 'B', '0'), new StaticString('2', 'D', 'B', '6'), new StaticString('2', 'D', 'B', '8'), new StaticString('2', 'D', 'B', 'E'), new StaticString('2', 'D', 'C', '0'), new StaticString('2', 'D', 'C', '6'), new StaticString('2', 'D', 'C', '8'), new StaticString('2', 'D', 'C', 'E'), new StaticString('2', 'D', 'D', '0'), new StaticString('2', 'D', 'D', '6'), new StaticString('2', 'D', 'D', '8'), new StaticString('2', 'D', 'D', 'E'), new StaticString('2', 'E', '2', 'F'), new StaticString('3', '0', '0', '5'), new StaticString('3', '0', '0', '7'), new StaticString('3', '0', '2', '1'), new StaticString('3', '0', '2', '9'), new StaticString('3', '0', '3', '1'), new StaticString('3', '0', '3', '5'), new StaticString('3', '0', '3', '8'), new StaticString('3', '0', '3', 'C'), new StaticString('3', '0', '4', '1'), new StaticString('3', '0', '9', '6'), new StaticString('3', '0', '9', 'D'), new StaticString('3', '0', '9', 'F'), new StaticString('3', '0', 'A', '1'), new StaticString('3', '0', 'F', 'A'), new StaticString('3', '0', 'F', 'C'), new StaticString('3', '0', 'F', 'F'), new StaticString('3', '1', '0', '5'), new StaticString('3', '1', '2', 'D'), new StaticString('3', '1', '3', '1'), new StaticString('3', '1', '8', 'E'), new StaticString('3', '1', 'A', '0'), new StaticString('3', '1', 'B', 'A'), new StaticString('3', '1', 'F', '0'), new StaticString('3', '1', 'F', 'F'), new StaticString('3', '4', '0', '0'), new StaticString('4', 'D', 'B', '5'), new StaticString('4', 'E', '0', '0'), new StaticString('9', 'F', 'C', 'C'), new StaticString('A', '0', '0', '0'), new StaticString('A', '4', '8', 'C'), new StaticString('A', '4', 'D', '0'), new StaticString('A', '4', 'F', 'D'), new StaticString('A', '5', '0', '0'), new StaticString('A', '6', '0', 'C'), new StaticString('A', '6', '1', '0'), new StaticString('A', '6', '1', 'F'), new StaticString('A', '6', '2', 'A'), new StaticString('A', '6', '2', 'B'), new StaticString('A', '6', '4', '0'), new StaticString('A', '6', '6', 'E'), new StaticString('A', '6', '7', 'F'), new StaticString('A', '6', '9', '7'), new StaticString('A', '6', 'A', '0'), new StaticString('A', '6', 'E', 'F'), new StaticString('A', '7', '1', '7'), new StaticString('A', '7', '1', 'F'), new StaticString('A', '7', '2', '2'), new StaticString('A', '7', '8', '8'), new StaticString('A', '7', '8', 'B'), new StaticString('A', '7', '8', 'E'), new StaticString('A', '7', '9', '0'), new StaticString('A', '7', '9', '3'), new StaticString('A', '7', 'A', '0'), new StaticString('A', '7', 'A', 'A'), new StaticString('A', '7', 'F', '8'), new StaticString('A', '8', '0', '1'), new StaticString('A', '8', '0', '3'), new StaticString('A', '8', '0', '5'), new StaticString('A', '8', '0', '7'), new StaticString('A', '8', '0', 'A'), new StaticString('A', '8', '0', 'C'), new StaticString('A', '8', '2', '2'), new StaticString('A', '8', '4', '0'), new StaticString('A', '8', '7', '3'), new StaticString('A', '8', '8', '2'), new StaticString('A', '8', 'B', '3'), new StaticString('A', '8', 'F', '2'), new StaticString('A', '8', 'F', '7'), new StaticString('A', '8', 'F', 'B'), new StaticString('A', '9', '0', 'A'), new StaticString('A', '9', '2', '5'), new StaticString('A', '9', '3', '0'), new StaticString('A', '9', '4', '6'), new StaticString('A', '9', '6', '0'), new StaticString('A', '9', '7', 'C'), new StaticString('A', '9', '8', '4'), new StaticString('A', '9', 'B', '2'), new StaticString('A', '9', 'C', 'F'), new StaticString('A', 'A', '0', '0'), new StaticString('A', 'A', '2', '8'), new StaticString('A', 'A', '4', '0'), new StaticString('A', 'A', '4', '2'), new StaticString('A', 'A', '4', '4'), new StaticString('A', 'A', '4', 'B'), new StaticString('A', 'A', '6', '0'), new StaticString('A', 'A', '7', '6'), new StaticString('A', 'A', '7', 'A'), new StaticString('A', 'A', '8', '0'), new StaticString('A', 'A', 'A', 'F'), new StaticString('A', 'A', 'B', '1'), new StaticString('A', 'A', 'B', '5'), new StaticString('A', 'A', 'B', '6'), new StaticString('A', 'A', 'B', '9'), new StaticString('A', 'A', 'B', 'D'), new StaticString('A', 'A', 'C', '0'), new StaticString('A', 'A', 'C', '2'), new StaticString('A', 'A', 'D', 'B'), new StaticString('A', 'A', 'D', 'D'), new StaticString('A', 'A', 'E', '0'), new StaticString('A', 'A', 'E', 'A'), new StaticString('A', 'A', 'F', '2'), new StaticString('A', 'A', 'F', '4'), new StaticString('A', 'B', '0', '1'), new StaticString('A', 'B', '0', '6'), new StaticString('A', 'B', '0', '9'), new StaticString('A', 'B', '0', 'E'), new StaticString('A', 'B', '1', '1'), new StaticString('A', 'B', '1', '6'), new StaticString('A', 'B', '2', '0'), new StaticString('A', 'B', '2', '6'), new StaticString('A', 'B', '2', '8'), new StaticString('A', 'B', '2', 'E'), new StaticString('A', 'B', 'C', '0'), new StaticString('A', 'B', 'E', '2'), new StaticString('A', 'C', '0', '0'), new StaticString('D', '7', 'A', '3'), new StaticString('D', '7', 'B', '0'), new StaticString('D', '7', 'C', '6'), new StaticString('D', '7', 'C', 'B'), new StaticString('D', '7', 'F', 'B'), new StaticString('F', '9', '0', '0'), new StaticString('F', 'A', '6', 'D'), new StaticString('F', 'A', '7', '0'), new StaticString('F', 'A', 'D', '9'), new StaticString('F', 'B', '0', '0'), new StaticString('F', 'B', '0', '6'), new StaticString('F', 'B', '1', '3'), new StaticString('F', 'B', '1', '7'), new StaticString('F', 'B', '1', 'D'), new StaticString('F', 'B', '1', 'F'), new StaticString('F', 'B', '2', '8'), new StaticString('F', 'B', '2', 'A'), new StaticString('F', 'B', '3', '6'), new StaticString('F', 'B', '3', '8'), new StaticString('F', 'B', '3', 'C'), new StaticString('F', 'B', '3', 'E'), new StaticString('F', 'B', '4', '0'), new StaticString('F', 'B', '4', '1'), new StaticString('F', 'B', '4', '3'), new StaticString('F', 'B', '4', '4'), new StaticString('F', 'B', '4', '6'), new StaticString('F', 'B', 'B', '1'), new StaticString('F', 'B', 'D', '3'), new StaticString('F', 'D', '3', 'D'), new StaticString('F', 'D', '5', '0'), new StaticString('F', 'D', '8', 'F'), new StaticString('F', 'D', '9', '2'), new StaticString('F', 'D', 'C', '7'), new StaticString('F', 'D', 'F', '0'), new StaticString('F', 'D', 'F', 'B'), new StaticString('F', 'E', '7', '0'), new StaticString('F', 'E', '7', '4'), new StaticString('F', 'E', '7', '6'), new StaticString('F', 'E', 'F', 'C'), new StaticString('F', 'F', '2', '1'), new StaticString('F', 'F', '3', 'A'), new StaticString('F', 'F', '4', '1'), new StaticString('F', 'F', '5', 'A'), new StaticString('F', 'F', '6', '6'), new StaticString('F', 'F', 'B', 'E'), new StaticString('F', 'F', 'C', '2'), new StaticString('F', 'F', 'C', '7'), new StaticString('F', 'F', 'C', 'A'), new StaticString('F', 'F', 'C', 'F'), new StaticString('F', 'F', 'D', '2'), new StaticString('F', 'F', 'D', '7'), new StaticString('F', 'F', 'D', 'A'), new StaticString('F', 'F', 'D', 'C')];
-      var stringIndex;
-      var stringLength  = string.length;
-
-      // ...
-      function stringIsUnicode(codes, index) {
-        if (index + 5 < stringLength && '\\' === Functions.stringAt(string, index++) && 'u' === Functions.stringAt(string, index++))
-        for (var codesIndex = codes.length; codesIndex; ) {
-          var code = codes[--codesIndex];
-
-          for (var subindex = 4; subindex--; ) {
-            if (code[subindex] !== Functions.stringAt(string, index + subindex)) break;
-            if (+0 === subindex) return true
+            else {
+              descriptor.get = subdescriptor.get;
+              descriptor.set = subdescriptor.set
+            }
           }
         }
 
-        return false
+        else if ("string" === typeof key && (VOID !== Native.Object$prototype$__lookupGetter__ && VOID !== Native.Object$prototype$__lookupSetter__)) {
+          var functor  = function() {};
+          var functors = new StaticArray(null, null);
+
+          // ...
+          if (VOID !== Native.Function$prototype$bind || assert(Native.Function$prototype$apply, Enumeration.STRICT))
+          for (var
+            __define__ = new StaticArray(Native.Object$prototype$__defineGetter__, Native.Object$prototype$__defineSetter__),
+            __lookup__ = new StaticArray(Native.Object$prototype$__lookupGetter__, Native.Object$prototype$__lookupSetter__),
+            index      = 2
+          ; index--; ) {
+            functors[index] = VOID !== Native.Function$prototype$bind ? Native.Function$prototype$apply(__lookup__[index], [object, [key]]) : Native.Function$prototype$apply.apply(__lookup__[index], [object, [key]]);
+            if (descriptor.configurable && null === functors[index] || VOID === __define__[index]) continue;
+
+            for (var subfunctors = new StaticArray(functors[index], functor), subindex = 2; subindex--; ) {
+              try {
+                subfunctors[subindex] = VOID !== Native.Function$prototype$bind
+                ? Native.Function$prototype$apply      (__define__[index], [object, [key, subfunctors[subindex]]])
+                : Native.Function$prototype$apply.apply(__define__[index], [object, [key, subfunctors[subindex]]])
+              } catch (error) { descriptor.configurable = false; break }
+
+              if (subfunctors[subindex] !== (
+                VOID !== Native.Function$prototype$bind
+                ? Native.Function$prototype$apply      (__lookup__[index], [object, [key]])
+                : Native.Function$prototype$apply.apply(__lookup__[index], [object, [key]])
+              )) throw new NativeAssertionError("Unable to evaluate `Object.prototype." + (__define__[index] === Native.Object$prototype$__defineGetter__ ? "__defineGetter__" : __define__[index] === Native.Object$prototype$__defineSetter__ ? "__defineSetter__" : "") + "(\u2026)` and `Object.prototype." + (__lookup__[index] === Native.Object$prototype$__lookupGetter__ ? "__lookupGetter__" : __lookup__[index] === Native.Object$prototype$__lookupSetter__ ? "__lookupSetter__" : "") + "(\u2026)` as built-in native")
+            }
+          }
+
+          descriptor.get = functors[0];
+          descriptor.set = functors[1]
+        }
+
+        else {
+          var computedProperty = false;
+          var hasProperty;
+          var redefineProperty;
+          var value;
+
+          // ...
+          try {
+            descriptor.configurable = true;
+            value                   = object[key];
+
+            try { hasProperty = key in object }  // --> Proxy::has(…)
+            catch (error) { hasProperty = true } // ->> Presumed
+
+            try {
+              descriptor.configurable = delete object[key]; // --> Proxy::deleteProperty(…)
+
+              try { redefineProperty = descriptor.configurable || (hasProperty && false === key in object) }
+              catch (error) { redefineProperty = false }
+
+              if (redefineProperty) {
+                try { object[key] = value }
+                catch (error) { computedProperty = true }
+              }
+            } catch (error) { descriptor.configurable = false }
+
+            descriptor.own = false === descriptor.configurable || hasProperty;
+
+            if (false === computedProperty && descriptor.configurable) try {
+              var subvalue;
+
+              // ...
+              object[key]      = VOID;        // ->> Exception throwable from possible setter
+              subvalue         = object[key]; // ->> Exception throwable from possible getter
+              redefineProperty = false;
+
+              if (subvalue === value) descriptor.writable = false;
+              else if (VOID !== subvalue) computedProperty = true;
+              else try {
+                object[key] = value;
+                subvalue    = object[key];
+
+                if (subvalue === value) descriptor.writable = true;
+                else { descriptor.writable = false; value = subvalue }
+              } catch (error) { computedProperty = true }
+            } catch (error) { redefineProperty = true }
+
+            if (redefineProperty) {
+              computedProperty = true;
+              try { object[key] = value } catch (error) {}
+            }
+          } catch (error) { computedProperty = true }
+
+          // ... ->> Evaluated as own property
+          if (computedProperty) {
+            descriptor.configurable = VOID;
+            descriptor.get          = null;
+            descriptor.set          = null;
+            descriptor.value        = VOID;
+            descriptor.writable     = VOID
+          }
+
+          else {
+            descriptor.get   = VOID;
+            descriptor.set   = VOID;
+            descriptor.value = value
+          }
+        }
       }
+
+      return descriptor
+    };
+
+    Functions.describeSelector = function describeSelector(selector) {
+      // TODO (Lapys)
+      return new CSSSelectorDescriptor(selector)
+    };
+
+    Functions.numberIsFinite = function numberIsFinite(number) {
+      return +Infinity !== number && -Infinity !== number
+    };
+
+    Functions.numberIsNaN = function numberIsNaN(number) {
+      return number !== number // ->> ignores `+0.0` and `-0.0` equivalency
+    };
+
+    Functions.numberIsSafe = function numberIsSafe(number) {
+      return Functions.numberIsFinite(number) && false === Functions.numberIsNaN(number)
+    };
+
+    Functions.numberToFraction = function numberToFraction(number) {
+      var fraction = new Fraction(Mathematics.trunc(number), 0, 1);
+      var mantissa = number - fraction.whole;
 
       // ...
-      if (Functions.stringIsIdentifierStart(Functions.stringAt(string, +0))) stringIndex = 1;
-      else if (stringIsUnicode(startCodes, +0)) stringIndex = 6;
-      else return false;
+      if (0.0 !== mantissa) {
+        var divisor;
+        var precision = 1e15;
 
-      while (stringIndex < stringLength) {
-        if (Functions.stringIsIdentifierContinue(Functions.stringAt(string, stringIndex))) ++stringIndex;
-        else if (stringIsUnicode(continueCodes, stringIndex)) stringIndex += 6;
-        else return false
+        // ...
+        for (var a = precision, b = Mathematics.round(mantissa * precision); ; divisor = a ? a : b) {
+          if (0 === a || 0 === b) break;
+          a < b ? b %= a : a %= b
+        }
+
+        fraction.denominator = precision / divisor;
+        fraction.numerator   = Mathematics.round(fraction.denominator * mantissa)
       }
 
-      return true
+      return fraction
     };
 
-    Functions.stringIsIdentifierContinue = function stringIsIdentifierContinue(character) /* WARN (Lapys) -> Only covers ASCII characters */ {
-      return Functions.stringIsDigit(character) || Functions.stringIsIdentifierStart(character)
+    Functions.stringAt = function stringAt(string, index) {
+      if ("string" === typeof string) {
+        if (Support.STRING_CHARACTER_ACCESS_BRACKET_NOTATION) {
+          Functions.stringAt = function stringAt(string, index) { return string[index] };
+          return Functions.stringAt(string, index)
+        }
+
+        if (VOID === Native.String$prototype$charAt)
+        return VOID;
+
+        if (VOID !== Native.Function$prototype$bind) {
+          Functions.stringAt = function stringAt(string, index) { return Native.Function$prototype$apply(Native.String$prototype$charAt, [string, [index]]) };
+          return Functions.stringAt(string, index)
+        }
+
+        if (assert(Native.Function$prototype$apply, Enumeration.STRICT))
+        return Native.Function$prototype$apply.apply(Native.String$prototype$charAt, [string, [index]]);
+
+        return VOID
+      }
+
+      return string[index]
     };
 
-    Functions.stringIsIdentifierStart = function stringIsIdentifierStart(character) /* WARN (Lapys) -> Only covers ASCII characters */ {
+    Functions.stringIsWhitespace = function stringIsWhitespace(string) {
       return (
-        character === 'A' || character === 'B' || character === 'C' || character === 'D' || character === 'E' || character === 'F' || character === 'G' || character === 'H' || character === 'I' || character === 'J' || character === 'K' || character === 'L' || character === 'M' || character === 'N' || character === 'O' || character === 'P' || character === 'Q' || character === 'R' || character === 'S' || character === 'T' || character === 'U' || character === 'V' || character === 'W' || character === 'X' || character === 'Y' || character === 'Z' ||
-        character === 'a' || character === 'b' || character === 'c' || character === 'd' || character === 'e' || character === 'f' || character === 'g' || character === 'h' || character === 'i' || character === 'j' || character === 'k' || character === 'l' || character === 'm' || character === 'n' || character === 'o' || character === 'p' || character === 'q' || character === 'r' || character === 's' || character === 't' || character === 'u' || character === 'v' || character === 'w' || character === 'x' || character === 'y' || character === 'z' ||
-        character === '_' || character === '$'
+        string === ' ' ||
+        string === '\f' || string === '\n' || string === '\r' || string === '\t' || string === '\v' ||
+        string === '\u00A0' || string === '\u1680' || string === '\u2000' || string === '\u2001' || string === '\u2002' || string === '\u2003' || string === '\u2004' || string === '\u2005' || string === '\u2006' || string === '\u2007' || string === '\u2008' || string === '\u2009' || string === '\u200A' || string === '\u202F' || string === '\u205F' || string === '\u3000'
       )
     };
 
-    Functions.stringIsReservedIdentifier = function stringIsReservedIdentifier(string) {
-      return string === "arguments" || string === "break" || string === "case" || string === "catch" || string === "class" || string === "const" || string === "continue" || string === "debugger" || string === "default" || string === "delete" || string === "do" || string === "else" || string === "enum" || string === "eval" || string === "export" || string === "extends" || string === "false" || string === "finally" || string === "for" || string === "function" || string === "if" || string === "implements" || string === "import" || string === "in" || string === "instanceof" || string === "interface" || string === "let" || string === "NaN" || string === "new" || string === "null" || string === "package" || string === "private" || string === "protected" || string === "public" || string === "return" || string === "static" || string === "super" || string === "switch" || string === "this" || string === "throw" || string === "true" || string === "try" || string === "typeof" || string === "undefined" || string === "var" || string === "void" || string === "while" || string === "with" || string === "yield"
-    };
-
-    Functions.stringIsSpace = function stringIsSpace(character) {
-      return character === ' ' || character === '\f' || character === '\t' || character === '\u00A0' || character === '\u1680' || character === '\u2000' || character === '\u2001' || character === '\u2002' || character === '\u2003' || character === '\u2004' || character === '\u2005' || character === '\u2006' || character === '\u2007' || character === '\u2008' || character === '\u2009' || character === '\u200A' || character === '\u202F' || character === '\u205F' || character === '\u3000' || character === '\uFEFF' || character === '\v'
-    };
-
     /* Mathematics > ... */
+    Mathematics.E       = 2.718281828459045;
+    Mathematics.E_GAMMA = 0.57721566490153286060651209008240243104215933593992;
+    Mathematics.ETA     = 245850922 / 156513558;
+    Mathematics.LN2     = 0.6931471805599453;
+    Mathematics.LN10    = 2.302585092994046;
+    Mathematics.LOG2E   = 1.4426950408889634;
+    Mathematics.LOG10E  = 0.4342944819032518;
+    Mathematics.PHI     = 1.618033988749894848204586834;
+    Mathematics.PI      = 245850922 / 78256779;
+    Mathematics.SQRT2   = 665857 / 470832;
+    Mathematics.SQRT3   = 97 / 56;
+    Mathematics.SQRT5   = 51841 / 23184;
+
+    Mathematics.abs = function absolute(number) {
+      return number < +0 ? -number : number
+    };
+
+    Mathematics.acos = function inverse_cosine(number) {
+      return Mathematics.ETA - Mathematics.asin(number)
+    };
+
+    Mathematics.acosh = function hyperbolic_inverse_cosine(number) {
+      return Mathematics.ln(number + Mathematics.sqrt((number * number) - 1))
+    };
+
+    Mathematics.acot = function inverse_cotangent(number) {
+      return Mathematics.ETA - Mathematics.atan(number)
+    };
+
+    Mathematics.acoth = function hyperbolic_inverse_cotangent(number) {
+      return Mathematics.ln((number + 1) / (number - 1)) / 2
+    };
+
+    Mathematics.acsc = function inverse_cosecant(number) {
+      return Mathematics.ETA - Mathematics.asec(number)
+    };
+
+    Mathematics.acsch = function hyperbolic_inverse_cosecant(number) {
+      return Mathematics.ln((1 + Mathematics.sqrt((1 + number) * (1 + number))) / number)
+    };
+
+    Mathematics.asec = function inverse_secant(number) {
+      return Mathematics.acos(1 / number)
+    };
+
+    Mathematics.asech = function hyperbolic_inverse_secant(number) {
+      return Mathematics.ln((1 + Mathematics.sqrt((1 - number) * (1 - number))) / number)
+    };
+
+    Mathematics.asin = function inverse_sine(number) {
+      var angle           = number;
+      var termDenominator = 1;
+      var termNumerand    = number;
+      var termNumerator   = 1;
+
+      // ...
+      for (var index = 0, recent; ; ) {
+        termNumerator   *= ++index;
+        termNumerand    *= number * number;
+        termDenominator *= ++index;
+
+        recent = angle;
+        angle += (termNumerator / termDenominator) * (termNumerand / (index + 1));
+
+        // ... --- WARN (Lapys) -> Requires a better halt to the series used here.
+        if (false === Functions.numberIsSafe(angle)) {
+          angle = recent;
+          break
+        }
+      }
+
+      return angle
+    };
+
+    Mathematics.asinh = function hyperbolic_inverse_sine(number) {
+      return Mathematics.ln(number + Mathematics.sqrt((number * number) + 1))
+    };
+
+    Mathematics.atan = function inverse_tangent(number) {
+      return Mathematics.asin(number / Mathematics.sqrt((number * number) + 1))
+    };
+
+    Mathematics.atanh = function hyperbolic_inverse_tangent(number) {
+      return Mathematics.ln((1 + number) / (1 - number)) / 2
+    };
+
+    Mathematics.beta = function beta() { /* TODO (Lapys) */ };
+
+    Mathematics.cbrt = function cube_root(number) {
+      return Mathematics.iroot(number, 3)
+    };
+
+    Mathematics.ceil = function ceiling(number) {
+      return Mathematics.trunc(number) + (number >= +0)
+    };
+
+    Mathematics.clamp = function clamp(number, minimum, maximum) {
+       return Mathematics.imin(maximum, Mathematics.imax(number, minimum))
+    };
+
+    Mathematics.cos = function cosine(number) {
+      return Mathematics.sin(Mathematics.ETA - number)
+    };
+
+    Mathematics.cot = function cotangent(number) {
+      return 1 / Mathematics.tan(number)
+    };
+
+    Mathematics.coth = function hyperbolic_cotangent(number) {
+      return 1 / Mathematics.tanh(number)
+    };
+
+    Mathematics.csc = function cosecant(number) {
+      return 1 / Mathematics.sin(number)
+    };
+    Mathematics.csch = function hyperbolic_cosecant(number) {
+      return 1 / Mathematics.sinh(number)
+    };
+
+    Mathematics.cyl_bessel  = function cylindrical_bessel() { /* TODO (Lapys) */ };
+    Mathematics.cyl_neumann = function cylindrical_neumann() { /* TODO (Lapys) */ };
+    Mathematics.ellint      = function elliptical_integral() { /* TODO (Lapys) */ };
+
+    Mathematics.exp = function exponentiation(number) {
+      if (number > 1) {
+        var currentTermDenominator = 1;
+        var currentTermNumerator   = 1;
+        var exponent               = 0;
+        var recentTerm             = 0;
+        var signedness             = number < +0;
+
+        // ...
+        if (signedness)
+        number = -number;
+
+        for (var index = 1, recent; ; ++index) {
+          recent     = exponent;
+          recentTerm = currentTermNumerator / currentTermDenominator;
+          exponent  += recentTerm;
+
+          // ... ->> Precision ends here
+          if (false === Functions.numberIsSafe(exponent)) {
+            exponent = recent;
+            break
+          }
+
+          // ...
+          currentTermNumerator   *= number;
+          currentTermDenominator *= index
+        }
+
+        // ...
+        return signedness ? 1 / exponent : exponent
+      }
+
+      return Mathematics.pow(Mathematics.E, number)
+    };
+
+    Mathematics.expint = function exponential_integral() { /* TODO (Lapys) */ };
+
+    Mathematics.fact = (function() {
+      function Factorial(integer, value) { this.integer = integer; this.value = value }
+        Factorial.prototype = {integer: 0, value: 1};
+
+      // ...
+      var factorials = new DepthArray(new Factorial(0, 1));
+      return function factorial(integer) {
+        var cache        = new Factorial(integer, 1);
+        var currentCache = factorials.at(0), previousCache;
+
+        for (var length = factorials.length, index = 1; index !== length; ++index) {
+          previousCache = currentCache;
+          currentCache  = factorials.at(index);
+
+          if (integer >= index + Mathematics.abs(integer - currentCache.integer)) {
+            var cached = (
+              integer >= index + Mathematics.abs(integer - previousCache.integer) &&
+              Mathematics.abs(integer - Mathematics.abs(integer - currentCache.integer)) < Mathematics.abs(integer - Mathematics.abs(integer - previousCache.integer))
+            ) ? previousCache : currentCache;
+            var subinteger = cached.integer;
+
+            // ...
+            cache.value = cached.value;
+
+            if      (integer > subinteger) { while (integer > subinteger) cache.value *= ++subinteger; break }
+            else if (integer < subinteger) { while (integer < subinteger) cache.value /= subinteger--; break }
+          }
+        }
+
+        if (cache.value === 1) {
+          while (integer > 1)
+          cache.value *= integer--
+        }
+
+        for (var length = factorials.length, index = 0; ; ++index) {
+          currentCache = index === length ? null : factorials.at(index);
+
+          if (null !== currentCache && cache.integer === currentCache.integer) break;
+          if (null === currentCache || cache.integer < currentCache.integer) { factorials.splice(index, cache); break }
+        }
+
+        return cache.value
+      }
+    })();
+
+    Mathematics.floor = function floor(number) {
+      return Mathematics.trunc(number) - (number < +0)
+    };
+
     Mathematics.gcd = function greatest_common_divisor(numbers) {
       var divisor = arguments[0];
 
       // ...
       for (var index = arguments.length; index; ) {
         var number = arguments[--index];
+        var remainder;
 
-        for (var remainder; 0 !== number % divisor; ) {
+        while (0 !== number % divisor) {
           remainder = number % divisor;
           number    = divisor;
+
           divisor   = remainder
         }
       }
@@ -851,42 +1757,193 @@ var Lapys = new (
       return divisor
     };
 
+    Mathematics.hermite = function hermite() { /* TODO (Lapys) */ };
+
+    Mathematics.iabs = function integer_absolute(integer) {
+       return (integer ^ (integer >> 31)) - (integer >> 31)
+    };
+
+    Mathematics.icbrt = function integer_cube_root(integer) {
+      var root = Infinity;
+
+      // ...
+      for (var approximation = 2048; approximation < root; ) {
+        root          = approximation;
+        approximation = ((2 * root) + (integer / (root * root))) / 3
+      }
+
+      return Mathematics.itrunc(root)
+    };
+
+    Mathematics.imax = function immediate_maximum(numberA, numberB) {
+      return numberA > numberB ? numberA : numberB
+    };
+
+    Mathematics.imin = function immediate_minimum(numberA, numberB) {
+      return numberA < numberB ? numberA : numberB
+    };
+
     Mathematics.ipow = function integer_power(base, exponent) {
-      var power = 1;
-
-      for (var base = base, exponent = exponent; ; ) {
-        var odd = exponent % 2;
-
-        if (odd) power *= base;
-        exponent = (exponent / 2) - (odd ? 0.5 : 0.0);
-        if (0 === exponent) break; base *= base
-      }
-
-      return power
-    };
-
-    Mathematics.maximum = function maximum(numbers) {
-      var maximum = -Constants.MAXIMUM_NUMBER;
+      var product    = 1;
+      var signedness = exponent < +0;
 
       // ...
-      for (var index = arguments.length; index; ) {
-        var number = arguments[--index];
-        maximum = number > maximum ? number : maximum
+      if (signedness)
+      exponent = -exponent;
+
+      while (true) {
+        if (exponent % 2) product *= base;
+        exponent = Mathematics.trunc(exponent / 2);
+
+        if (0 === exponent) break;
+        base *= base
       }
 
-      return maximum
+      return signedness ? 1 / product : product
     };
 
-    Mathematics.minimum = function minimum(numbers) {
-      var minimum = +Constants.MAXIMUM_NUMBER;
+    Mathematics.iroot = function integer_root(number, exponent) {
+      var extraction = 0;
+      var signedness = exponent < +0;
+      var term       = 1;
 
       // ...
-      for (var index = arguments.length; index; ) {
-        var number = arguments[--index];
-        minimum = number < minimum ? number : minimum
+      if (signedness)
+      exponent = -exponent;
+
+      for (var exponent = --exponent; ; term = extraction) {
+        extraction = ((term * exponent) + (number / Mathematics.ipow(term, exponent))) / (exponent + 1);
+        if (1e-15 > Mathematics.abs(extraction - term)) break // ->> Precision ends here
       }
 
-      return minimum
+      return signedness ? 1 / extraction : extraction
+    };
+
+    Mathematics.isqrt = function integer_square_root(integer) {
+      var extraction = 0;
+
+      // ...
+      for (var shift = 32; shift; ) {
+        shift -= 2;
+
+        extraction <<= 1;
+        extraction |= 1;
+        extraction ^= extraction * extraction > (integer >>> shift);
+      }
+
+      return extraction
+    };
+
+    Mathematics.itrunc = function immediate_truncate(number) {
+      return number | 0
+    };
+
+    Mathematics.jsf      = function jenkins_small_fast_randomizer() { /* TODO (Lapys) */ };
+    Mathematics.knuth_b  = function knuth_algorithm_b_randomizer() { /* TODO (Lapys) */ };
+    Mathematics.laguerre = function laguerre() { /* TODO (Lapys) */ };
+    Mathematics.lcg      = function linear_congruential_generator() { /* TODO (Lapys) */ };
+    Mathematics.legendre = function legendre() { /* TODO (Lapys) */ };
+
+    Mathematics.lerp = function lerp(ratio, start, end) {
+      return start + (ratio * (end - start))
+    };
+
+    Mathematics.ln = function natural_logarithm(number) {
+      if (0 !== number) {
+        var currentTerm;
+        var currentTermNumerator;
+        var factor     = 0; // ->> of 10
+        var logarithm  = 0;
+        var recentTerm = 0;
+        var within     = true; // --> 0 > x < 2
+
+        // ...
+        while (number <= 1e-1) { --factor; number *= 10 }
+        while (number >= 1e+1) { ++factor; number /= 10 }
+
+        if (number >= 2) { number = 1 / number; within = false }
+
+        number              -= 1;
+        currentTermNumerator = number;
+        currentTerm          = number;
+
+        for (var index = 2; 1e-15 /* ->> Precision ends here */ < Mathematics.abs(currentTerm - recentTerm); ++index) {
+          logarithm += currentTerm * (index % 2 ? -1 : 1);
+
+          recentTerm  = currentTerm;
+          currentTerm = (currentTermNumerator *= number) / index
+        }
+
+        // ...
+        return (Mathematics.LN10 * factor) + (logarithm * (within ? 1 : -1))
+      }
+
+      return Infinity
+    };
+
+    Mathematics.log = function logarithm(number, base) {
+      return Mathematics.ln(number) / (Mathematics.E === base || arguments.length < 2 ? 1 : Mathematics.ln(base))
+    };
+
+    Mathematics.max = function maximum(numbers) {
+      var maximal = -Infinity;
+
+      // ...
+      for (var index = arguments.length; index; )
+      maximal = Mathematics.imax(maximal, arguments[--index]);
+
+      return maximal
+    };
+
+    Mathematics.min = function minimum(numbers) {
+      var minimal = +Infinity;
+
+      // ...
+      for (var index = arguments.length; index; )
+      minimal = Mathematics.imax(minimal, arguments[--index]);
+
+      return minimal
+    };
+
+    Mathematics.mod = function modulus(dividend, divisor) {
+      return ((dividend % divisor) + divisor) % divisor
+    };
+
+    Mathematics.mt         = function mersenne_twiser() { /* TODO (Lapys) */ };
+    Mathematics.mt32       = function mersenne_twiser_32_bits() { /* TODO (Lapys) */ };
+    Mathematics.mt64       = function mersenne_twiser_64_bits() { /* TODO (Lapys) */ };
+    Mathematics.mulberry   = function mulberry() { /* TODO (Lapys) */ };
+    Mathematics.mulberry32 = function mulberry_32_bits() { /* TODO (Lapys) */ };
+
+    Mathematics.perc = function percent(number, exponent) {
+      return number * ((arguments.length < 2 ? 1 : exponent) / 100)
+    };
+
+    Mathematics.pow = function power(base, exponent) {
+      return exponent % 1 ? Mathematics.root(base, 1 / exponent) : Mathematics.ipow(base, exponent)
+    };
+
+    Mathematics.randint      = function randint() { /* TODO (Lapys) */ };
+    Mathematics.random       = function random() { /* TODO (Lapys) */ };
+    Mathematics.riemann_zeta = function riemann_zeta() { /* TODO (Lapys) */ };
+
+    Mathematics.root = function root(number, exponent) {
+      if (0 === (1 / exponent) % 1) return Mathematics.ipow(number, 1 / exponent);
+      if (0 === exponent % 1) return Mathematics.iroot(number, exponent);
+
+      // ...
+      var extraction;
+      var fraction = Functions.numberToFraction(exponent).toImproper();
+
+      while (true) {
+        extraction = Mathematics.ipow(number, fraction.denominator);
+        if (Infinity !== extraction) break;
+
+        fraction.denominator = Mathematics.trunc(fraction.denominator / 10);
+        fraction.numerator   = Mathematics.trunc(fraction.numerator / 10)
+      }
+
+      return Mathematics.iroot(extraction, fraction.numerator)
     };
 
     Mathematics.round = function round(number) {
@@ -894,115 +1951,497 @@ var Lapys = new (
       return characteristics + (number - characteristics >= 0.5)
     };
 
-    Mathematics.trunc = function truncate(number) {
-      if (-1.0 < number && number < +1.0)
-      return +0;
+    Mathematics.sec = function sec(number) {
+      return 1 / Mathematics.cos(number)
+    };
 
-      // ... ->> Bitwise arithmetic truncates `Number`s to their integer form
-      if (-Constants.MAXIMUM_BITWISE_INTEGER <= number && number <= Constants.MAXIMUM_BITWISE_INTEGER)
-      return number | +0;
+    Mathematics.sech = function sech(number) {
+      return 1 / Mathematics.cosh(number)
+    };
 
-      // ... ->> Parse `number`'s source
-      if (Supports.String$prototype$charAt) {
-        var string               = Functions.numberToString(number);
-        var signedness           = Functions.stringAt(string, +0) === '-';
-        var scientificSignedness = false;
-        var scientificExponent   = +0;
-        var mantissaIndex        = +0;
-        var mantissaEnd          = +0;
-        var characteristics      = +0;
-
-        // ...
-        for (var index = +signedness, length = string.length; index !== length; ++index) {
-          var character = Functions.stringAt(string, index);
-
-          // ...
-          if (+0 === mantissaIndex) {
-            if (character === '.') { mantissaEnd = length; mantissaIndex = ++index; continue }
-            else if (Functions.stringIsDigit(character)) { characteristics = Functions.numberFromDigit(character) + (characteristics * 10); continue }
-          }
-
-          if (character === 'e') {
-            mantissaEnd          = index;
-            scientificSignedness = Functions.stringAt(string, ++index) === '-';
-            while (++index !== length) scientificExponent = Functions.numberFromDigit(Functions.stringAt(string, index)) + (scientificExponent * 10);
-
-            break
-          }
-        }
-
-        while (scientificExponent--) {
-          if (scientificSignedness) { if (characteristics < 10) { characteristics = 0; break } characteristics /= 10 }
-          else { characteristics *= 10; if (mantissaEnd !== mantissaIndex) characteristics += Functions.numberFromDigit(Functions.stringAt(string, mantissaIndex++)) }
-        }
-
-        return characteristics
-      }
-
-      // ... ->> "Count" up to `number`
-      var Modes = {ADD: 0b000001, EXPONENTIATE: 0b000010, INCREMENT: 0b000100, MULTIPLY: 0b001000, RADIX: 0b010000, SELF: 0b100000};
-      var increment  = +0, nextIncrement;
-      var integer    = 1,  nextInteger;
-      var modes      = [Modes.SELF | Modes.EXPONENTIATE, Modes.SELF | Modes.MULTIPLY, Modes.SELF | Modes.RADIX, Modes.SELF | Modes.ADD, Modes.EXPONENTIATE, Modes.MULTIPLY, Modes.RADIX, Modes.ADD, Modes.INCREMENT]; // ->> in order of progression
-      var precision  = 1;    // WARN (Lapys) -> Speeds get pessimistic if greater than `1` ->> Greater than `1` if `number` is large enough i.e.: `number === number + 1`
-      var radix      = 10;
-      var self       = true; // NOTE (Lapys) -> Allow increments by updating the `integer` only, not its `increment`
-      var signedness = number < +0.0;
+    Mathematics.sin = function sine(number) {
+      var angle      = 0;
+      var index      = 1;
+      var signedness = Mathematics.ipow(-1, Mathematics.trunc(number / Mathematics.PI)) === -1;
+      var term;
+      var termDenominator = 1;
+      var termNumerator   = number %= Mathematics.PI;
 
       // ...
-      for (var index = +0; integer < number; self = self && (modes[index] & Modes.SELF)) {
-        switch (modes[index]) {
-          case Modes.ADD         : nextIncrement = increment + increment;                  break;
-          case Modes.EXPONENTIATE: nextIncrement = Mathematics.ipow(increment, increment); break;
-          case Modes.INCREMENT   : nextIncrement = increment + precision;                  break;
-          case Modes.MULTIPLY    : nextIncrement = increment * increment;                  break;
-          case Modes.RADIX       : nextIncrement = increment * radix;                      break;
+      do {
+        term   = angle;
+        angle += (termNumerator / termDenominator) * (signedness ? -1 : 1);
 
-          case Modes.SELF | Modes.ADD         : nextInteger = integer + integer;                  break;
-          case Modes.SELF | Modes.EXPONENTIATE: nextInteger = Mathematics.ipow(integer, integer); break;
-          case Modes.SELF | Modes.MULTIPLY    : nextInteger = integer * integer;                  break;
-          case Modes.SELF | Modes.RADIX       : nextInteger = integer * radix
-        }
+        termDenominator *= ++index;
+        termDenominator *= ++index;
+        termNumerator   *= number * number;
+        signedness       = false === signedness
+      } while (1e-15 < Mathematics.abs(term - angle)); // ->> Precision ends here
+
+      return angle
+    };
+
+    Mathematics.sinh = function sinh(number) {
+      return (Mathematics.exp(+number) - Mathematics.exp(-number)) / 2
+    };
+
+    Mathematics.sph_bessel   = function spherical_bessel() { /* TODO (Lapys) */ };
+    Mathematics.sph_legendre = function spherical_legendre() { /* TODO (Lapys) */ };
+    Mathematics.sph_neumann  = function spherical_neumann() { /* TODO (Lapys) */ };
+
+    Mathematics.sqrt = function sqrt(number) {
+      return Mathematics.iroot(number, 2)
+    };
+
+    Mathematics.tan = function tan(number) {
+      return Mathematics.sin(number) / Mathematics.cos(number)
+    };
+
+    Mathematics.tanh = function tanh(number) {
+      return Mathematics.sinh(number) / Mathematics.cosh(number)
+    };
+
+    Mathematics.trunc = function truncate(number) {
+      var counter    = 1;
+      var signedness = number < +0;
+      var truncation;
+
+      // ...
+      if (signedness)
+      number = -number;
+
+      while (counter < number)
+      counter *= 2;
+
+      for (truncation = 0; counter >= 1; counter /= 2)
+      truncation += counter * (number >= counter + truncation);
+
+      // ...
+      return truncation * (signedness ? -1 : 1)
+    };
+
+    Mathematics.wrap = function wrap(number, start, end) {
+      return Mathematics.mod(number - start, end - (start - 1))
+    };
+
+    Mathematics.xorshift       = function xorshift() { /* TODO (Lapys) */ };
+    Mathematics.xorshift128    = function xorshift_128_bits() { /* TODO (Lapys) */ };
+    Mathematics.xorshift128_p  = function xorshift_128_bits_plus() { /* TODO (Lapys) */ };
+    Mathematics.xorshift128_s  = function xorshift_128_bits_star() { /* TODO (Lapys) */ };
+    Mathematics.xorshift256    = function xorshift_256_bits() { /* TODO (Lapys) */ };
+    Mathematics.xorshift256_p  = function xorshift_256_bits_plus() { /* TODO (Lapys) */ };
+    Mathematics.xorshift256_ss = function xorshift_256_bits_star() { /* TODO (Lapys) */ };
+    Mathematics.xorshift_p     = function xorshift_plus() { /* TODO (Lapys) */ };
+    Mathematics.xorshift_s     = function xorshift_star() { /* TODO (Lapys) */ };
+    Mathematics.xorshift_ss    = function xorshift_star() { /* TODO (Lapys) */ };
+    Mathematics.xorwow         = function xorwow() { /* TODO (Lapys) */ };
+
+    /* Support > ... */
+    try { Support.STRICT_MODE = arguments.callee; Support.STRICT_MODE = false }
+    catch (error) { Support.STRICT_MODE = true }
+
+    Support.STRING_CHARACTER_ACCESS_BRACKET_NOTATION = false === Support.STRICT_MODE && false === delete 'ඞ'[0]; // ->> Unable to assert on strict mode
+
+    /* Native > ... */
+    if (VOID !== Native.Error$prototype && VOID !== Native.TypeError$prototype) {
+      var descriptors = {
+        "Error$prototype$name" : ERROR,
+        "Object$prototype$name": ERROR
+      };
+
+      // ... ->> Define `name` properties for `…ERROR`s
+      do {
+        var count = 0;
+        var keys  = {"RecursionOverflowError": null, "TypeError": null}; // ->> `ReferenceError` ignored?
 
         // ...
-        if (self) {
-          // ... ->> `integer` progression too large or redundant
-          if (nextInteger === integer || nextInteger > number || false === Functions.numberIsSafe(nextInteger)) {
-            if (++index === modes.length) break;
-            continue
-          }
+        descriptors.Object$prototype$name = Functions.describeProperty(Native.Object$prototype, "name");
+        if (false === descriptors.Object$prototype$name.configurable || VOID === descriptors.Object$prototype$name.value) break;
 
-          index -= +0 !== index
+        descriptors.Error$prototype$name = Functions.describeProperty(Native.Error$prototype, "name");
+        if (false === descriptors.Error$prototype$name.configurable || VOID === descriptors.Error$prototype$name.value) break;
+
+        // ... ->> Allow guaranteed definition as own properties
+        delete Native.Error$prototype ["name"];
+        delete Native.Object$prototype["name"];
+
+        if (true) // WARN (Lapys) -> Safari does not support instantiating `class RecursionOverflowError` through an exception
+        delete keys["RecursionOverflowError"];
+
+        for (var key in keys) {
+          if (count++ === 2) break;
+
+          var constructor = Native[key + '$'];
+          var prototype   = Native[key + "$prototype"];
+          var descriptor  = Functions.describeProperty(prototype, "name");
+
+          // ...
+          if (descriptor.configurable && VOID !== descriptor.value) {
+            var error = new constructor(); // ->> Capture `…ERROR` (see `TYPE_ERROR`)
+
+            // ...
+            constructor.prototype = error; // ->> See respective constructor
+            error["name"]         = descriptor.value;
+
+            Functions.defineProperty(prototype, "name", descriptor)
+          }
         }
 
-        else {
-          self = false;
+        Functions.defineProperty(Native.Error$prototype,  "name", descriptors.Error$prototype$name);
+        Functions.defineProperty(Native.Object$prototype, "name", descriptors.Object$prototype$name)
+      } while (false)
+    }
 
-          // ... ->> `increment` progression too large or redundant
-          if (nextIncrement === increment || false === Functions.numberIsSafe(nextIncrement)) {
-            if (++index === modes.length) break;
-            continue
+    try { Native.Object$prototype$toString$ = Native.Object$prototype.toString }
+    catch (error) { throw new NativeAssertionError("Unable to evaluate `Object.prototype.toString()`") }
+
+    try {
+      Pseudo.prototype = GLOBAL.Function.prototype;
+      if (false === (Pseudo.prototype !== Native.Object$prototype && Pseudo instanceof Pseudo && (function() {}) instanceof Pseudo && false === ({}) instanceof Pseudo)) throw new PseudoError();
+
+      Native.Function$prototype               = Pseudo.prototype;
+      Support.FUNCTION_INHERITS_NAME_PROPERTY = Native.Function$prototype.name === "" && false === "name" in Native.Object$prototype
+    } catch (error) { throw new NativeAssertionError("Unable to evaluate `Function.prototype` as built-in native") }
+
+    Native.Function$prototype$toString = nativeof(Native.Function$prototype, "toString", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Function.prototype").get()["finally"](function(native) {
+      var assertion = true;
+
+      // ...
+      try { new native;                        assertion = false } catch (error) {}
+      try { ({"toString": native}).toString(); assertion = false } catch (error) {}
+
+      if (assertion && delete Native.Object$prototype["toString"]) {
+        try {
+          switch ((function() { return 'ඞ' }).toString()) {
+            case "function () {\n          return 'ඞ';\n        }": // WARN (Lapys) -> Function source must be non-deducible
+            case "function () {\n    return \"\\u0D9E\";\n}"       : // WARN (Lapys) -> Fails in JavaScript implementations that de-compile function sources in a non-standard way
+            case "(function() { return 'ඞ' })"                    : //
+            case "function () { return 'ඞ'; }"                    : //
+            case "function() { return 'ඞ' }"                      : // NOTE (Lapys) -> Confirmed use of `Function.prototype.toString()` (but not confirmed object)
+              Native.Object$prototype.toString = Native.Object$prototype$toString$;
+              return native
           }
+        } catch (error) {}
 
-          // ... ->> `integer` progression too large or redundant
-          nextInteger = nextIncrement + integer;
-
-          if (nextInteger === integer || nextInteger > number || false === Functions.numberIsSafe(nextInteger)) {
-            if (++index === modes.length) {
-              if (+0 === increment && false === Functions.numberIsSafe(precision *= 2)) break;
-              for (increment = index = +0; modes[index] & Modes.SELF; ++index) continue
-            }
-
-            continue
-          }
-
-          increment = nextIncrement;
-          index    -= +0 !== index && +0 === (modes[index - 1] & Modes.SELF)
-        }
-
-        integer = nextInteger
+        Native.Object$prototype.toString = Native.Object$prototype$toString$
       }
 
-      return signedness ? -integer : integer
+      return ERROR
+    });
+
+    Native.Function$prototype$apply = nativeof(Native.Function$prototype, "apply", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Function.prototype").get()["finally"](function(native) {
+      var assertion = true;
+
+      // ...
+      try { new native(GLOBAL, []);                assertion = false } catch (error) {}
+      try { ({"apply": native}).apply(GLOBAL, []); assertion = false } catch (error) {}
+
+      if (assertion && assert(Native.Function$prototype$apply)) {
+        try {
+          function functor() /* ->> Repeated code: see `Native.Function$prototype$bind = nativeof(…)` */ {
+            var callee = Support.STRICT_MODE ? functor : arguments.callee;
+            var count  = 0;
+            var match  = 0;
+
+            // ...
+            for (var index in arguments) {
+              if (count++ === 2) break;
+              match += '0' === index || '1' === index
+            }
+
+            return functor === this && functor === callee && VOID === arguments[1] && (0 === match || match === arguments.length)
+          }
+
+          // ...
+          if (
+            functor.apply(functor, [undefined, VOID])                                                        &&
+            (function() { return this === (Support.STRICT_MODE ? null      : GLOBAL) }).apply(null,      []) &&
+            (function() { return this === (Support.STRICT_MODE ? undefined : GLOBAL) }).apply(undefined, []) &&
+            (function() { try { return (function() { return 0 === arguments.length }).apply(GLOBAL, {"length": -1}) } catch (error) {} return true })()
+          ) return native
+        } catch (error) {}
+      }
+
+      return ERROR
+    });
+
+    Native.Function$prototype$bind = nativeof(Native.Function$prototype, "bind", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Function.prototype").get(null)["finally"](function(native) {
+      assert(Native.Function$prototype$apply, Enumeration.STRICT);
+
+      if (ERROR !== native)
+      try {
+        Pseudo.prototype = {};
+
+        var assertion   = true;
+        var functor     = function(boundParameter) { return GLOBAL === this && arguments.length === 1 && boundParameter instanceof Pseudo };
+        var functorBind = functor.bind(GLOBAL, new Pseudo);
+
+        // ...
+        try { assertion = false === delete functor["prototype"] }
+        catch (error) {}
+
+        if (
+          assertion                                                                                           &&
+          functor    .length === 1                                                                            &&
+          functorBind.length === 0                                                                            &&
+          (false === Support.FUNCTION_INHERITS_NAME_PROPERTY || functorBind.name === "bound " + functor.name) &&
+          delete functorBind["prototype"]                                                                     &&
+          new functorBind instanceof functor.bind(GLOBAL, new Pseudo, new Pseudo)
+        ) {
+          // ... ->> Directly compare function source to its bound default
+          function isBoundFunctionSource(source) {
+            return (
+              source === "function () { [native code] }"      ||
+              source === "function() {\n    [native code]\n}" ||
+              source === "\nfunction() {\n    [native code]\n}\n"
+            )
+          }
+
+          // ... --> Function.prototype.apply = Function.prototype.apply.apply(Function.prototype.bind, [Function.prototype.apply, [Function.prototype.apply]])
+          return nativeof({"apply": Native.Function$prototype$apply.apply(native, [Native.Function$prototype$apply, [Native.Function$prototype$apply]])}, "apply", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.UNNAMED_FUNCTION, "Function.prototype").get()["finally"](function(subnative) {
+            if (Native.Function$prototype$apply !== subnative) {
+              assertion = true;
+
+              try { new subnative(subnative, [GLOBAL]); assertion = false } catch (error) {}
+              try {     subnative(subnative, [GLOBAL]); assertion = false } catch (error) {} // ->> Bound `subnative` not seen as function
+
+              // ...
+              if (
+                assertion                                                                                                              &&
+                subnative.length === 2                                                                                                 &&
+                (false === Support.FUNCTION_INHERITS_NAME_PROPERTY || subnative.name === "bound " || subnative.name === "bound apply") &&
+                isBoundFunctionSource(subnative(Native.Function$prototype$toString, [subnative]))                                      &&
+                subnative(function() { return functor === this && arguments.length === 1 && VOID === arguments[0] }, [functor = function() {}, [VOID]])
+              ) {
+                var source  = (function() { return arguments.toString() })();
+                var functor = function() /* ->> Repeated code: see `Native.Function$prototype$apply = nativeof(…)` */ {
+                  var callee = Support.STRICT_MODE ? functor : arguments.callee;
+                  var count  = 0;
+                  var match  = 0;
+
+                  // ... --- TODO (Lapys)
+                  for (var index in arguments) {
+                    if (count++ === 2) break;
+                    match += '0' === index || '1' === index
+                  }
+
+                  return functor === this && functor === callee && VOID === arguments[1] && (0 === match || match === arguments.length)
+                };
+
+                // ... Repeated code: see `Native.Function$prototype$apply = nativeof(…)`
+                if (delete subnative["name"] && (
+                  source === "[object Arguments]" ? (
+                    subnative(functor, [functor, {'1': VOID, "length": 2}]) &&
+                    (function() { return Support.STRICT_MODE ? null === this : GLOBAL === this }).apply(null, []) &&
+                    (function() { return Support.STRICT_MODE ? undefined === this : GLOBAL === this }).apply(undefined, []) &&
+                    (function() { try { return subnative(function() { return 0 === arguments.length }, [GLOBAL, {"length": -1}]) } catch (error) {} return true })()
+                  ) :
+                  source === "[object Object]" ? (
+                    subnative(functor, [functor, [undefined, VOID]]) &&
+                    subnative(function() { return GLOBAL === this }, [null, []]) &&
+                    subnative(function() { return GLOBAL === this }, [undefined, []])
+                  ) :
+                  false
+                )) {
+                  var subsubnative = subnative(native, [
+                    function() { return subnative(arguments[0], arguments[1]) }, // ->> Bind this `Function.prototype.apply(…)` wrapper
+                    function() { return subnative(arguments[0], arguments[1]) }  //     to this `Function.prototype.apply(…)` function
+                  ]);
+
+                  // ...
+                  assertion = true;
+
+                  try { new subnative(subnative, [GLOBAL]); assertion = false } catch (error) {}
+                  try { subnative(subnative, [GLOBAL]); assertion = false } catch (error) { /* ->> Bound `subnative` wrapper not seen as function */ }
+
+                  // ...
+                  if (
+                    assertion &&
+                    0 === subsubnative.length &&
+                    (false === Support.FUNCTION_INHERITS_NAME_PROPERTY || subsubnative.name === "bound ") &&
+                    isBoundFunctionSource(subsubnative(Native.Function$prototype$toString, [subsubnative]))
+                  ) if (delete subsubnative["name"]) {
+                    Native.Function$prototype$apply = subsubnative;
+                    return native
+                  }
+                }
+              }
+            }
+
+            return ERROR
+          })
+        }
+      } catch (error) {}
+
+      return VOID
+    });
+
+    Native.String$prototype$charAt = Support.STRING_CHARACTER_ACCESS_BRACKET_NOTATION ? function charAt(index) {
+      var string = this + "";
+
+      // ...
+      if (null === this || undefined === this)
+      throw new TypeError("String.prototype.charAt called on incompatible null or undefined");
+
+      return index < string.length ? string[index] : ""
+    } : nativeof("", "charAt", Enumeration.AS_FUNCTION | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "String.prototype").get()["finally"](function(native) {
+      // ... ->> Less rigorous testing required with the affirmed `Function.prototype.apply(…)` and `Function.prototype.toString(…)` features
+      return native
+    });
+
+    Native.Object$getOwnPropertyDescriptor = nativeof(Native.Object$, "getOwnPropertyDescriptor", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Object").get(null)["finally"](function(native) {
+      // ... ->> (Slightly) Even less rigorous testing required with the additionally affirmed `String.prototype.charAt(…)` feature
+      if (ERROR !== native)
+      try {
+        var owningObject    = {"": VOID};
+        var nonOwningObject = {};
+        var descriptor      = native(owningObject, "");
+
+        // ...
+        if (
+          "object" === typeof descriptor &&
+          "configurable" in descriptor && true === descriptor["configurable"] &&
+          "enumerable"   in descriptor && true === descriptor["enumerable"]   &&
+          "writable"     in descriptor && true === descriptor["writable"]     &&
+          "value"        in descriptor && VOID === descriptor["value"]        &&
+          undefined === native(nonOwningObject, "")
+        ) {
+          var Object$prototypeEnumerableKeyCount = 0;
+          var owningObjectEnumerableKeyCount     = 0;
+          var nonOwningObjectEnumerableKeyCount  = 0;
+
+          // ...
+          for (var key in Native.Object$prototype) ++Object$prototypeEnumerableKeyCount;
+          for (var key in owningObject)            ++owningObjectEnumerableKeyCount;
+          for (var key in nonOwningObject)         ++nonOwningObjectEnumerableKeyCount;
+
+          if (
+            owningObjectEnumerableKeyCount    === Object$prototypeEnumerableKeyCount + 1 &&
+            nonOwningObjectEnumerableKeyCount === Object$prototypeEnumerableKeyCount + 0 &&
+            delete descriptor["configurable"]                                            &&
+            delete descriptor["enumerable"]                                              &&
+            delete descriptor["value"]                                                   &&
+            delete descriptor["writable"]                                                &&
+            delete owningObject[""]
+          ) return native
+        }
+      } catch (error) {}
+
+      return VOID
+    });
+
+    Native.Object$prototype$__lookupGetter__ = nativeof(Native.Object$prototype, "__lookupGetter__", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT | (VOID !== Native.Object$getOwnPropertyDescriptor ? Enumeration.CONFIGURABLE_PROPERTY | Enumeration.VALUE_PROPERTY | Enumeration.WRITABLE_PROPERTY : 0x0000000), "Object.prototype").get(null)["finally"](null);
+    Native.Object$prototype$__lookupSetter__ = nativeof(Native.Object$prototype, "__lookupSetter__", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT | (VOID !== Native.Object$getOwnPropertyDescriptor ? Enumeration.CONFIGURABLE_PROPERTY | Enumeration.VALUE_PROPERTY | Enumeration.WRITABLE_PROPERTY : 0x0000000), "Object.prototype").get(null)["finally"](null);
+
+    Native.Object$getOwnPropertyDescriptor = VOID === Native.Object$getOwnPropertyDescriptor ? nativeof(Native.Object$, "getOwnPropertyDescriptor", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT | (VOID !== Native.Object$prototype$__lookupGetter__ && VOID !== Native.Object$prototype$__lookupSetter__ ? Enumeration.CONFIGURABLE_PROPERTY | Enumeration.VALUE_PROPERTY | Enumeration.WRITABLE_PROPERTY : 0x0000000), "Object").get(null)["finally"](null) : Native.Object$getOwnPropertyDescriptor;
+
+    if (VOID !== Native.Object$getOwnPropertyDescriptor) {
+      Native.Object$prototype$__lookupGetter__ = VOID;
+      Native.Object$prototype$__lookupSetter__ = VOID
     }
-})();
+
+    else if (VOID === Native.Object$getOwnPropertyDescriptor && VOID === Native.Object$prototype$__lookupGetter__ && VOID === Native.Object$prototype$__lookupSetter__)
+      throw new NativeAssertionError("Required `Object.getOwnPropertyDescriptor(\u2026)` (or `Object.prototype.__lookupGetter__(\u2026)` & `Object.prototype.__lookupSetter__(\u2026)`) as built-in native");
+
+    console.log("Function.prototype.apply", Native.Function$prototype$apply);
+    console.log("Function.prototype.bind", Native.Function$prototype$bind);
+    console.log("Object.getOwnPropertyDescriptor", Native.Object$getOwnPropertyDescriptor);
+    console.log("Object.prototype.__lookupGetter__", Native.Object$prototype$__lookupGetter__);
+    console.log("Object.prototype.__lookupSetter__", Native.Object$prototype$__lookupSetter__);
+
+    // ... --- TODO (Lapys) -> Is this required?
+    // Native.Object$defineProperty = nativeof(Native.Object$, "defineProperty", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Object").get(null)["finally"](function(native) {
+    //   // ... --- WARN (Lapys) -> Property key must be non-deducible
+    //   if (ERROR !== native && false === 'ඞ' in Native.Object$prototype)
+    //   try {
+    //     var object = {};
+
+    //     // ...
+    //     if (object !== native(object, 'ඞ', {configurable: true, enumerable: false, value: VOID, writable: false})) return VOID; // ->> Test property definition
+    //     if (false === 'ඞ' in object) return VOID;                                                                               //
+    //     if (VOID !== object['ඞ']) return VOID;                                                                                  //
+    //     object['ඞ'] = ERROR;                                                                                                    // ->> Test property enumerability and immutability
+    //     if (VOID !== object['ඞ']) return VOID;                                                                                  //
+    //     for (var key in object) if (key === 'ඞ') return VOID;                                                                   //
+    //     if (false === delete object['ඞ']) return VOID;                                                                          // ->> Test property configurability
+
+    //     if (object !== native(object, 'ඞ', {configurable: false, enumerable: false, value: VOID, writable: false})) return VOID; // ->> Test property definition
+    //     if (false !== delete object['ඞ']) return VOID;                                                                           // ->> Test property configurability
+
+    //     return native
+    //   } catch (error) {}
+
+    //   return VOID
+    // });
+
+    // Native.Object$prototype$__defineGetter__ = nativeof(Native.Object$prototype, "__defineGetter__", Enumeration.AS_FUNCTION | Enumeration.AS_PROPERTY | Enumeration.NAMED_FUNCTION | Enumeration.STRICT, "Object.prototype").get(null)["finally"](function(native) {
+    //   // ... --- WARN (Lapys) -> Property key must be non-deducible
+    //   if (ERROR !== native && false === 'ඞ' in Native.Object$prototype)
+    //   try {
+    //     var enumerable = false;
+    //     var object     = {};
+
+    //     // ...
+    //     if (VOID !== Native.Function$prototype$bind) Native.Function$prototype$apply(native, [object, ['ඞ', function() { return VOID }]]);
+    //     else if (assert(Native.Function$prototype$apply, Enumeration.STRICT)) Native.Function$prototype$apply.apply(native, [object, ['ඞ', function() { return VOID }]]);
+
+    //     // ...
+    //     if (false === 'ඞ' in object) return VOID;                             // ->> Test property definition
+    //     if (VOID !== object['ඞ']) return VOID;                                //
+    //     object['ඞ'] = ERROR;                                                  // ->> Test property writability
+    //     if (VOID !== object['ඞ']) return VOID;                                //
+    //     for (var key in object) if (key === 'ඞ') { enumerable = true; break } // ->> Test property enumerability
+    //     if (false === enumerable) return VOID;                                 //
+    //     if (false === delete object['ඞ']) return VOID;                        // ->> Test property configurability
+
+    //     return native
+    //   } catch (error) {}
+
+    //   return VOID
+    // });
+
+    // if (VOID !== Native.Object$defineProperty) Native.Object$prototype$__defineGetter__ = VOID;
+    // else if (VOID === Native.Object$defineProperty && VOID === Native.Object$prototype$__defineGetter__) throw new NativeAssertionError("Requires `Object.defineProperty(\u2026)` or `Object.prototype.__defineGetter__(\u2026)` as built-in native");
+
+    Native.Object$prototype$__defineSetter__ = VOID;
+    Native.Object$prototype$__lookupGetter__ = VOID;
+    Native.Object$prototype$__lookupSetter__ = VOID;
+    // Native.clearInterval = VOID;
+    // Native.clearTimeout = VOID;
+    // Native.document = VOID;
+    // Native.EventTarget$prototype$addEventListener = VOID;
+    // Native.EventTarget$prototype$attachEvent = VOID;
+    // Native.EventTarget$prototype$detachEvent = VOID;
+    // Native.EventTarget$prototype$removeEventListener = VOID;
+    // Native.requestAnimationFrame = VOID;
+    // Native.setInterval = VOID;
+    // Native.setTimeout = VOID;
+
+    console.log(Native);
+
+    /* DOM > ... */
+    DOM.createElement = function createElement(selector) {
+      assert(Functions.stringAt, Enumeration.STRICT);
+
+      // for (var index = 0, length = selector.length; index !== length; ++index)
+
+      // CSSSelectorDescriptor
+      // DOMTree
+    };
+
+    /* Event > ... */
+    Event.addListener = VOID === Native.EventTarget$prototype$addEventListener ? function addListener(node, type) {
+    } : function addListener(node, type) {};
+
+    // getElementByClassName : null,
+    // getElementsByClassName: null,
+    // getElementById        : null,
+    // getElementsById       : null,
+    // getElementBySelector  : null,
+    // getElementsBySelector : null,
+    // getElementByTagName   : null,
+    // getElementsByTagName  : null
+
+  /* ... */
+  COMPLETED = true
+}();
